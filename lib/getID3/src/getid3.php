@@ -193,7 +193,7 @@ class getID3
 		// IMPORTANT: This path must include the trailing slash
 		if (GETID3_OS_ISWINDOWS && !defined('GETID3_HELPERAPPSDIR')) {
 
-			$helperappsdir = GETID3_INCLUDEPATH.'..'.DIRECTORY_SEPARATOR.'helperapps'; // must not have any space in this path
+			$helperappsdir = GETID3_INCLUDEPATH.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'helperapps'; // must not have any space in this path
 
 			if (!is_dir($helperappsdir)) {
 				$this->startup_error .= '"'.$helperappsdir.'" cannot be defined as GETID3_HELPERAPPSDIR because it does not exist';
