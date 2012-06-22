@@ -12,8 +12,8 @@ and some content might be broken or hidden, make sure to read raw files.
 License
 -------
 
-For license info please read (https://github.com/phansys/getID3/doc/license.txt)
-For commercial license read (https://github.com/phansys/getID3/doc/license.commercial.txt)
+For license info please read [doc/license.txt](https://github.com/phansys/getID3/doc/license.txt)
+For commercial license read [doc/license.commercial.txt](https://github.com/phansys/getID3/doc/license.commercial.txt)
 
 ## Installation
 
