@@ -3,7 +3,6 @@ getID3
 
 This library integrates the getID3 library with the Symfony2 project, emulating the PSR-0 CS.
 
-For more info read the 
 **Warning**: documentation files are not rendering correctly in Github (reStructuredText format)
 and some content might be broken or hidden, make sure to read raw files.
 
