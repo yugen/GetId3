@@ -12,8 +12,9 @@ and some content might be broken or hidden, make sure to read raw files.
 License
 -------
 
-For license info please read [doc/license.txt](https://github.com/phansys/getID3/doc/license.txt)
-For commercial license read [doc/license.commercial.txt](https://github.com/phansys/getID3/doc/license.commercial.txt)
+For license info please read [doc/license.txt](https://github.com/phansys/getID3/tree/master/doc/license.txt)
+
+For commercial license read [doc/license.commercial.txt](https://github.com/phansys/getID3/tree/master/doc/license.commercial.txt)
 
 ## Installation
 
@@ -22,9 +23,9 @@ For commercial license read [doc/license.commercial.txt](https://github.com/phan
 Add following lines to your `deps` file:
 
 ```
-    [getID3]
-        git=https://github.com/phansys/getID3.git
-        target=/getID3
+[getID3]
+    git=https://github.com/phansys/getID3.git
+    target=/getID3
 
 ```
 Now, run the vendors script to download the library:
