@@ -1,7 +1,7 @@
 getID3
 ======
 
-This library integrates the getID3 library with the Symfony2 project, emulating the PSR-0 CS.
+This library integrates the getID3 library with the Symfony2 project, emulating the [PSR-0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md) CS.
 
 **Warning**: documentation files are not rendering correctly in Github (reStructuredText format)
 and some content might be broken or hidden, make sure to read raw files.
