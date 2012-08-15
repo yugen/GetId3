@@ -1,7 +1,7 @@
 getID3
 ======
 
-This library integrates the getID3 library with the Symfony2 project, emulating the [PSR-0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md) CS.
+This package integrates the getID3 library with the Symfony2 project, emulating the [PSR-0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md) CS.
 
 **Warning**: documentation files are not rendering correctly in Github (reStructuredText format)
 and some content might be broken or hidden, make sure to read raw files.
@@ -17,8 +17,11 @@ For license info please read [doc/license.txt](https://github.com/phansys/getID3
 For commercial license read [doc/license.commercial.txt](https://github.com/phansys/getID3/tree/master/doc/license.commercial.txt)
 
 ## Installation
+(You can choose deps or composer install mechanisms)
 
-### Step 1: Download getID3
+### deps
+
+##### Step 1: Download getID3
 
 Add following lines to your `deps` file:
 
@@ -34,7 +37,7 @@ Now, run the vendors script to download the library:
 $ php bin/vendors install
 ```
 
-### Step 2: Configure the Autoloader
+##### Step 2: Configure the Autoloader
 
 Add the `getID3` namespace to your autoloader:
 
@@ -47,6 +50,26 @@ $loader->registerPrefixes(array(
         'getID3_' => __DIR__.'/../vendor/getID3/lib',
         ));
 ```
+___
+
+### [composer] (http://getcomposer.org/)
+
+##### Step 1: Edit composer.json
+
+Add following lines to your `composer.json` `"require"` definitions:
+
+``` json
+"phansys/getid3": "master"
+```
+
+##### Step 2: Run composer
+
+Now, run the composer script to download the library:
+
+``` bash
+$ php composer.phar install
+```
+
 
 Quick use example reading audio properties
 ------------------------------------------
