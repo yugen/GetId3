@@ -1,7 +1,7 @@
 {
     "name": "phansys/getid3",
     "description": "This package integrates the GetId3 library with the Symfony2 project, emulating the PSR-0 CS",
-    "keywords": "keywords": ["getid3", "tags", "metadata"],
+    "keywords": ["getid3", "tags", "metadata"],
     "type": "library",
     "license": "GPL",
     "homepage": "http://www.getid3.org",
