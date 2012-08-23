@@ -454,7 +454,7 @@ class GetId3_GetId3
             }
 
             // instantiate module class
-            $class_name = 'GetId3_Module_' . GetId3_Lib_Helper::toCamelCase($determined_format['group'], '-') . '_' . ucfirst($determined_format['module']);
+            $class_name = 'GetId3_Module_' . GetId3_Lib_Helper::toCamelCase($determined_format['group'], '-', true) . '_' . ucfirst($determined_format['module']);
             if (!class_exists($class_name)) {
                 return $this->error('Format not supported, module "' . $determined_format['include'] . '" is corrupt.');
             }
@@ -1080,7 +1080,7 @@ class GetId3_GetId3
             if (!empty($info['pattern'])
                 && preg_match('#' . $info['pattern'] . '#s', $filedata)
             ) {
-                $info['class'] = 'GetId3_Module_' . GetId3_Lib_Helper::toCamelCase($info['group'], '-') . '_' . ucfirst($info['module']);
+                $info['class'] = 'GetId3_Module_' . GetId3_Lib_Helper::toCamelCase($info['group'], '-', true) . '_' . ucfirst($info['module']);
                 $info['include'] = str_replace('_', DIRECTORY_SEPARATOR, $info['class']) . '.php';
                 return $info;
             }
@@ -1090,7 +1090,7 @@ class GetId3_GetId3
             // Too many mp3 encoders on the market put gabage in front of mpeg files
             // use assume format on these if format detection failed
             $info = $GetFileFormatArray['mp3'];
-            $info['class'] = 'GetId3_Module_' . GetId3_Lib_Helper::toCamelCase($info['group'], '-') . '_' . ucfirst($info['module']);
+            $info['class'] = 'GetId3_Module_' . GetId3_Lib_Helper::toCamelCase($info['group'], '-', true) . '_' . ucfirst($info['module']);
             $info['include'] = str_replace('_', DIRECTORY_SEPARATOR, $info['class']) . '.php';
             return $info;
         } elseif (preg_match('/\.cue$/i', $filename) && preg_match('#FILE "[^"]+" (BINARY|MOTOROLA|AIFF|WAVE|MP3)#',
@@ -1099,7 +1099,7 @@ class GetId3_GetId3
             // so until I think of something better, just go by filename if all other format checks fail
             // and verify there's at least one instance of "TRACK xx AUDIO" in the file
             $info = $GetFileFormatArray['cue'];
-            $info['class'] = 'GetId3_Module_' . GetId3_Lib_Helper::toCamelCase($info['group'], '-') . '_' . ucfirst($info['module']);
+            $info['class'] = 'GetId3_Module_' . GetId3_Lib_Helper::toCamelCase($info['group'], '-', true) . '_' . ucfirst($info['module']);
             $info['include'] = str_replace('_', DIRECTORY_SEPARATOR, $info['class']) . '.php';
             return $info;
         }
