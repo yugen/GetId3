@@ -7,7 +7,20 @@ php:
 before_script:
   - wget -nc http://getcomposer.org/composer.phar
   - php composer.phar install
+<<<<<<< HEAD
 
 notifications:
   email:
     - phansys@gmail.com
+=======
+   
+script: phpunit --configuration phpunit.xml.dist
+
+notifications:
+  email:
+    - phansys@gmail.com
+    
+branches:
+  only:
+    - v1.9.4.x-dev
+>>>>>>> v1.9.4
