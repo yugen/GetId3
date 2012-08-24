@@ -16,7 +16,7 @@
         "ext-exif": "EXIF extension is required for graphic modules."
     },
     "autoload": {
-        "classmap": ["GetId3/"]
+        "psr-0": { "GetId3_": "" }
     },
     "target-dir": "GetId3"
 }
