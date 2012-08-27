@@ -1,5 +1,6 @@
 GetId3
 ======
+[![Build Status](https://secure.travis-ci.org/phansys/GetId3.png?branch=master)](http://travis-ci.org/phansys/GetId3)
 
 This package integrates the GetId3 library with the Symfony2 project, emulating the [PSR-0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md) CS.
 
