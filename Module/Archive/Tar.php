@@ -19,10 +19,21 @@
 //                                                             //
 /////////////////////////////////////////////////////////////////
 
-
+/**
+ * module for analyzing TAR files
+ *
+ * @author James Heinrich <info@getid3.org>
+ * @author Mike Mozolin <teddybearØmail*ru>
+ * @link http://getid3.sourceforge.net
+ * @link http://www.getid3.org
+ */
 class GetId3_Module_Archive_Tar extends GetId3_Handler_BaseHandler
 {
 
+    /**
+     *
+     * @return boolean
+     */
     public function Analyze()
     {
         $info = &$this->getid3->info;
@@ -121,7 +132,12 @@ class GetId3_Module_Archive_Tar extends GetId3_Handler_BaseHandler
         return true;
     }
 
-    // Parses the file mode to file permissions
+    /**
+     * Parses the file mode to file permissions
+     *
+     * @param type $mode
+     * @return type
+     */
     public function display_perms($mode)
     {
         // Determine Type
@@ -164,7 +180,13 @@ class GetId3_Module_Archive_Tar extends GetId3_Handler_BaseHandler
         return $s;
     }
 
-    // Converts the file type
+    /**
+     * Converts the file type
+     *
+     * @staticvar array $flag_types
+     * @param type $typflag
+     * @return type
+     */
     public function get_flag_type($typflag)
     {
         static $flag_types = array(

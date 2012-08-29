@@ -14,9 +14,19 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-
+/**
+ * module for analyzing SZIP compressed files
+ *
+ * @author James Heinrich <info@getid3.org>
+ * @link http://getid3.sourceforge.net
+ * @link http://www.getid3.org
+ */
 class GetId3_Module_Archive_Szip extends GetId3_Handler_BaseHandler
 {
+    /**
+     *
+     * @return boolean
+     */
     public function Analyze()
     {
         $info = &$this->getid3->info;

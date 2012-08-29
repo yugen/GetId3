@@ -1,5 +1,4 @@
 <?php
-
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
 //  available at http://getid3.sourceforge.net                 //
@@ -19,12 +18,28 @@
 //                                                             //
 /////////////////////////////////////////////////////////////////
 
-
+/**
+ * module for analyzing GZIP files
+ *
+ * @author James Heinrich <info@getid3.org>
+ * @author Mike Mozolin <teddybearØmail*ru>
+ * @link http://getid3.sourceforge.net
+ * @link http://www.getid3.org
+ */
 class GetId3_Module_Archive_Gzip extends GetId3_Handler_BaseHandler
 {
-    // public: Optional file list - disable for speed.
-    public $option_gzip_parse_contents = false; // decode gzipped files, if possible, and parse recursively (.tar.gz for example)
+    /**
+     * Optional file list - disable for speed.
+     * decode gzipped files, if possible, and parse recursively (.tar.gz for example)
+     *
+     * @var boolean
+     */
+    public $option_gzip_parse_contents = false;
 
+    /**
+     *
+     * @return boolean
+     */
     public function Analyze()
     {
         $info = &$this->getid3->info;
@@ -221,7 +236,7 @@ class GetId3_Module_Archive_Gzip extends GetId3_Handler_BaseHandler
                     switch ($determined_format['module']) {
                         case 'tar':
                             // view TAR-file info
-                            if (file_exists(GetId3_GetId3::getIncludePath() . $determined_format['include']) && include_once(GetId3_GetId3::getIncludePath() . $determined_format['include'])) {
+                            if (class_exists($determined_format['class'])) {
                                 if (($temp_tar_filename = tempnam(GetId3_GetId3::getTempDir(),
                                                                   'getID3')) === false) {
                                     // can't find anywhere to create a temp file, abort
@@ -257,7 +272,13 @@ class GetId3_Module_Archive_Gzip extends GetId3_Handler_BaseHandler
         return true;
     }
 
-    // Converts the OS type
+    /**
+     * Converts the OS type
+     *
+     * @staticvar array $os_type
+     * @param type $key
+     * @return type
+     */
     public function get_os_type($key)
     {
         static $os_type = array(
@@ -280,7 +301,13 @@ class GetId3_Module_Archive_Gzip extends GetId3_Handler_BaseHandler
         return (isset($os_type[$key]) ? $os_type[$key] : '');
     }
 
-    // Converts the eXtra FLags
+    /**
+     * Converts the eXtra FLags
+     *
+     * @staticvar array $xflag_type
+     * @param type $key
+     * @return type
+     */
     public function get_xflag_type($key)
     {
         static $xflag_type = array(

@@ -14,10 +14,20 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-
+/**
+ * module for analyzing pkZip files
+ *
+ * @author James Heinrich <info@getid3.org>
+ * @link http://getid3.sourceforge.net
+ * @link http://www.getid3.org
+ */
 class GetId3_Module_Archive_Zip extends GetId3_Handler_BaseHandler
 {
 
+    /**
+     *
+     * @return boolean
+     */
     public function Analyze()
     {
         $info = &$this->getid3->info;
@@ -111,6 +121,10 @@ class GetId3_Module_Archive_Zip extends GetId3_Handler_BaseHandler
         }
     }
 
+    /**
+     *
+     * @return boolean
+     */
     public function getZIPHeaderFilepointerTopDown()
     {
         $info = &$this->getid3->info;
@@ -157,6 +171,10 @@ class GetId3_Module_Archive_Zip extends GetId3_Handler_BaseHandler
         return true;
     }
 
+    /**
+     *
+     * @return boolean
+     */
     public function getZIPentriesFilepointer()
     {
         $info = &$this->getid3->info;
@@ -180,6 +198,10 @@ class GetId3_Module_Archive_Zip extends GetId3_Handler_BaseHandler
         return true;
     }
 
+    /**
+     *
+     * @return boolean
+     */
     public function ZIPparseLocalFileHeader()
     {
         $LocalFileHeader['offset'] = ftell($this->getid3->fp);
@@ -273,6 +295,10 @@ class GetId3_Module_Archive_Zip extends GetId3_Handler_BaseHandler
         return $LocalFileHeader;
     }
 
+    /**
+     *
+     * @return boolean
+     */
     public function ZIPparseCentralDirectory()
     {
         $CentralDirectory['offset'] = ftell($this->getid3->fp);
@@ -375,6 +401,10 @@ class GetId3_Module_Archive_Zip extends GetId3_Handler_BaseHandler
         return $CentralDirectory;
     }
 
+    /**
+     *
+     * @return boolean
+     */
     public function ZIPparseEndOfCentralDirectory()
     {
         $EndOfCentralDirectory['offset'] = ftell($this->getid3->fp);
@@ -419,6 +449,12 @@ class GetId3_Module_Archive_Zip extends GetId3_Handler_BaseHandler
         return $EndOfCentralDirectory;
     }
 
+    /**
+     *
+     * @param type $flagbytes
+     * @param type $compressionmethod
+     * @return type
+     */
     public static function ZIPparseGeneralPurposeFlags($flagbytes,
                                                        $compressionmethod)
     {
@@ -453,6 +489,12 @@ class GetId3_Module_Archive_Zip extends GetId3_Handler_BaseHandler
         return $ParsedFlags;
     }
 
+    /**
+     *
+     * @staticvar array $ZIPversionOSLookup
+     * @param type $index
+     * @return type
+     */
     public static function ZIPversionOSLookup($index)
     {
         static $ZIPversionOSLookup = array(
@@ -479,6 +521,12 @@ class GetId3_Module_Archive_Zip extends GetId3_Handler_BaseHandler
         return (isset($ZIPversionOSLookup[$index]) ? $ZIPversionOSLookup[$index] : '[unknown]');
     }
 
+    /**
+     *
+     * @staticvar array $ZIPcompressionMethodLookup
+     * @param type $index
+     * @return type
+     */
     public static function ZIPcompressionMethodLookup($index)
     {
         static $ZIPcompressionMethodLookup = array(
@@ -498,6 +546,12 @@ class GetId3_Module_Archive_Zip extends GetId3_Handler_BaseHandler
         return (isset($ZIPcompressionMethodLookup[$index]) ? $ZIPcompressionMethodLookup[$index] : '[unknown]');
     }
 
+    /**
+     *
+     * @param type $DOSdate
+     * @param type $DOStime
+     * @return type
+     */
     public static function DOStime2UNIXtime($DOSdate, $DOStime)
     {
         // wFatDate

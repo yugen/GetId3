@@ -68,11 +68,24 @@
 *   Frequent updates                    mysql
 */
 
-
+/**
+ *
+ * @author James Heinrich <info@getid3.org>
+ * @author Allan Hansen <ahØartemis*dk>
+ * @link http://getid3.sourceforge.net
+ * @link http://www.getid3.org
+ */
 class GetId3_Extension_Cache_Dbm extends GetId3_GetId3
 {
 
-	// public: constructor - see top of this file for cache type and cache_options
+    /**
+     * public: constructor - see top of this file for cache type and cache_options
+     *
+     * @param type $cache_type
+     * @param type $dbm_filename
+     * @param type $lock_filename
+     * @throws Exception
+     */
 	public function __construct($cache_type, $dbm_filename, $lock_filename) {
 
 		// Check for dba extension
@@ -138,9 +151,9 @@ class GetId3_Extension_Cache_Dbm extends GetId3_GetId3
 		parent::__construct();
 	}
 
-
-
-	// public: destuctor
+    /**
+     *
+     */
 	public function __destruct() {
 
 		// Close dbm file
@@ -153,9 +166,11 @@ class GetId3_Extension_Cache_Dbm extends GetId3_GetId3
 		fclose($this->lock);
 	}
 
-
-
-	// public: clear cache
+	/**
+     * clear cache
+     *
+     * @throws Exception
+     */
 	public function clear_cache() {
 
 		// Close dbm file
@@ -175,9 +190,12 @@ class GetId3_Extension_Cache_Dbm extends GetId3_GetId3
 		register_shutdown_function(array($this, '__destruct'));
 	}
 
-
-
-	// public: analyze file
+	/**
+     * analyze file
+     *
+     * @param type $filename
+     * @return type
+     */
 	public function analyze($filename) {
 
 		if (file_exists($filename)) {
@@ -204,5 +222,4 @@ class GetId3_Extension_Cache_Dbm extends GetId3_GetId3
 
 		return $result;
 	}
-
 }

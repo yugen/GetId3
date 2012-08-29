@@ -14,11 +14,25 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-
+/**
+ * module for analyzing RAR files
+ *
+ * @author James Heinrich <info@getid3.org>
+ * @link http://getid3.sourceforge.net
+ * @link http://www.getid3.org
+ */
 class GetId3_Module_Archive_Rar extends GetId3_Handler_BaseHandler
 {
+    /**
+     *
+     * @var boolean
+     */
     public $option_use_rar_extension = false;
 
+    /**
+     *
+     * @return boolean
+     */
     public function Analyze()
     {
         $info = &$this->getid3->info;

@@ -89,8 +89,29 @@
  *
  *
  */
+
+/**
+ *
+ * @author James Heinrich <info@getid3.org>
+ * @author Allan Hansen <ahØartemis*dk>
+ * @author Carlo Capocasa <calroØcarlocapocasa*com>
+ * @author Karl G. Holz <newaeonØmac*com>
+ * @link http://getid3.sourceforge.net
+ * @link http://www.getid3.org
+ */
 class GetId3_Extension_Cache_Sqlite3 extends GetId3_GetId3
 {
+    /**
+     * hold the sqlite db
+     * @var SQLite Resource
+     */
+    private $db;
+
+    /**
+     * table to use for caching
+     * @var string $table
+     */
+    private $table;
 
     /**
      * __construct()
@@ -127,17 +148,6 @@ class GetId3_Extension_Cache_Sqlite3 extends GetId3_GetId3
         $db = $this->db;
         $db->close();
     }
-    /**
-     * hold the sqlite db
-     * @var SQLite Resource
-     */
-    private $db;
-
-    /**
-     * table to use for caching
-     * @var string $table
-     */
-    private $table;
 
     /**
      * clear the cache
@@ -267,6 +277,5 @@ class GetId3_Extension_Cache_Sqlite3 extends GetId3_GetId3
                 return "SELECT val FROM $this->table WHERE dirname = :dirname";
                 break;
         }
-        return null;
     }
 }

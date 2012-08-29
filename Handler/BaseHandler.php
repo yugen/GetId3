@@ -10,14 +10,50 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
+/**
+ *
+ * @author James Heinrich <info@getid3.org>
+ * @link http://getid3.sourceforge.net
+ * @link http://www.getid3.org
+ */
 abstract class GetId3_Handler_BaseHandler
 {
-    protected $getid3;                       // pointer
-    protected $data_string_flag = false; // analyzing filepointer or string
-    protected $data_string = '';    // string to analyze
-    protected $data_string_position = 0;     // seek position in string
-    protected $data_string_length = 0;     // string length
-    private $dependency_to = null;
+    /**
+     * pointer
+     *
+     * @var GetId3_GetId3
+     */
+    protected $getid3;
+
+    /**
+     * analyzing filepointer or string
+     *
+     * @var boolean
+     */
+    protected $data_string_flag = false;
+
+    /**
+     * string to analyze
+     *
+     * @var string
+     */
+    protected $data_string = '';
+
+    /**
+     * seek position in string
+     *
+     * @var integer
+     */
+    protected $data_string_position = 0;
+
+    /**
+     * string length
+     *
+     * @var integer
+     */
+    protected $data_string_length = 0;
+    
+    private $dependency_to;
 
     /**
      *

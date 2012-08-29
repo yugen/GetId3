@@ -69,16 +69,38 @@
 *   Frequent updates                    mysql
 */
 
-
+/**
+ *
+ * @author James Heinrich <info@getid3.org>
+ * @author Allan Hansen <ahØartemis*dk>
+ * @author Carlo Capocasa <calroØcarlocapocasa*com>
+ * @link http://getid3.sourceforge.net
+ * @link http://www.getid3.org
+ */
 class GetId3_Extension_Cache_Mysql extends GetId3_GetId3
 {
-
-	// private vars
+    /**
+     *
+     * @var type
+     */
 	private $cursor;
+
+    /**
+     *
+     * @var type
+     */
 	private $connection;
 
-
-	// public: constructor - see top of this file for cache type and cache_options
+    /**
+     * public: constructor - see top of this file for cache type and cache_options
+     *
+     * @param type $host
+     * @param type $database
+     * @param type $username
+     * @param type $password
+     * @param type $table
+     * @throws Exception
+     */
 	public function __construct($host, $database, $username, $password, $table='getid3_cache') {
 
 		// Check for mysql support
@@ -117,7 +139,9 @@ class GetId3_Extension_Cache_Mysql extends GetId3_GetId3
 
 
 
-	// public: clear cache
+	/**
+     * public: clear cache
+     */
 	public function clear_cache() {
 
 		$this->cursor = mysql_query("DELETE FROM `".mysql_real_escape_string($this->table)."`", $this->connection);
@@ -126,7 +150,12 @@ class GetId3_Extension_Cache_Mysql extends GetId3_GetId3
 
 
 
-	// public: analyze file
+	/**
+     * public: analyze file
+     *
+     * @param type $filename
+     * @return type
+     */
 	public function analyze($filename) {
 
 		if (file_exists($filename)) {
@@ -156,7 +185,11 @@ class GetId3_Extension_Cache_Mysql extends GetId3_GetId3
 
 
 
-	// private: (re)create sql table
+	/**
+     * private: (re)create sql table
+     *
+     * @param type $drop
+     */
 	private function create_table($drop=false) {
 
 		$this->cursor = mysql_query("CREATE TABLE IF NOT EXISTS `".mysql_real_escape_string($this->table)."` (

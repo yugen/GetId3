@@ -11,9 +11,23 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-
+/**
+ * module for analyzing Ogg Vorbis, OggFLAC and Speex files
+ *
+ * @author James Heinrich <info@getid3.org>
+ * @link http://getid3.sourceforge.net
+ * @link http://www.getid3.org
+ */
 class GetId3_Lib_Helper
 {
+    /**
+     *
+     * @param type $string
+     * @param type $hex
+     * @param type $spaces
+     * @param string $htmlencoding
+     * @return type
+     */
     public static function PrintHexBytes($string, $hex = true, $spaces = true,
                                          $htmlencoding = 'UTF-8')
     {
@@ -39,6 +53,11 @@ class GetId3_Lib_Helper
         return $returnstring;
     }
 
+    /**
+     *
+     * @param type $floatnumber
+     * @return type
+     */
     public static function trunc($floatnumber)
     {
         // truncates a floating-point number at the decimal point
@@ -56,6 +75,12 @@ class GetId3_Lib_Helper
         return $truncatednumber;
     }
 
+    /**
+     *
+     * @param type $variable
+     * @param type $increment
+     * @return boolean
+     */
     public static function safe_inc(&$variable, $increment = 1)
     {
         if (isset($variable)) {
@@ -66,6 +91,11 @@ class GetId3_Lib_Helper
         return true;
     }
 
+    /**
+     *
+     * @param type $floatnum
+     * @return type
+     */
     public static function CastAsInt($floatnum)
     {
         // convert to float if not already
@@ -82,6 +112,12 @@ class GetId3_Lib_Helper
         return $floatnum;
     }
 
+    /**
+     *
+     * @staticvar null $hasINT64
+     * @param type $num
+     * @return boolean
+     */
     public static function intValueSupported($num)
     {
         // check if integers are 64-bit
@@ -99,12 +135,22 @@ class GetId3_Lib_Helper
         return false;
     }
 
+    /**
+     *
+     * @param type $fraction
+     * @return type
+     */
     public static function DecimalizeFraction($fraction)
     {
         list($numerator, $denominator) = explode('/', $fraction);
         return $numerator / ($denominator ? $denominator : 1);
     }
 
+    /**
+     *
+     * @param type $binarynumerator
+     * @return type
+     */
     public static function DecimalBinary2Float($binarynumerator)
     {
         $numerator = self::Bin2Dec($binarynumerator);
@@ -113,6 +159,12 @@ class GetId3_Lib_Helper
         return ($numerator / $denominator);
     }
 
+    /**
+     *
+     * @param type $binarypointnumber
+     * @param type $maxbits
+     * @return type
+     */
     public static function NormalizeBinaryPoint($binarypointnumber, $maxbits = 52)
     {
         // http://www.scri.fsu.edu/~jac/MAD3401/Backgrnd/binary.html
@@ -141,6 +193,11 @@ class GetId3_Lib_Helper
         return array('normalized' => $binarypointnumber, 'exponent' => (int) $exponent);
     }
 
+    /**
+     *
+     * @param type $floatvalue
+     * @return string
+     */
     public static function Float2BinaryDecimal($floatvalue)
     {
         // http://www.scri.fsu.edu/~jac/MAD3401/Backgrnd/binary.html
@@ -157,6 +214,12 @@ class GetId3_Lib_Helper
         return $binarypointnumber;
     }
 
+    /**
+     *
+     * @param type $floatvalue
+     * @param type $bits
+     * @return boolean
+     */
     public static function Float2String($floatvalue, $bits)
     {
         // http://www.scri.fsu.edu/~jac/MAD3401/Backgrnd/ieee-expl.html
@@ -192,17 +255,26 @@ class GetId3_Lib_Helper
                                                     $bits % 8, false);
     }
 
+    /**
+     *
+     * @param type $byteword
+     * @return type
+     */
     public static function LittleEndian2Float($byteword)
     {
         return self::BigEndian2Float(strrev($byteword));
     }
 
+    /**
+     * ANSI/IEEE Standard 754-1985, Standard for Binary Floating Point Arithmetic
+     *
+     * @param type $byteword
+     * @return int|boolean
+     * @link http://www.psc.edu/general/software/packages/ieee/ieee.html
+     * @link http://www.scri.fsu.edu/~jac/MAD3401/Backgrnd/ieee.html
+     */
     public static function BigEndian2Float($byteword)
     {
-        // ANSI/IEEE Standard 754-1985, Standard for Binary Floating Point Arithmetic
-        // http://www.psc.edu/general/software/packages/ieee/ieee.html
-        // http://www.scri.fsu.edu/~jac/MAD3401/Backgrnd/ieee.html
-
         $bitword = self::BigEndian2Bin($byteword);
         if (!$bitword) {
             return 0;
@@ -275,6 +347,14 @@ class GetId3_Lib_Helper
         return (float) $floatvalue;
     }
 
+    /**
+     *
+     * @param type $byteword
+     * @param type $synchsafe
+     * @param type $signed
+     * @return boolean
+     * @throws Exception
+     */
     public static function BigEndian2Int($byteword, $synchsafe = false,
                                          $signed = false)
     {
@@ -302,17 +382,27 @@ class GetId3_Lib_Helper
                 }
             } else {
                 throw new Exception('ERROR: Cannot have signed integers larger than ' . (8 * PHP_INT_SIZE) . '-bits (' . strlen($byteword) . ') in self::BigEndian2Int()');
-                break;
             }
         }
         return self::CastAsInt($intvalue);
     }
 
+    /**
+     *
+     * @param type $byteword
+     * @param type $signed
+     * @return type
+     */
     public static function LittleEndian2Int($byteword, $signed = false)
     {
         return self::BigEndian2Int(strrev($byteword), false, $signed);
     }
 
+    /**
+     *
+     * @param type $byteword
+     * @return type
+     */
     public static function BigEndian2Bin($byteword)
     {
         $binvalue = '';
@@ -324,6 +414,15 @@ class GetId3_Lib_Helper
         return $binvalue;
     }
 
+    /**
+     *
+     * @param type $number
+     * @param type $minbytes
+     * @param type $synchsafe
+     * @param type $signed
+     * @return type
+     * @throws Exception
+     */
     public static function BigEndian2String($number, $minbytes = 1,
                                             $synchsafe = false, $signed = false)
     {
@@ -346,6 +445,11 @@ class GetId3_Lib_Helper
         return str_pad($intstring, $minbytes, "\x00", STR_PAD_LEFT);
     }
 
+    /**
+     *
+     * @param type $number
+     * @return string
+     */
     public static function Dec2Bin($number)
     {
         while ($number >= 256) {
@@ -363,6 +467,12 @@ class GetId3_Lib_Helper
         return $binstring;
     }
 
+    /**
+     *
+     * @param type $binstring
+     * @param type $signed
+     * @return type
+     */
     public static function Bin2Dec($binstring, $signed = false)
     {
         $signmult = 1;
@@ -380,6 +490,11 @@ class GetId3_Lib_Helper
         return self::CastAsInt($decvalue * $signmult);
     }
 
+    /**
+     *
+     * @param type $binstring
+     * @return string
+     */
     public static function Bin2String($binstring)
     {
         // return 'hi' for input of '0110100001101001'
@@ -391,6 +506,13 @@ class GetId3_Lib_Helper
         return $string;
     }
 
+    /**
+     *
+     * @param type $number
+     * @param type $minbytes
+     * @param type $synchsafe
+     * @return type
+     */
     public static function LittleEndian2String($number, $minbytes = 1,
                                                $synchsafe = false)
     {
@@ -407,6 +529,12 @@ class GetId3_Lib_Helper
         return str_pad($intstring, $minbytes, "\x00", STR_PAD_RIGHT);
     }
 
+    /**
+     *
+     * @param type $array1
+     * @param type $array2
+     * @return boolean
+     */
     public static function array_merge_clobber($array1, $array2)
     {
         // written by kcØhireability*com
@@ -426,6 +554,12 @@ class GetId3_Lib_Helper
         return $newarray;
     }
 
+    /**
+     *
+     * @param type $array1
+     * @param type $array2
+     * @return boolean
+     */
     public static function array_merge_noclobber($array1, $array2)
     {
         if (!is_array($array1) || !is_array($array2)) {
@@ -443,6 +577,11 @@ class GetId3_Lib_Helper
         return $newarray;
     }
 
+    /**
+     *
+     * @param type $theArray
+     * @return boolean
+     */
     public static function ksort_recursive(&$theArray)
     {
         ksort($theArray);
@@ -454,6 +593,12 @@ class GetId3_Lib_Helper
         return true;
     }
 
+    /**
+     *
+     * @param type $filename
+     * @param type $numextensions
+     * @return string
+     */
     public static function fileextension($filename, $numextensions = 1)
     {
         if (strstr($filename, '.')) {
@@ -470,6 +615,11 @@ class GetId3_Lib_Helper
         return '';
     }
 
+    /**
+     *
+     * @param type $seconds
+     * @return type
+     */
     public static function PlaytimeString($seconds)
     {
         $sign = (($seconds < 0) ? '-' : '');
@@ -484,6 +634,11 @@ class GetId3_Lib_Helper
                                                                                                         STR_PAD_LEFT);
     }
 
+    /**
+     *
+     * @param type $macdate
+     * @return type
+     */
     public static function DateMac2Unix($macdate)
     {
         // Macintosh timestamp: seconds since 00:00h January 1, 1904
@@ -491,6 +646,11 @@ class GetId3_Lib_Helper
         return self::CastAsInt($macdate - 2082844800);
     }
 
+    /**
+     *
+     * @param type $rawdata
+     * @return type
+     */
     public static function FixedPoint8_8($rawdata)
     {
         return self::BigEndian2Int(substr($rawdata, 0, 1)) + (float) (self::BigEndian2Int(substr($rawdata,
@@ -499,6 +659,11 @@ class GetId3_Lib_Helper
                                                                                                            8));
     }
 
+    /**
+     *
+     * @param type $rawdata
+     * @return type
+     */
     public static function FixedPoint16_16($rawdata)
     {
         return self::BigEndian2Int(substr($rawdata, 0, 2)) + (float) (self::BigEndian2Int(substr($rawdata,
@@ -507,6 +672,11 @@ class GetId3_Lib_Helper
                                                                                                            16));
     }
 
+    /**
+     *
+     * @param type $rawdata
+     * @return type
+     */
     public static function FixedPoint2_30($rawdata)
     {
         $binarystring = self::BigEndian2Bin($rawdata);
@@ -516,6 +686,13 @@ class GetId3_Lib_Helper
                                                                                                      30));
     }
 
+    /**
+     *
+     * @param type $ArrayPath
+     * @param type $Separator
+     * @param type $Value
+     * @return type
+     */
     public static function CreateDeepArray($ArrayPath, $Separator, $Value)
     {
         // assigns $Value to a nested array path:
@@ -538,6 +715,12 @@ class GetId3_Lib_Helper
         return $ReturnedArray;
     }
 
+    /**
+     *
+     * @param type $arraydata
+     * @param type $returnkey
+     * @return type
+     */
     public static function array_max($arraydata, $returnkey = false)
     {
         $maxvalue = false;
@@ -553,6 +736,12 @@ class GetId3_Lib_Helper
         return ($returnkey ? $maxkey : $maxvalue);
     }
 
+    /**
+     *
+     * @param type $arraydata
+     * @param type $returnkey
+     * @return type
+     */
     public static function array_min($arraydata, $returnkey = false)
     {
         $minvalue = false;
@@ -568,6 +757,11 @@ class GetId3_Lib_Helper
         return ($returnkey ? $minkey : $minvalue);
     }
 
+    /**
+     *
+     * @param type $XMLstring
+     * @return boolean
+     */
     public static function XML2array($XMLstring)
     {
         if (function_exists('simplexml_load_string')) {
@@ -579,6 +773,11 @@ class GetId3_Lib_Helper
         return false;
     }
 
+    /**
+     *
+     * @param type $XMLobject
+     * @return type
+     */
     public static function SimpleXMLelement2array($XMLobject)
     {
         if (!is_object($XMLobject) && !is_array($XMLobject)) {
@@ -591,8 +790,18 @@ class GetId3_Lib_Helper
         return $XMLarray;
     }
 
-    // Allan Hansen <ahØartemis*dk>
-    // self::md5_data() - returns md5sum for a file from startuing position to absolute end position
+    /**
+     * self::md5_data() - returns md5sum for a file from startuing position to absolute end position
+     *
+     * @staticvar string $tempdir
+     * @param type $file
+     * @param type $offset
+     * @param type $end
+     * @param type $algorithm
+     * @return boolean
+     * @throws Exception
+     * @author Allan Hansen <ahØartemis*dk>
+     */
     public static function hash_data($file, $offset, $end, $algorithm)
     {
         static $tempdir = '';
@@ -680,6 +889,15 @@ class GetId3_Lib_Helper
         return $result;
     }
 
+    /**
+     *
+     * @param type $filename_source
+     * @param type $filename_dest
+     * @param type $offset
+     * @param type $length
+     * @return boolean
+     * @throws Exception
+     */
     public static function CopyFileParts($filename_source, $filename_dest,
                                          $offset, $length)
     {
@@ -713,6 +931,11 @@ class GetId3_Lib_Helper
         return false;
     }
 
+    /**
+     *
+     * @param type $charval
+     * @return type
+     */
     public static function iconv_fallback_int_utf8($charval)
     {
         if ($charval < 128) {
@@ -737,7 +960,13 @@ class GetId3_Lib_Helper
         return $newcharstring;
     }
 
-    // ISO-8859-1 => UTF-8
+    /**
+     * ISO-8859-1 => UTF-8
+     *
+     * @param type $string
+     * @param type $bom
+     * @return type
+     */
     public static function iconv_fallback_iso88591_utf8($string, $bom = false)
     {
         if (function_exists('utf8_encode')) {
@@ -755,7 +984,13 @@ class GetId3_Lib_Helper
         return $newcharstring;
     }
 
-    // ISO-8859-1 => UTF-16BE
+    /**
+     * ISO-8859-1 => UTF-16BE
+     *
+     * @param type $string
+     * @param type $bom
+     * @return string
+     */
     public static function iconv_fallback_iso88591_utf16be($string, $bom = false)
     {
         $newcharstring = '';
@@ -768,7 +1003,13 @@ class GetId3_Lib_Helper
         return $newcharstring;
     }
 
-    // ISO-8859-1 => UTF-16LE
+    /**
+     * ISO-8859-1 => UTF-16LE
+     *
+     * @param type $string
+     * @param type $bom
+     * @return string
+     */
     public static function iconv_fallback_iso88591_utf16le($string, $bom = false)
     {
         $newcharstring = '';
@@ -781,13 +1022,23 @@ class GetId3_Lib_Helper
         return $newcharstring;
     }
 
-    // ISO-8859-1 => UTF-16LE (BOM)
+    /**
+     * ISO-8859-1 => UTF-16LE (BOM)
+     *
+     * @param type $string
+     * @return type
+     */
     public static function iconv_fallback_iso88591_utf16($string)
     {
         return self::iconv_fallback_iso88591_utf16le($string, true);
     }
 
-    // UTF-8 => ISO-8859-1
+    /**
+     * UTF-8 => ISO-8859-1
+     *
+     * @param type $string
+     * @return type
+     */
     public static function iconv_fallback_utf8_iso88591($string)
     {
         if (function_exists('utf8_decode')) {
@@ -832,7 +1083,14 @@ class GetId3_Lib_Helper
         return $newcharstring;
     }
 
-    // UTF-8 => UTF-16BE
+    /**
+     * UTF-8 => UTF-16BE
+     *
+     * @param type $string
+     * @param type $bom
+     * @return type
+     *
+     */
     public static function iconv_fallback_utf8_utf16be($string, $bom = false)
     {
         $newcharstring = '';
@@ -877,7 +1135,13 @@ class GetId3_Lib_Helper
         return $newcharstring;
     }
 
-    // UTF-8 => UTF-16LE
+    /**
+     * UTF-8 => UTF-16LE
+     *
+     * @param type $string
+     * @param type $bom
+     * @return type
+     */
     public static function iconv_fallback_utf8_utf16le($string, $bom = false)
     {
         $newcharstring = '';
@@ -922,13 +1186,23 @@ class GetId3_Lib_Helper
         return $newcharstring;
     }
 
-    // UTF-8 => UTF-16LE (BOM)
+    /**
+     * UTF-8 => UTF-16LE (BOM)
+     *
+     * @param type $string
+     * @return type
+     */
     public static function iconv_fallback_utf8_utf16($string)
     {
         return self::iconv_fallback_utf8_utf16le($string, true);
     }
 
-    // UTF-16BE => UTF-8
+    /**
+     * UTF-16BE => UTF-8
+     *
+     * @param type $string
+     * @return type
+     */
     public static function iconv_fallback_utf16be_utf8($string)
     {
         if (substr($string, 0, 2) == "\xFE\xFF") {
@@ -943,7 +1217,12 @@ class GetId3_Lib_Helper
         return $newcharstring;
     }
 
-    // UTF-16LE => UTF-8
+    /**
+     * UTF-16LE => UTF-8
+     *
+     * @param type $string
+     * @return type
+     */
     public static function iconv_fallback_utf16le_utf8($string)
     {
         if (substr($string, 0, 2) == "\xFF\xFE") {
@@ -958,7 +1237,12 @@ class GetId3_Lib_Helper
         return $newcharstring;
     }
 
-    // UTF-16BE => ISO-8859-1
+    /**
+     * UTF-16BE => ISO-8859-1
+     *
+     * @param type $string
+     * @return type
+     */
     public static function iconv_fallback_utf16be_iso88591($string)
     {
         if (substr($string, 0, 2) == "\xFE\xFF") {
@@ -973,7 +1257,12 @@ class GetId3_Lib_Helper
         return $newcharstring;
     }
 
-    // UTF-16LE => ISO-8859-1
+    /**
+     * UTF-16LE => ISO-8859-1
+     *
+     * @param type $string
+     * @return type
+     */
     public static function iconv_fallback_utf16le_iso88591($string)
     {
         if (substr($string, 0, 2) == "\xFF\xFE") {
@@ -988,7 +1277,12 @@ class GetId3_Lib_Helper
         return $newcharstring;
     }
 
-    // UTF-16 (BOM) => ISO-8859-1
+    /**
+     * UTF-16 (BOM) => ISO-8859-1
+     *
+     * @param type $string
+     * @return type
+     */
     public static function iconv_fallback_utf16_iso88591($string)
     {
         $bom = substr($string, 0, 2);
@@ -1000,7 +1294,12 @@ class GetId3_Lib_Helper
         return $string;
     }
 
-    // UTF-16 (BOM) => UTF-8
+    /**
+     * UTF-16 (BOM) => UTF-8
+     *
+     * @param type $string
+     * @return type
+     */
     public static function iconv_fallback_utf16_utf8($string)
     {
         $bom = substr($string, 0, 2);
@@ -1012,6 +1311,15 @@ class GetId3_Lib_Helper
         return $string;
     }
 
+    /**
+     *
+     * @staticvar array $ConversionFunctionList
+     * @param type $in_charset
+     * @param type $out_charset
+     * @param type $string
+     * @return type
+     * @throws Exception
+     */
     public static function iconv_fallback($in_charset, $out_charset, $string)
     {
 
@@ -1062,6 +1370,12 @@ class GetId3_Lib_Helper
         throw new Exception('PHP does not have iconv() support - cannot convert from ' . $in_charset . ' to ' . $out_charset);
     }
 
+    /**
+     *
+     * @param type $string
+     * @param type $charset
+     * @return string
+     */
     public static function MultiByteCharString2HTML($string,
                                                     $charset = 'ISO-8859-1')
     {
@@ -1156,6 +1470,12 @@ class GetId3_Lib_Helper
         return $HTMLstring;
     }
 
+    /**
+     *
+     * @staticvar array $RGADname
+     * @param type $namecode
+     * @return type
+     */
     public static function RGADnameLookup($namecode)
     {
         static $RGADname = array();
@@ -1168,6 +1488,12 @@ class GetId3_Lib_Helper
         return (isset($RGADname[$namecode]) ? $RGADname[$namecode] : '');
     }
 
+    /**
+     *
+     * @staticvar array $RGADoriginator
+     * @param type $originatorcode
+     * @return type
+     */
     public static function RGADoriginatorLookup($originatorcode)
     {
         static $RGADoriginator = array();
@@ -1181,6 +1507,12 @@ class GetId3_Lib_Helper
         return (isset($RGADoriginator[$originatorcode]) ? $RGADoriginator[$originatorcode] : '');
     }
 
+    /**
+     *
+     * @param type $rawadjustment
+     * @param type $signbit
+     * @return type
+     */
     public static function RGADadjustmentLookup($rawadjustment, $signbit)
     {
         $adjustment = $rawadjustment / 10;
@@ -1190,6 +1522,13 @@ class GetId3_Lib_Helper
         return (float) $adjustment;
     }
 
+    /**
+     *
+     * @param type $namecode
+     * @param type $originatorcode
+     * @param type $replaygain
+     * @return type
+     */
     public static function RGADgainString($namecode, $originatorcode,
                                           $replaygain)
     {
@@ -1207,11 +1546,23 @@ class GetId3_Lib_Helper
         return $gainstring;
     }
 
+    /**
+     *
+     * @param type $amplitude
+     * @return type
+     */
     public static function RGADamplitude2dB($amplitude)
     {
         return 20 * log10($amplitude);
     }
 
+    /**
+     *
+     * @staticvar string $tempdir
+     * @param type $imgData
+     * @param type $imageinfo
+     * @return type
+     */
     public static function GetDataImageSize($imgData, &$imageinfo)
     {
         static $tempdir = '';
@@ -1235,6 +1586,12 @@ class GetId3_Lib_Helper
         return $GetDataImageSize;
     }
 
+    /**
+     *
+     * @staticvar array $ImageTypesLookup
+     * @param type $imagetypeid
+     * @return type
+     */
     public static function ImageTypesLookup($imagetypeid)
     {
         static $ImageTypesLookup = array();
@@ -1257,6 +1614,11 @@ class GetId3_Lib_Helper
         return (isset($ImageTypesLookup[$imagetypeid]) ? $ImageTypesLookup[$imagetypeid] : '');
     }
 
+    /**
+     *
+     * @param type $ThisFileInfo
+     * @return boolean
+     */
     public static function CopyTagsToComments(&$ThisFileInfo)
     {
 
@@ -1326,6 +1688,16 @@ class GetId3_Lib_Helper
         return true;
     }
 
+    /**
+     *
+     * @staticvar type $cache
+     * @param type $key
+     * @param type $begin
+     * @param type $end
+     * @param type $file
+     * @param type $name
+     * @return type
+     */
     public static function EmbeddedLookup($key, $begin, $end, $file, $name)
     {
 
@@ -1403,12 +1775,24 @@ class GetId3_Lib_Helper
         return false;
     }
 
+    /**
+     *
+     * @param type $string
+     * @return type
+     */
     public static function trimNullByte($string)
     {
         return trim($string, "\x00");
     }
-    
-    public static function toCamelCase($origin, $cahrToReplace = '_', $capitaliseFirstChar = false) 
+
+    /**
+     *
+     * @param type $origin
+     * @param type $cahrToReplace
+     * @param type $capitaliseFirstChar
+     * @return type
+     */
+    public static function toCamelCase($origin, $cahrToReplace = '_', $capitaliseFirstChar = false)
     {
         if($capitaliseFirstChar) {
             $origin = ucfirst($origin);
