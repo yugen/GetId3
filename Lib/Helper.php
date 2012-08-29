@@ -1745,37 +1745,6 @@ class GetId3_Lib_Helper
     }
 
     /**
-     * @deprecated
-     * @global type $GETID3_ERRORARRAY
-     * @param type $filename
-     * @param type $sourcefile
-     * @param type $DieOnFailure
-     * @return boolean
-     * @throws Exception
-     */
-    public static function IncludeDependency($filename, $sourcefile,
-                                             $DieOnFailure = false)
-    {
-        global $GETID3_ERRORARRAY;
-
-        if (file_exists($filename)) {
-            if (include_once($filename)) {
-                return true;
-            } else {
-                $diemessage = basename($sourcefile) . ' depends on ' . $filename . ', which has errors';
-            }
-        } else {
-            $diemessage = basename($sourcefile) . ' depends on ' . $filename . ', which is missing';
-        }
-        if ($DieOnFailure) {
-            throw new Exception($diemessage);
-        } else {
-            $GETID3_ERRORARRAY[] = $diemessage;
-        }
-        return false;
-    }
-
-    /**
      *
      * @param type $string
      * @return type
