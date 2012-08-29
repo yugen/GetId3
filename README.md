@@ -2,7 +2,7 @@ GetId3
 ======
 [![Build Status](https://secure.travis-ci.org/phansys/GetId3.png?branch=master)](http://travis-ci.org/phansys/GetId3)
 
-This package integrates the GetId3 library with the Symfony2 project, emulating the [PSR-0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md) CS.
+This release of GetId3 library updates to [PSR-0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md) CS and makes it Symfony2 installable by deps or composer mechanisms.
 
 **Warning**: documentation files are not rendering correctly in Github (reStructuredText format)
 and some content might be broken or hidden, make sure to read raw files.
@@ -13,9 +13,9 @@ and some content might be broken or hidden, make sure to read raw files.
 License
 -------
 
-For license info please read [doc/license.txt](https://github.com/phansys/GetId3/tree/master/doc/license.txt)
+For license info please read [Resources/doc/license.txt](Resources/doc/license.txt)
 
-For commercial license read [doc/license.commercial.txt](https://github.com/phansys/GetId3/tree/master/doc/license.commercial.txt)
+For commercial license read [Resources/doc/license.commercial.txt](Resources/doc/license.commercial.txt)
 
 ## Installation
 (You can choose deps or composer install mechanisms)
@@ -77,26 +77,27 @@ Quick use example reading audio properties
 
 ``` php
 <?php
-namespace My\Bundle\Entity;
+namespace My\Project;
 
 use \GetId3_GetId3 as GetId3;
 
-class Audio
+class MyClass
 {
     // ...
-    private function MyFunc()
+    private function MyMethod()
     {
-        $GetId3 = new GetId3();
-        $GetId3->option_md5_data        = true;
-        $GetId3->option_md5_data_source = true;
-        $GetId3->encoding               = 'UTF-8';		
-        //$this->file: instance of Symfony\Component\HttpFoundation\File\UploadedFile or any valid file resource
-        $audio = $GetId3->analyze($this->file);			
+        $getId3 = new GetId3();
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';		
+        $mp3File = '/path/to/my/mp3file.mp3';	
+        $audio = $getId3->analyze($mp3File);	
         if (isset($audio['error'])) 
         {
-            throw new \RuntimeException('Error at reading audio properties with GetId3 : ' . $this->file);
+            throw new \RuntimeException('Error at reading audio properties with GetId3 : ' . $mp3File);
         }			
         $this->setLength(isset($audio['playtime_seconds']) ? $audio['playtime_seconds'] : '');
+        // var_dump($audio);
     }
 }
 ```
