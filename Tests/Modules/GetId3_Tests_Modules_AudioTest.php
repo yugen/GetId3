@@ -8,7 +8,7 @@ class GetId3_Tests_Modules_AudioTest extends PHPUnit_Framework_TestCase
     public function __construct()
     {
         self::$mp3File = __DIR__ . '/../Fixtures/mp3demo.mp3';
-        self::$class = 'GetId3_GetId23';
+        self::$class = 'GetId3_GetId3';
     }
     
     public function testFile()
