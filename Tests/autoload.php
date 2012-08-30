@@ -27,7 +27,9 @@ class GetId3_Tests_Autoloader
         array_pop($realpath);
         $realpath = implode(DIRECTORY_SEPARATOR, $realpath);
         $className = $realpath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, explode('_', $className)) . '.php';
-        require $className;
+        if (file_exists($className)) {
+            require $className;
+        }
     }
 }
 
