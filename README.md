@@ -4,18 +4,15 @@ GetId3
 
 This release of GetId3 library updates to [PSR-0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md) CS and makes it Symfony2 installable by deps or composer mechanisms.
 
-**Warning**: documentation files are not rendering correctly in Github (reStructuredText format)
-and some content might be broken or hidden, make sure to read raw files.
-
 * [Main site] http://www.getid3.org
 * [Support] http://support.getid3.org/
 
 License
 -------
 
-For license info please read [Resources/doc/license.txt](Resources/doc/license.txt)
+For license info please read [Resources/doc/license.txt](https://github.com/phansys/GetId3/tree/master/Resources/doc/license.txt)
 
-For commercial license read [Resources/doc/license.commercial.txt](Resources/doc/license.commercial.txt)
+For commercial license read [Resources/doc/license.commercial.txt](https://github.com/phansys/GetId3/tree/master/Resources/doc/license.commercial.txt)
 
 ## Installation
 (You can choose deps or composer install mechanisms)
