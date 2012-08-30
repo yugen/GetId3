@@ -8,7 +8,7 @@ class GetId3_Tests_Modules_AudioTest extends PHPUnit_Framework_TestCase
     public function __construct()
     {
         self::$mp3File = __DIR__ . '/../Fixtures/mp3demo.mp3';
-        self::$class = 'GetId3_GetId3';
+        self::$class = 'GetId3_GetId23';
     }
     
     public function testFile()
@@ -16,8 +16,11 @@ class GetId3_Tests_Modules_AudioTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(file_exists(self::$mp3File) && is_readable(self::$mp3File));
     }
     
-    public function testClass()
+    protected function setUp()
     {        
+        if (!class_exists(self::$class)) {
+            $this->markTestSkipped(self::$class . ' is not available.');
+        }
         $this->assertTrue(class_exists(self::$class));
         $rc = new ReflectionClass(self::$class);
         $this->assertTrue($rc->hasProperty('option_md5_data') && $rc->hasProperty('option_md5_data_source') && $rc->hasProperty('encoding'));
