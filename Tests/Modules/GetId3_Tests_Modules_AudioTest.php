@@ -5,19 +5,11 @@ class GetId3_Tests_Modules_AudioTest extends PHPUnit_Framework_TestCase
     protected static $mp3File;
     protected static $class;
     
-    public function __construct()
-    {
-        self::$mp3File = __DIR__ . '/../Fixtures/mp3demo.mp3';
-        self::$class = 'GetId3_GetId3';
-    }
-    
-    public function testFile()
-    {        
-        $this->assertTrue(file_exists(self::$mp3File) && is_readable(self::$mp3File));
-    }
-    
     protected function setUp()
     {        
+        self::$mp3File = __DIR__ . '/../Fixtures/mp3demo.mp3';
+        self::$class = 'GetId3_GetId3';
+        
         if (!class_exists(self::$class)) {
             $this->markTestSkipped(self::$class . ' is not available.');
         }
@@ -28,6 +20,11 @@ class GetId3_Tests_Modules_AudioTest extends PHPUnit_Framework_TestCase
         $rm = new ReflectionMethod(self::$class, 'analyze');
         $this->assertTrue($rm->isPublic());        
     }
+    
+    public function testFile()
+    {        
+        $this->assertTrue(file_exists(self::$mp3File) && is_readable(self::$mp3File));
+    }    
     
     public function testReadMp3()
     {       
