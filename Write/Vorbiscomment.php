@@ -1,4 +1,9 @@
 <?php
+
+namespace GetId3\Write;
+
+use GetId3\GetId3;
+
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
 //  available at http://getid3.sourceforge.net                 //
@@ -21,7 +26,7 @@
  * @link http://www.getid3.org
  * @uses helperapps/vorbiscomment.exe
  */
-class GetId3_Write_Vorbiscomment
+class Vorbiscomment
 {
 
 	public $filename;
@@ -57,7 +62,7 @@ class GetId3_Write_Vorbiscomment
 		}
 
 		// Create file with new comments
-		$tempcommentsfilename = tempnam(GetId3_GetId3::getTempDir(), 'getID3');
+		$tempcommentsfilename = tempnam(GetId3::getTempDir(), 'getID3');
 		if (is_writable($tempcommentsfilename) && is_file($tempcommentsfilename) && ($fpcomments = fopen($tempcommentsfilename, 'wb'))) {
 
 			foreach ($this->tag_data as $key => $value) {
@@ -73,9 +78,9 @@ class GetId3_Write_Vorbiscomment
 		}
 
 		$oldignoreuserabort = ignore_user_abort(true);
-		if (GetId3_GetId3::environmentIsWindows()) {
+		if (GetId3::environmentIsWindows()) {
 
-			if (file_exists(GetId3_GetId3::getHelperAppsDir().'vorbiscomment.exe')) {
+			if (file_exists(GetId3::getHelperAppsDir().'vorbiscomment.exe')) {
 				//$commandline = '"'.GetId3::getHelperAppsDir().'vorbiscomment.exe" -w --raw -c "'.$tempcommentsfilename.'" "'.str_replace('/', '\\', $this->filename).'"';
 				//  vorbiscomment works fine if you copy-paste the above commandline into a command prompt,
 				//  but refuses to work with `backtick` if there are "doublequotes" present around BOTH
@@ -88,7 +93,7 @@ class GetId3_Write_Vorbiscomment
 				clearstatcache();
 				$timestampbeforewriting = filemtime($this->filename);
 
-				$commandline = GetId3_GetId3::getHelperAppsDir().'vorbiscomment.exe -w --raw -c "'.$tempcommentsfilename.'" "'.$this->filename.'" 2>&1';
+				$commandline = GetId3::getHelperAppsDir().'vorbiscomment.exe -w --raw -c "'.$tempcommentsfilename.'" "'.$this->filename.'" 2>&1';
 				$VorbiscommentError = `$commandline`;
 
 				if (empty($VorbiscommentError)) {
@@ -98,7 +103,7 @@ class GetId3_Write_Vorbiscomment
 					}
 				}
 			} else {
-				$VorbiscommentError = 'vorbiscomment.exe not found in '.GetId3_GetId3::getHelperAppsDir();
+				$VorbiscommentError = 'vorbiscomment.exe not found in '.GetId3::getHelperAppsDir();
 			}
 
 		} else {

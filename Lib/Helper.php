@@ -1,5 +1,9 @@
 <?php
 
+namespace GetId3\Lib;
+
+use GetId3\GetId3;
+
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
 //  available at http://getid3.sourceforge.net                 //
@@ -18,7 +22,7 @@
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
-class GetId3_Lib_Helper
+class Helper
 {
     /**
      *
@@ -829,7 +833,7 @@ class GetId3_Lib_Helper
         }
         $size = $end - $offset;
         while (true) {
-            if (GetId3_GetId3::environmentIsWindows()) {
+            if (GetId3::environmentIsWindows()) {
 
                 // It seems that sha1sum.exe for Windows only works on physical files, does not accept piped data
                 // Fall back to create-temp-file method:
@@ -839,16 +843,16 @@ class GetId3_Lib_Helper
 
                 $RequiredFiles = array('cygwin1.dll', 'head.exe', 'tail.exe', $windows_call);
                 foreach ($RequiredFiles as $required_file) {
-                    if (!is_readable(GetId3_GetId3::getHelperAppsDir() . $required_file)) {
+                    if (!is_readable(GetId3::getHelperAppsDir() . $required_file)) {
                         // helper apps not available - fall back to old method
                         break 2;
                     }
                 }
-                $commandline = GetId3_GetId3::getHelperAppsDir() . 'head.exe -c ' . $end . ' ' . escapeshellarg(str_replace('/',
+                $commandline = GetId3::getHelperAppsDir() . 'head.exe -c ' . $end . ' ' . escapeshellarg(str_replace('/',
                                                                                                                             DIRECTORY_SEPARATOR,
                                                                                                                             $file)) . ' | ';
-                $commandline .= GetId3_GetId3::getHelperAppsDir() . 'tail.exe -c ' . $size . ' | ';
-                $commandline .= GetId3_GetId3::getHelperAppsDir() . $windows_call;
+                $commandline .= GetId3::getHelperAppsDir() . 'tail.exe -c ' . $size . ' | ';
+                $commandline .= GetId3::getHelperAppsDir() . $windows_call;
             } else {
 
                 $commandline = 'head -c' . $end . ' ' . escapeshellarg($file) . ' | ';
@@ -865,7 +869,7 @@ class GetId3_Lib_Helper
         if (empty($tempdir)) {
             // yes this is ugly, feel free to suggest a better way
             require_once(dirname(__FILE__) . '/getid3.php');
-            $getid3_temp = new GetId3_GetId3();
+            $getid3_temp = new GetId3();
             $tempdir = $getid3_temp->tempdir;
             unset($getid3_temp);
         }
@@ -911,7 +915,7 @@ class GetId3_Lib_Helper
                     $byteslefttowrite = $length;
                     while (($byteslefttowrite > 0) && ($buffer = fread($fp_src,
                                                                        min($byteslefttowrite,
-                                                                           GetId3_GetId3::FREAD_BUFFER_SIZE)))) {
+                                                                           GetId3::FREAD_BUFFER_SIZE)))) {
                         $byteswritten = fwrite($fp_dest, $buffer,
                                                $byteslefttowrite);
                         $byteslefttowrite -= $byteswritten;
@@ -1569,7 +1573,7 @@ class GetId3_Lib_Helper
         if (empty($tempdir)) {
             // yes this is ugly, feel free to suggest a better way
             require_once(dirname(__FILE__) . '/getid3.php');
-            $getid3_temp = new GetId3_GetId3();
+            $getid3_temp = new GetId3();
             $tempdir = $getid3_temp->tempdir;
             unset($getid3_temp);
         }
