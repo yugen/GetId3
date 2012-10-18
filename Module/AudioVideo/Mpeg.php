@@ -166,7 +166,7 @@ class Mpeg extends BaseHandler
             }
 
             if ($info['mpeg']['video']['raw']['bitrate'] == 0x3FFFF) { // 18 set bits
-                $info['warning'][] = 'This version of GetId3() [' . $this->getid3->version() . '] cannot determine average bitrate of VBR MPEG video files';
+                $info['warning'][] = 'This version of GetId3Core() [' . $this->getid3->version() . '] cannot determine average bitrate of VBR MPEG video files';
                 $info['mpeg']['video']['bitrate_mode'] = 'vbr';
             } else {
 
@@ -209,7 +209,7 @@ class Mpeg extends BaseHandler
                 }
             }
 
-            $getid3_temp = new GetId3();
+            $getid3_temp = new GetId3Core();
             $getid3_temp->openfile($this->getid3->filename);
             $getid3_temp->info = $info;
             $getid3_mp3 = new GetId3\Module\Audio\Mp3($getid3_temp);

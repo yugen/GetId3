@@ -4,7 +4,7 @@ namespace GetId3\Module\Graphic;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -87,7 +87,7 @@ class Jpg extends BaseHandler
 							$info['warning'][] = 'exif_read_data() cannot parse non-EXIF data in APP1 (expected "Exif", found "'.substr($imageinfo['APP1'], 0, 4).'")';
 						}
 					} else {
-						$info['warning'][] = 'EXIF parsing only available when '.(GetId3::environmentIsWindows() ? 'php_exif.dll enabled' : 'compiled with --enable-exif');
+						$info['warning'][] = 'EXIF parsing only available when '.(GetId3Core::environmentIsWindows() ? 'php_exif.dll enabled' : 'compiled with --enable-exif');
 					}
 				}
 				$returnOK = true;

@@ -41,7 +41,7 @@ class Mp3 extends BaseHandler
      *
      * @var boolean
      */
-    public $allow_bruteforce = false; // forces GetId3() to scan the file byte-by-byte and log all the valid audio frame headers - extremely slow, unrecommended, but may provide data from otherwise-unusuable files
+    public $allow_bruteforce = false; // forces GetId3Core() to scan the file byte-by-byte and log all the valid audio frame headers - extremely slow, unrecommended, but may provide data from otherwise-unusuable files
 
     const GETID3_MP3_VALID_CHECK_FRAMES = 35;
 

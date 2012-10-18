@@ -37,7 +37,7 @@ class Bink extends BaseHandler
     {
         $info = &$this->getid3->info;
 
-        $info['error'][] = 'Bink / Smacker files not properly processed by this version of GetId3() [' . $this->getid3->version() . ']';
+        $info['error'][] = 'Bink / Smacker files not properly processed by this version of GetId3Core() [' . $this->getid3->version() . ']';
 
         fseek($this->getid3->fp, $info['avdataoffset'], SEEK_SET);
         $fileTypeID = fread($this->getid3->fp, 3);

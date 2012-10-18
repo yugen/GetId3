@@ -4,7 +4,7 @@ namespace GetId3\Module\Audio;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -147,7 +147,7 @@ class Flac extends BaseHandler
 		}
 
 		// copy attachments to 'comments' array if nesesary
-		if (isset($info['flac']['PICTURE']) && $this->getid3->option_save_attachments === GetId3::ATTACHMENTS_INLINE) {
+		if (isset($info['flac']['PICTURE']) && $this->getid3->option_save_attachments === GetId3Core::ATTACHMENTS_INLINE) {
 			foreach ($info['flac']['PICTURE'] as $key => $valuearray) {
 				if (!empty($valuearray['image_mime']) && !empty($valuearray['data'])) {
 					$info['flac']['comments']['picture'][] = array('image_mime' => $valuearray['image_mime'], 'data' => $valuearray['data']);

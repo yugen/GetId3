@@ -4,7 +4,7 @@ namespace GetId3\Module\Audio;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -87,11 +87,11 @@ class Lpac extends BaseHandler
 				break;
 
 			default:
-				//$info['warning'][] = 'This version of GetId3() ['.$this->getid3->version().'] only supports LPAC file format version 6, this file is version '.$info['lpac']['file_version'].' - please report to info@getid3.org';
+				//$info['warning'][] = 'This version of GetId3Core() ['.$this->getid3->version().'] only supports LPAC file format version 6, this file is version '.$info['lpac']['file_version'].' - please report to info@getid3.org';
 				break;
 		}
 
-		$getid3_temp = new GetId3();
+		$getid3_temp = new GetId3Core();
 		$getid3_temp->openfile($this->getid3->filename);
 		$getid3_temp->info = $info;
 		$getid3_riff = new GetId3\Module\AudioVideo\Riff($getid3_temp);

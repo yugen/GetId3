@@ -4,7 +4,7 @@ namespace GetId3\Module\Audio;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -135,16 +135,16 @@ class Shorten extends BaseHandler
 			return false;
 		}
 
-		if (GetId3::environmentIsWindows()) {
+		if (GetId3Core::environmentIsWindows()) {
 
 			$RequiredFiles = array('shorten.exe', 'cygwin1.dll', 'head.exe');
 			foreach ($RequiredFiles as $required_file) {
-				if (!is_readable(GetId3::getHelperAppsDir().$required_file)) {
-					$info['error'][] = GetId3::getHelperAppsDir().$required_file.' does not exist';
+				if (!is_readable(GetId3Core::getHelperAppsDir().$required_file)) {
+					$info['error'][] = GetId3Core::getHelperAppsDir().$required_file.' does not exist';
 					return false;
 				}
 			}
-			$commandline = GetId3::getHelperAppsDir().'shorten.exe -x "'.$info['filenamepath'].'" - | '.GetId3::getHelperAppsDir().'head.exe -c 64';
+			$commandline = GetId3Core::getHelperAppsDir().'shorten.exe -x "'.$info['filenamepath'].'" - | '.GetId3Core::getHelperAppsDir().'head.exe -c 64';
 			$commandline = str_replace('/', '\\', $commandline);
 
 		} else {

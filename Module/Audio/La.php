@@ -4,7 +4,7 @@ namespace GetId3\Module\Audio;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -173,7 +173,7 @@ class La extends BaseHandler
 				}
 
 				if ($info['la']['footerstart'] < $info['avdataend']) {
-					if ($RIFFtempfilename = tempnam(GetId3::getTempDir(), 'id3')) {
+					if ($RIFFtempfilename = tempnam(GetId3Core::getTempDir(), 'id3')) {
 						if ($RIFF_fp = fopen($RIFFtempfilename, 'w+b')) {
 							$RIFFdata = 'WAVE';
 							if ($info['la']['version'] == 0.2) {
@@ -189,7 +189,7 @@ class La extends BaseHandler
 							fwrite($RIFF_fp, $RIFFdata, strlen($RIFFdata));
 							fclose($RIFF_fp);
 
-							$getid3_temp = new GetId3();
+							$getid3_temp = new GetId3Core();
 							$getid3_temp->openfile($RIFFtempfilename);
 							$getid3_riff = new GetId3\Module\AudioVideo\Riff($getid3_temp);
 							$getid3_riff->Analyze();
@@ -224,7 +224,7 @@ class La extends BaseHandler
 
 			default:
 				if (substr($rawdata, $offset, 2) == 'LA') {
-					$info['error'][] = 'This version of GetId3() ['.$this->getid3->version().'] does not support LA version '.substr($rawdata, $offset + 2, 1).'.'.substr($rawdata, $offset + 3, 1).' which this appears to be - check http://getid3.sourceforge.net for updates.';
+					$info['error'][] = 'This version of GetId3Core() ['.$this->getid3->version().'] does not support LA version '.substr($rawdata, $offset + 2, 1).'.'.substr($rawdata, $offset + 3, 1).' which this appears to be - check http://getid3.sourceforge.net for updates.';
 				} else {
 					$info['error'][] = 'Not a LA (Lossless-Audio) file';
 				}

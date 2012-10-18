@@ -4,7 +4,7 @@ namespace GetId3\Module\AudioVideo;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -1078,7 +1078,7 @@ class Riff extends BaseHandler
 				$info['mime_type'] = 'video/mpeg';
 				if (!empty($thisfile_riff['CDXA']['data'][0]['size'])) {
                     if (class_exists('GetId3\Module\AudioVideo\Mpeg')) {
-						$getid3_temp = new GetId3();
+						$getid3_temp = new GetId3Core();
 						$getid3_temp->openfile($this->getid3->filename);
 						$getid3_mpeg = new GetId3\Module\AudioVideo\Mpeg($getid3_temp);
 						$getid3_mpeg->Analyze();
@@ -1112,7 +1112,7 @@ class Riff extends BaseHandler
 				}
 				if (isset($thisfile_riff[$RIFFsubtype]['id3 '])) {
 
-					$getid3_temp = new GetId3();
+					$getid3_temp = new GetId3Core();
 					$getid3_temp->openfile($this->getid3->filename);
 					$getid3_id3v2 = new GetId3\Module\Tag\Id3v2($getid3_temp);
 					$getid3_id3v2->StartingOffset = $thisfile_riff[$RIFFsubtype]['id3 '][0]['offset'] + 8;
@@ -1387,7 +1387,7 @@ class Riff extends BaseHandler
 								if (preg_match('/^\xFF[\xE2-\xE7\xF2-\xF7\xFA-\xFF][\x00-\xEB]/s', $FirstFourBytes)) {
 									// MP3
 									if (GGetId3\Module\Audio\Mp3::MPEGaudioHeaderBytesValid($FirstFourBytes)) {
-										$getid3_temp = new GetId3();
+										$getid3_temp = new GetId3Core();
 										$getid3_temp->openfile($this->getid3->filename);
 										$getid3_temp->info['avdataoffset'] = ftell($this->getid3->fp) - 4;
 										$getid3_temp->info['avdataend']    = ftell($this->getid3->fp) + $AudioChunkSize;
@@ -1410,7 +1410,7 @@ class Riff extends BaseHandler
 
 									// AC3
                                     if (class_exists('GetId3\\Module\\Audio\\Ac3')) {
-										$getid3_temp = new GetId3();
+										$getid3_temp = new GetId3Core();
 										$getid3_temp->openfile($this->getid3->filename);
 										$getid3_temp->info['avdataoffset'] = ftell($this->getid3->fp) - 4;
 										$getid3_temp->info['avdataend']    = ftell($this->getid3->fp) + $AudioChunkSize;
@@ -1483,7 +1483,7 @@ class Riff extends BaseHandler
 
 								// Probably is MP3 data
 								if (GetId3\Module\Audio\Mp3::MPEGaudioHeaderBytesValid(substr($RIFFdataChunkContentsTest, 0, 4))) {
-									$getid3_temp = new GetId3();
+									$getid3_temp = new GetId3Core();
 									$getid3_temp->openfile($this->getid3->filename);
 									$getid3_temp->info['avdataoffset'] = $RIFFchunk[$chunkname][$thisindex]['offset'];
 									$getid3_temp->info['avdataend']    = $RIFFchunk[$chunkname][$thisindex]['offset'] + $RIFFchunk[$chunkname][$thisindex]['size'];
@@ -1500,7 +1500,7 @@ class Riff extends BaseHandler
 
 								// This is probably AC-3 data
                                 if (class_exists('GetId3\\Module\\Audio\\Ac3')) {
-									$getid3_temp = new GetId3();
+									$getid3_temp = new GetId3Core();
 									$getid3_temp->openfile($this->getid3->filename);
 									$getid3_temp->info['avdataoffset'] = $RIFFchunk[$chunkname][$thisindex]['offset'];
 									$getid3_temp->info['avdataend']    = $RIFFchunk[$chunkname][$thisindex]['offset'] + $RIFFchunk[$chunkname][$thisindex]['size'];
@@ -1522,7 +1522,7 @@ class Riff extends BaseHandler
 
                                 if (class_exists('GetId3\\Module\\Audio\\Ac3')) {
 									// ok to use tmpfile here - only 56 bytes
-									if ($RIFFtempfilename = tempnam(GetId3::getTempDir(), 'id3')) {
+									if ($RIFFtempfilename = tempnam(GetId3Core::getTempDir(), 'id3')) {
 										if ($fd_temp = fopen($RIFFtempfilename, 'wb')) {
 											for ($i = 0; $i < 28; $i += 2) {
 												// swap byte order
@@ -1531,7 +1531,7 @@ class Riff extends BaseHandler
 											}
 											fclose($fd_temp);
 
-											$getid3_temp = new GetId3();
+											$getid3_temp = new GetId3Core();
 											$getid3_temp->openfile($RIFFtempfilename);
 											$getid3_temp->info['avdataend'] = 20;
 											$getid3_ac3 = new GetId3\Module\Audio\Ac3($getid3_temp);
@@ -1657,7 +1657,7 @@ class Riff extends BaseHandler
 	public function ParseRIFFdata(&$RIFFdata) {
 		$info = &$this->getid3->info;
 		if ($RIFFdata) {
-			$tempfile = tempnam(GetId3::getTempDir(), 'getID3');
+			$tempfile = tempnam(GetId3Core::getTempDir(), 'getID3');
 			$fp_temp  = fopen($tempfile, 'wb');
 			$RIFFdataLength = strlen($RIFFdata);
 			$NewLengthString = Helper::LittleEndian2String($RIFFdataLength, 4);
@@ -1667,7 +1667,7 @@ class Riff extends BaseHandler
 			fwrite($fp_temp, $RIFFdata);
 			fclose($fp_temp);
 
-			$getid3_temp = new GetId3();
+			$getid3_temp = new GetId3Core();
 			$getid3_temp->openfile($tempfile);
 			$getid3_temp->info['filesize']     = $RIFFdataLength;
 			$getid3_temp->info['filenamepath'] = $info['filenamepath'];

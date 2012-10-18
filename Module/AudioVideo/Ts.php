@@ -81,7 +81,7 @@ class Ts extends BaseHandler
 			}
 		}
 
-        $info['error'][] = 'MPEG Transport Stream (.ts) parsing not enabled in this version of GetId3() ['.$this->getid3->version().']';
+        $info['error'][] = 'MPEG Transport Stream (.ts) parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
         return false;
 
 	}

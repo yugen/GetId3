@@ -3,7 +3,8 @@
 namespace GetId3\Write;
 
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
+use GetId3\Module\Tag;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -25,7 +26,7 @@ use GetId3\GetId3;
  * @author James Heinrich <info@getid3.org>
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
- * @uses GetId3\Module\Tag\Id3v2
+ * @uses Tag\Id3v2
  */
 class Id3v2
 {
@@ -95,7 +96,7 @@ class Id3v2
 
 		if (!empty($this->filename) && (is_writeable($this->filename) || (!file_exists($this->filename) && is_writeable(dirname($this->filename))))) {
 			// Initialize GetId3 engine
-			$getID3 = new GetId3();
+			$getID3 = new GetId3Core();
 			$OldThisFileInfo = $getID3->analyze($this->filename);
 			if (!Helper::intValueSupported($OldThisFileInfo['filesize'])) {
 				$this->errors[] = 'Unable to write ID3v2 because file is larger than '.round(PHP_INT_MAX / 1073741824).'GB';
@@ -139,7 +140,7 @@ class Id3v2
 
 				} else {
 
-					if ($tempfilename = tempnam(GetId3::getTempDir(), 'getID3')) {
+					if ($tempfilename = tempnam(GetId3Core::getTempDir(), 'getID3')) {
 						if (is_readable($this->filename) && is_file($this->filename) && ($fp_source = fopen($this->filename, 'rb'))) {
 							if (is_writable($tempfilename) && is_file($tempfilename) && ($fp_temp = fopen($tempfilename, 'wb'))) {
 
@@ -199,7 +200,7 @@ class Id3v2
 			if (is_readable($this->filename) && is_file($this->filename) && ($fp_source = fopen($this->filename, 'rb'))) {
 
 				// Initialize GetId3 engine
-				$getID3 = new GetId3();
+				$getID3 = new GetId3Core();
 				$OldThisFileInfo = $getID3->analyze($this->filename);
 				if (!Helper::intValueSupported($OldThisFileInfo['filesize'])) {
 					$this->errors[] = 'Unable to remove ID3v2 because file is larger than '.round(PHP_INT_MAX / 1073741824).'GB';
@@ -234,7 +235,7 @@ class Id3v2
 			if (is_readable($this->filename) && is_file($this->filename) && ($fp_source = fopen($this->filename, 'rb'))) {
 
 				// Initialize GetId3 engine
-				$getID3 = new GetId3();
+				$getID3 = new GetId3Core();
 				$OldThisFileInfo = $getID3->analyze($this->filename);
 				if (!Helper::intValueSupported($OldThisFileInfo['filesize'])) {
 					$this->errors[] = 'Unable to remove ID3v2 because file is larger than '.round(PHP_INT_MAX / 1073741824).'GB';
@@ -377,7 +378,7 @@ class Id3v2
      * @return boolean
      */
 	public function GenerateID3v2FrameData($frame_name, $source_data_array) {
-		if (!GetId3\Module\Tag\Id3v2::IsValidID3v2FrameName($frame_name, $this->majorversion)) {
+		if (!Tag\Id3v2::IsValidID3v2FrameName($frame_name, $this->majorversion)) {
 			return false;
 		}
 		$framedata = '';
@@ -411,7 +412,7 @@ class Id3v2
 						$this->errors[] = 'Invalid Text Encoding in '.$frame_name.' ('.$source_data_array['encodingid'].') for ID3v2.'.$this->majorversion;
 					} else {
 						$framedata .= chr($source_data_array['encodingid']);
-						$framedata .= $source_data_array['description'].GetId3\Module\Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
+						$framedata .= $source_data_array['description'].Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
 						$framedata .= $source_data_array['data'];
 					}
 					break;
@@ -430,7 +431,7 @@ class Id3v2
 						$this->warnings[] = 'Invalid URL in '.$frame_name.' ('.$source_data_array['data'].')';
 					} else {
 						$framedata .= chr($source_data_array['encodingid']);
-						$framedata .= $source_data_array['description'].GetId3\Module\Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
+						$framedata .= $source_data_array['description'].Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
 						$framedata .= $source_data_array['data'];
 					}
 					break;
@@ -581,12 +582,12 @@ class Id3v2
 					$source_data_array['encodingid'] = (isset($source_data_array['encodingid']) ? $source_data_array['encodingid'] : $this->id3v2_default_encodingid);
 					if (!$this->ID3v2IsValidTextEncoding($source_data_array['encodingid'])) {
 						$this->errors[] = 'Invalid Text Encoding in '.$frame_name.' ('.$source_data_array['encodingid'].') for ID3v2.'.$this->majorversion;
-					} elseif (GetId3\Module\Tag\Id3v2::LanguageLookup($source_data_array['language'], true) == '') {
+					} elseif (Tag\Id3v2::LanguageLookup($source_data_array['language'], true) == '') {
 						$this->errors[] = 'Invalid Language in '.$frame_name.' ('.$source_data_array['language'].')';
 					} else {
 						$framedata .= chr($source_data_array['encodingid']);
 						$framedata .= strtolower($source_data_array['language']);
-						$framedata .= $source_data_array['description'].GetId3\Module\Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
+						$framedata .= $source_data_array['description'].Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
 						$framedata .= $source_data_array['data'];
 					}
 					break;
@@ -606,7 +607,7 @@ class Id3v2
 					$source_data_array['encodingid'] = (isset($source_data_array['encodingid']) ? $source_data_array['encodingid'] : $this->id3v2_default_encodingid);
 					if (!$this->ID3v2IsValidTextEncoding($source_data_array['encodingid'])) {
 						$this->errors[] = 'Invalid Text Encoding in '.$frame_name.' ('.$source_data_array['encodingid'].') for ID3v2.'.$this->majorversion;
-					} elseif (GetId3\Module\Tag\Id3v2::LanguageLookup($source_data_array['language'], true) == '') {
+					} elseif (Tag\Id3v2::LanguageLookup($source_data_array['language'], true) == '') {
 						$this->errors[] = 'Invalid Language in '.$frame_name.' ('.$source_data_array['language'].')';
 					} elseif (($source_data_array['timestampformat'] > 2) || ($source_data_array['timestampformat'] < 1)) {
 						$this->errors[] = 'Invalid Time Stamp Format byte in '.$frame_name.' ('.$source_data_array['timestampformat'].')';
@@ -619,10 +620,10 @@ class Id3v2
 						$framedata .= strtolower($source_data_array['language']);
 						$framedata .= chr($source_data_array['timestampformat']);
 						$framedata .= chr($source_data_array['contenttypeid']);
-						$framedata .= $source_data_array['description'].GetId3\Module\Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
+						$framedata .= $source_data_array['description'].Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
 						ksort($source_data_array['data']);
 						foreach ($source_data_array['data'] as $key => $val) {
-							$framedata .= $val['data'].GetId3\Module\Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
+							$framedata .= $val['data'].Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
 							$framedata .= Helper::BigEndian2String($val['timestamp'], 4, false);
 						}
 					}
@@ -637,12 +638,12 @@ class Id3v2
 					$source_data_array['encodingid'] = (isset($source_data_array['encodingid']) ? $source_data_array['encodingid'] : $this->id3v2_default_encodingid);
 					if (!$this->ID3v2IsValidTextEncoding($source_data_array['encodingid'])) {
 						$this->errors[] = 'Invalid Text Encoding in '.$frame_name.' ('.$source_data_array['encodingid'].') for ID3v2.'.$this->majorversion;
-					} elseif (GetId3\Module\Tag\Id3v2::LanguageLookup($source_data_array['language'], true) == '') {
+					} elseif (Tag\Id3v2::LanguageLookup($source_data_array['language'], true) == '') {
 						$this->errors[] = 'Invalid Language in '.$frame_name.' ('.$source_data_array['language'].')';
 					} else {
 						$framedata .= chr($source_data_array['encodingid']);
 						$framedata .= strtolower($source_data_array['language']);
-						$framedata .= $source_data_array['description'].GetId3\Module\Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
+						$framedata .= $source_data_array['description'].Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
 						$framedata .= $source_data_array['data'];
 					}
 					break;
@@ -846,7 +847,7 @@ class Id3v2
 						$framedata .= chr($source_data_array['encodingid']);
 						$framedata .= str_replace("\x00", '', $source_data_array['mime'])."\x00";
 						$framedata .= chr($source_data_array['picturetypeid']);
-						$framedata .= (!empty($source_data_array['description']) ? $source_data_array['description'] : '').GetId3\Module\Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
+						$framedata .= (!empty($source_data_array['description']) ? $source_data_array['description'] : '').Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
 						$framedata .= $source_data_array['data'];
 					}
 					break;
@@ -868,8 +869,8 @@ class Id3v2
 					} else {
 						$framedata .= chr($source_data_array['encodingid']);
 						$framedata .= str_replace("\x00", '', $source_data_array['mime'])."\x00";
-						$framedata .= $source_data_array['filename'].GetId3\Module\Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
-						$framedata .= $source_data_array['description'].GetId3\Module\Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
+						$framedata .= $source_data_array['filename'].Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
+						$framedata .= $source_data_array['description'].Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
 						$framedata .= $source_data_array['data'];
 					}
 					break;
@@ -941,7 +942,7 @@ class Id3v2
 					// Frame identifier               $xx xx xx xx
 					// URL                            <text string> $00
 					// ID and additional data         <text string(s)>
-					if (!GetId3\Module\Tag\Id3v2::IsValidID3v2FrameName($source_data_array['frameid'], $this->majorversion)) {
+					if (!Tag\Id3v2::IsValidID3v2FrameName($source_data_array['frameid'], $this->majorversion)) {
 						$this->errors[] = 'Invalid Frame Identifier in '.$frame_name.' ('.$source_data_array['frameid'].')';
 					} elseif (!$this->IsValidURL($source_data_array['data'], true, false)) {
 						//$this->errors[] = 'Invalid URL in '.$frame_name.' ('.$source_data_array['data'].')';
@@ -949,11 +950,11 @@ class Id3v2
 						$this->warnings[] = 'Invalid URL in '.$frame_name.' ('.$source_data_array['data'].')';
 					} elseif ((($source_data_array['frameid'] == 'AENC') || ($source_data_array['frameid'] == 'APIC') || ($source_data_array['frameid'] == 'GEOB') || ($source_data_array['frameid'] == 'TXXX')) && ($source_data_array['additionaldata'] == '')) {
 						$this->errors[] = 'Content Descriptor must be specified as additional data for Frame Identifier of '.$source_data_array['frameid'].' in '.$frame_name;
-					} elseif (($source_data_array['frameid'] == 'USER') && (GetId3\Module\Tag\Id3v2::LanguageLookup($source_data_array['additionaldata'], true) == '')) {
+					} elseif (($source_data_array['frameid'] == 'USER') && (Tag\Id3v2::LanguageLookup($source_data_array['additionaldata'], true) == '')) {
 						$this->errors[] = 'Language must be specified as additional data for Frame Identifier of '.$source_data_array['frameid'].' in '.$frame_name;
 					} elseif (($source_data_array['frameid'] == 'PRIV') && ($source_data_array['additionaldata'] == '')) {
 						$this->errors[] = 'Owner Identifier must be specified as additional data for Frame Identifier of '.$source_data_array['frameid'].' in '.$frame_name;
-					} elseif ((($source_data_array['frameid'] == 'COMM') || ($source_data_array['frameid'] == 'SYLT') || ($source_data_array['frameid'] == 'USLT')) && ((GetId3\Module\Tag\Id3v2::LanguageLookup(substr($source_data_array['additionaldata'], 0, 3), true) == '') || (substr($source_data_array['additionaldata'], 3) == ''))) {
+					} elseif ((($source_data_array['frameid'] == 'COMM') || ($source_data_array['frameid'] == 'SYLT') || ($source_data_array['frameid'] == 'USLT')) && ((Tag\Id3v2::LanguageLookup(substr($source_data_array['additionaldata'], 0, 3), true) == '') || (substr($source_data_array['additionaldata'], 3) == ''))) {
 						$this->errors[] = 'Language followed by Content Descriptor must be specified as additional data for Frame Identifier of '.$source_data_array['frameid'].' in '.$frame_name;
 					} else {
 						$framedata .= $source_data_array['frameid'];
@@ -1024,7 +1025,7 @@ class Id3v2
 					$source_data_array['encodingid'] = (isset($source_data_array['encodingid']) ? $source_data_array['encodingid'] : $this->id3v2_default_encodingid);
 					if (!$this->ID3v2IsValidTextEncoding($source_data_array['encodingid'])) {
 						$this->errors[] = 'Invalid Text Encoding in '.$frame_name.' ('.$source_data_array['encodingid'].')';
-					} elseif (GetId3\Module\Tag\Id3v2::LanguageLookup($source_data_array['language'], true) == '') {
+					} elseif (Tag\Id3v2::LanguageLookup($source_data_array['language'], true) == '') {
 						$this->errors[] = 'Invalid Language in '.$frame_name.' ('.$source_data_array['language'].')';
 					} else {
 						$framedata .= chr($source_data_array['encodingid']);
@@ -1090,8 +1091,8 @@ class Id3v2
 						$framedata .= $source_data_array['pricevaliduntil'];
 						$framedata .= str_replace("\x00", '', $source_data_array['contacturl'])."\x00";
 						$framedata .= chr($source_data_array['receivedasid']);
-						$framedata .= $source_data_array['sellername'].GetId3\Module\Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
-						$framedata .= $source_data_array['description'].GetId3\Module\Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
+						$framedata .= $source_data_array['sellername'].Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
+						$framedata .= $source_data_array['description'].Tag\Id3v2::TextEncodingTerminatorLookup($source_data_array['encodingid']);
 						$framedata .= $source_data_array['mime']."\x00";
 						$framedata .= $source_data_array['logo'];
 					}
@@ -1619,7 +1620,7 @@ class Id3v2
 		if (is_array($this->tag_data)) {
 			foreach ($this->tag_data as $frame_name => $frame_rawinputdata) {
 				foreach ($frame_rawinputdata as $irrelevantindex => $source_data_array) {
-					if (GetId3\Module\Tag\Id3v2::IsValidID3v2FrameName($frame_name, $this->majorversion)) {
+					if (Tag\Id3v2::IsValidID3v2FrameName($frame_name, $this->majorversion)) {
 						unset($frame_length);
 						unset($frame_flags);
 						$frame_data = false;
@@ -1692,16 +1693,16 @@ class Id3v2
 				}
 			}
 
-			while ($this->paddedlength < (strlen($tagstring) + GetId3\Module\Tag\Id3v2::ID3v2HeaderLength($this->majorversion))) {
+			while ($this->paddedlength < (strlen($tagstring) + Tag\Id3v2::ID3v2HeaderLength($this->majorversion))) {
 				$this->paddedlength += 1024;
 			}
 
-			$footer = false; // ID3v2 footers not yet supported in GetId3()
-			if (!$footer && ($this->paddedlength > (strlen($tagstring) + GetId3\Module\Tag\Id3v2::ID3v2HeaderLength($this->majorversion)))) {
+			$footer = false; // ID3v2 footers not yet supported in GetId3Core()
+			if (!$footer && ($this->paddedlength > (strlen($tagstring) + Tag\Id3v2::ID3v2HeaderLength($this->majorversion)))) {
 				// pad up to $paddedlength bytes if unpadded tag is shorter than $paddedlength
 				// "Furthermore it MUST NOT have any padding when a tag footer is added to the tag."
-				if (($this->paddedlength - strlen($tagstring) - GetId3\Module\Tag\Id3v2::ID3v2HeaderLength($this->majorversion)) > 0) {
-					$tagstring .= str_repeat("\x00", $this->paddedlength - strlen($tagstring) - GetId3\Module\Tag\Id3v2::ID3v2HeaderLength($this->majorversion));
+				if (($this->paddedlength - strlen($tagstring) - Tag\Id3v2::ID3v2HeaderLength($this->majorversion)) > 0) {
+					$tagstring .= str_repeat("\x00", $this->paddedlength - strlen($tagstring) - Tag\Id3v2::ID3v2HeaderLength($this->majorversion));
 				}
 			}
 			if ($this->id3v2_use_unsynchronisation && (substr($tagstring, strlen($tagstring) - 1, 1) == "\xFF")) {
@@ -1729,7 +1730,7 @@ class Id3v2
      * @return boolean
      */
 	public function ID3v2IsValidPriceString($pricestring) {
-		if (GetId3\Module\Tag\Id3v2::LanguageLookup(substr($pricestring, 0, 3), true) == '') {
+		if (Tag\Id3v2::LanguageLookup(substr($pricestring, 0, 3), true) == '') {
 			return false;
 		} elseif (!$this->IsANumber(substr($pricestring, 3), true)) {
 			return false;

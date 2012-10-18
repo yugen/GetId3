@@ -66,7 +66,7 @@ class Exe extends BaseHandler
 		$info['exe']['mz']['memory_minimum']     = $info['exe']['mz']['raw']['min_memory_paragraphs'] * 16;
 		$info['exe']['mz']['memory_recommended'] = $info['exe']['mz']['raw']['max_memory_paragraphs'] * 16;
 
-        $info['error'][] = 'EXE parsing not enabled in this version of GetId3() ['.$this->getid3->version().']';
+        $info['error'][] = 'EXE parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
         return false;
 
 	}

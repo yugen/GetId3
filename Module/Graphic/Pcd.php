@@ -100,7 +100,7 @@ class Pcd extends BaseHandler
 			}
 
 			// Example for plotting extracted data
-			//getid3_lib::IncludeDependency(GetId3::getIncludePath().'module.audio.ac3.php', __FILE__, true);
+			//getid3_lib::IncludeDependency(GetId3Core::getIncludePath().'module.audio.ac3.php', __FILE__, true);
 			//if ($PCDisVertical) {
 			//	$BMPinfo['resolution_x'] = $PCD_height;
 			//	$BMPinfo['resolution_y'] = $PCD_width;

@@ -3,7 +3,7 @@
 namespace GetId3\Module\Archive;
 
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -233,7 +233,7 @@ class Gzip
 
                     // determine format
                     $formattest = substr($inflated, 0, 32774);
-                    $getid3_temp = new GetId3();
+                    $getid3_temp = new GetId3Core();
                     $determined_format = $getid3_temp->GetFileFormat($formattest);
                     unset($getid3_temp);
 
@@ -243,7 +243,7 @@ class Gzip
                         case 'tar':
                             // view TAR-file info
                             if (class_exists($determined_format['class'])) {
-                                if (($temp_tar_filename = tempnam(GetId3::getTempDir(),
+                                if (($temp_tar_filename = tempnam(GetId3Core::getTempDir(),
                                                                   'getID3')) === false) {
                                     // can't find anywhere to create a temp file, abort
                                     $info['error'][] = 'Unable to create temp file to parse TAR inside GZIP file';
@@ -253,7 +253,7 @@ class Gzip
                                                          'w+b')) {
                                     fwrite($fp_temp_tar, $inflated);
                                     fclose($fp_temp_tar);
-                                    $getid3_temp = new GetId3();
+                                    $getid3_temp = new GetId3Core();
                                     $getid3_temp->openfile($temp_tar_filename);
                                     $getid3_tar = new Tar($getid3_temp);
                                     $getid3_tar->Analyze();

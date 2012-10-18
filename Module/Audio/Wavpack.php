@@ -4,7 +4,7 @@ namespace GetId3\Module\Audio;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -233,7 +233,7 @@ class Wavpack extends BaseHandler
 						case 0x21: // ID_RIFF_HEADER
 							$original_wav_filesize = Helper::LittleEndian2Int(substr($metablock['data'], 4, 4));
 
-							$getid3_temp = new GetId3();
+							$getid3_temp = new GetId3Core();
 							$getid3_temp->openfile($this->getid3->filename);
 							$getid3_riff = new GetId3\Module\AudioVideo\Riff($getid3_temp);
 							$getid3_riff->ParseRIFFdata($metablock['data']);
@@ -254,7 +254,7 @@ class Wavpack extends BaseHandler
 							$metablockRIFFfooter = $metablockRIFFheader.$metablock['data'];
 
 							$startoffset = $metablock['offset'] + ($metablock['large_block'] ? 4 : 2);
-							$getid3_temp = new GetId3();
+							$getid3_temp = new GetId3Core();
 							$getid3_temp->openfile($this->getid3->filename);
 							$getid3_temp->info['avdataend']  = $info['avdataend'];
 							$getid3_temp->info['fileformat'] = 'riff';
@@ -270,12 +270,12 @@ class Wavpack extends BaseHandler
 
 
 						case 0x23: // ID_REPLAY_GAIN
-							$info['warning'][] = 'WavPack "Replay Gain" contents not yet handled by GetId3() in metablock at offset '.$metablock['offset'];
+							$info['warning'][] = 'WavPack "Replay Gain" contents not yet handled by GetId3Core() in metablock at offset '.$metablock['offset'];
 							break;
 
 
 						case 0x24: // ID_CUESHEET
-							$info['warning'][] = 'WavPack "Cuesheet" contents not yet handled by GetId3() in metablock at offset '.$metablock['offset'];
+							$info['warning'][] = 'WavPack "Cuesheet" contents not yet handled by GetId3Core() in metablock at offset '.$metablock['offset'];
 							break;
 
 

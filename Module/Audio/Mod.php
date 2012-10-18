@@ -64,7 +64,7 @@ class Mod extends BaseHandler
 
 		$info['fileformat'] = 'mod';
 
-		$info['error'][] = 'MOD parsing not enabled in this version of GetId3() ['.$this->getid3->version().']';
+		$info['error'][] = 'MOD parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
 		return false;
 	}
 
@@ -83,7 +83,7 @@ class Mod extends BaseHandler
 
 		$info['fileformat'] = 'xm';
 
-		$info['error'][] = 'XM-MOD parsing not enabled in this version of GetId3() ['.$this->getid3->version().']';
+		$info['error'][] = 'XM-MOD parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
 		return false;
 	}
 
@@ -102,7 +102,7 @@ class Mod extends BaseHandler
 
 		$info['fileformat'] = 's3m';
 
-		$info['error'][] = 'ScreamTracker parsing not enabled in this version of GetId3() ['.$this->getid3->version().']';
+		$info['error'][] = 'ScreamTracker parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
 		return false;
 	}
 
@@ -121,7 +121,7 @@ class Mod extends BaseHandler
 
 		$info['fileformat'] = 'it';
 
-		$info['error'][] = 'ImpulseTracker parsing not enabled in this version of GetId3() ['.$this->getid3->version().']';
+		$info['error'][] = 'ImpulseTracker parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
 		return false;
 	}
 }

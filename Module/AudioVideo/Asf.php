@@ -4,7 +4,7 @@ namespace GetId3\Module\AudioVideo;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -1147,7 +1147,7 @@ class Asf extends BaseHandler
                             case 'id3':
                                 // id3v2 module might not be loaded
                                 if (class_exists('getid3_id3v2')) {
-                                    $tempfile = tempnam(GetId3::getTempDir(),
+                                    $tempfile = tempnam(GetId3Core::getTempDir(),
                                                         'getID3');
                                     $tempfilehandle = fopen($tempfile, 'wb');
                                     $tempThisfileInfo = array('encoding' => $info['encoding']);
@@ -1155,7 +1155,7 @@ class Asf extends BaseHandler
                                            $thisfile_asf_extendedcontentdescriptionobject_contentdescriptor_current['value']);
                                     fclose($tempfilehandle);
 
-                                    $getid3_temp = new GetId3();
+                                    $getid3_temp = new GetId3Core();
                                     $getid3_temp->openfile($tempfile);
                                     $getid3_id3v2 = new GetId3\Module\Tag\Id3v2($getid3_temp);
                                     $getid3_id3v2->Analyze();

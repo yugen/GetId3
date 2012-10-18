@@ -2,7 +2,7 @@
 
 namespace GetId3\Tests\Modules;
 
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 class AudioTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,7 +12,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         self::$mp3File = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'mp3demo.mp3';
-        self::$class = 'GetId3\\GetId3';
+        self::$class = 'GetId3\\GetId3Core';
 
         if (!class_exists(self::$class)) {
             $this->markTestSkipped(self::$class . ' is not available.');
@@ -32,7 +32,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
 
     public function testReadMp3()
     {
-        $getId3 = new GetId3();
+        $getId3 = new GetId3Core();
 		$getId3->option_md5_data        = true;
 		$getId3->option_md5_data_source = true;
 		$getId3->encoding               = 'UTF-8';

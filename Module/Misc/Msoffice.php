@@ -45,7 +45,7 @@ class Msoffice extends BaseHandler
 		}
 		$info['fileformat'] = 'msoffice';
 
-$info['error'][] = 'MS Office (.doc, .xls, etc) parsing not enabled in this version of GetId3() ['.$this->getid3->version().']';
+$info['error'][] = 'MS Office (.doc, .xls, etc) parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
 return false;
 
 	}

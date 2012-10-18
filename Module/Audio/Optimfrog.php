@@ -4,7 +4,7 @@ namespace GetId3\Module\Audio;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -90,7 +90,7 @@ class Optimfrog extends BaseHandler
 		// to skip over the data chunk
 		$RIFFdata = substr($RIFFdata, 0, 36).substr($RIFFdata, 44).substr($RIFFdata, 36, 8);
 
-		$getid3_temp = new GetId3();
+		$getid3_temp = new GetId3Core();
 		$getid3_temp->openfile($this->getid3->filename);
 		$getid3_temp->info['avdataoffset'] = $info['avdataoffset'];
 		$getid3_temp->info['avdataend']    = $info['avdataend'];
@@ -274,7 +274,7 @@ class Optimfrog extends BaseHandler
 
 					$thisfile_ofr_thisblock['offset'] = $BlockOffset;
 					$thisfile_ofr_thisblock['size']   = $BlockSize;
-					$info['warning'][] = 'APEtag processing inside OptimFROG not supported in this version ('.$this->getid3->version().') of GetId3()';
+					$info['warning'][] = 'APEtag processing inside OptimFROG not supported in this version ('.$this->getid3->version().') of GetId3Core()';
 
 					fseek($this->getid3->fp, $BlockSize, SEEK_CUR);
 					break;
@@ -322,7 +322,7 @@ class Optimfrog extends BaseHandler
 		// to skip over the data chunk
 		$RIFFdata = substr($RIFFdata, 0, 36).substr($RIFFdata, 44).substr($RIFFdata, 36, 8);
 
-		$getid3_temp = new GetId3();
+		$getid3_temp = new GetId3Core();
 		$getid3_temp->openfile($this->getid3->filename);
 		$getid3_temp->info['avdataoffset'] = $info['avdataoffset'];
 		$getid3_temp->info['avdataend']    = $info['avdataend'];

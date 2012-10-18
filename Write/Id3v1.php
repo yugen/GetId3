@@ -3,7 +3,8 @@
 namespace GetId3\Write;
 
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
+use GetId3\Module\Tag;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -72,7 +73,7 @@ class Id3v1
 				}
 				$this->tag_data['track'] = (isset($this->tag_data['track']) ? $this->tag_data['track'] : (isset($this->tag_data['track_number']) ? $this->tag_data['track_number'] : (isset($this->tag_data['tracknumber']) ? $this->tag_data['tracknumber'] : '')));
 
-				$new_id3v1_tag_data = GetId3\Module\Tag\Id3v1::GenerateID3v1Tag(
+				$new_id3v1_tag_data = Tag\Id3v1::GenerateID3v1Tag(
 														(isset($this->tag_data['title']  ) ? $this->tag_data['title']   : ''),
 														(isset($this->tag_data['artist'] ) ? $this->tag_data['artist']  : ''),
 														(isset($this->tag_data['album']  ) ? $this->tag_data['album']   : ''),
@@ -102,7 +103,7 @@ class Id3v1
 		// This function rewrites the ID3v1 tag with correct padding
 
 		// Initialize GetId3 engine
-		$getID3 = new GetId3();
+		$getID3 = new GetId3Core();
 		$getID3->option_tag_id3v2  = false;
 		$getID3->option_tag_apetag = false;
 		$getID3->option_tags_html  = false;
@@ -158,7 +159,7 @@ class Id3v1
 		}
 		// 32-bit PHP will not return correct values for filesize() if file is >=2GB
 		// but GetId3->analyze() has workarounds to get actual filesize
-		$getID3 = new GetId3();
+		$getID3 = new GetId3Core();
 		$getID3->option_tag_id3v1  = false;
 		$getID3->option_tag_id3v2  = false;
 		$getID3->option_tag_apetag = false;

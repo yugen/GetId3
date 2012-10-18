@@ -4,7 +4,7 @@ namespace GetId3\Module\AudioVideo;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -380,7 +380,7 @@ class Matroska extends BaseHandler
 								}
 
 								// create temp instance
-								$getid3_temp = new GetId3();
+								$getid3_temp = new GetId3Core();
 								if ($track_info['dataformat'] != 'flac') {
 									$getid3_temp->openfile($this->getid3->filename);
 								}
@@ -453,7 +453,7 @@ class Matroska extends BaseHandler
 								}
 
 								// create temp instance
-								$getid3_temp = new GetId3();
+								$getid3_temp = new GetId3Core();
 
 								// analyze
 								$getid3_ogg = new GetId3\Module\Audio\Ogg($getid3_temp);
@@ -1040,7 +1040,7 @@ class Matroska extends BaseHandler
 												}
 											}
 											if (!empty($attachedfile_entry['FileData']) && !empty($attachedfile_entry['FileMimeType']) && preg_match('#^image/#i', $attachedfile_entry['FileMimeType'])) {
-												if ($this->getid3->option_save_attachments === GetId3::ATTACHMENTS_INLINE) {
+												if ($this->getid3->option_save_attachments === GetId3Core::ATTACHMENTS_INLINE) {
 													$attachedfile_entry['data']       = $attachedfile_entry['FileData'];
 													$attachedfile_entry['image_mime'] = $attachedfile_entry['FileMimeType'];
 													$info['matroska']['comments']['picture'][] = array('data' => $attachedfile_entry['data'], 'image_mime' => $attachedfile_entry['image_mime'], 'filename' => $attachedfile_entry['FileName']);

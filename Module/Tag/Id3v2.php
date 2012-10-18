@@ -130,7 +130,7 @@ class Id3v2 extends BaseHandler
 
 
 
-		// create 'encoding' key - used by GetId3::HandleAllTags()
+		// create 'encoding' key - used by GetId3Core::HandleAllTags()
 		// in ID3v2 every field can have it's own encoding type
 		// so force everything to UTF-8 so it can be handled consistantly
 		$thisfile_id3v2['encoding'] = 'UTF-8';

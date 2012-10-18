@@ -4,7 +4,7 @@ namespace GetId3\Module\Tag;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -121,7 +121,7 @@ class Lyrics3 extends BaseHandler
 				$GETID3_ERRORARRAY = &$info['warning'];
 
                 if (class_exists('GetId3\\Module\\Tag\\Apetag')) {
-					$getid3_temp = new GetId3();
+					$getid3_temp = new GetId3Core();
 					$getid3_temp->openfile($this->getid3->filename);
 					$getid3_apetag = new GetId3\Module\Tag\Apetag($getid3_temp);
 					$getid3_apetag->overrideendoffset = $info['lyrics3']['tag_offset_start'];

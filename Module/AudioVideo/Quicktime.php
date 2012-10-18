@@ -4,7 +4,7 @@ namespace GetId3\Module\AudioVideo;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -98,7 +98,7 @@ class Quicktime extends BaseHandler
 						$OldAVDataEnd         = $info['avdataend'];
 						$info['avdataend']    = $info['quicktime'][$atomname]['offset'] + $info['quicktime'][$atomname]['size'];
 
-						$getid3_temp = new GetId3();
+						$getid3_temp = new GetId3Core();
 						$getid3_temp->openfile($this->getid3->filename);
 						$getid3_temp->info['avdataoffset'] = $info['avdataoffset'];
 						$getid3_temp->info['avdataend']    = $info['avdataend'];
@@ -704,7 +704,7 @@ class Quicktime extends BaseHandler
 								case 'mp4v':
 									$info['fileformat'] = 'mp4';
 									$info['video']['fourcc'] = $atom_structure['sample_description_table'][$i]['data_format'];
-									//$info['warning'][] = 'This version of GetId3() ['.$this->getid3->version().'] does not fully support MPEG-4 audio/video streams'; // 2011-02-18: why am I warning about this again? What's not supported?
+									//$info['warning'][] = 'This version of GetId3Core() ['.$this->getid3->version().'] does not fully support MPEG-4 audio/video streams'; // 2011-02-18: why am I warning about this again? What's not supported?
 									break;
 
 								case 'qtvr':
@@ -1317,7 +1317,7 @@ class Quicktime extends BaseHandler
 						$info['quicktime']['comments']['gps_altitude'][] = floatval($altitude);
 					}
 				} else {
-					$info['warning'][] = 'QuickTime atom "©xyz" data does not match expected data pattern at offset '.$baseoffset.'. Please report as GetId3() bug.';
+					$info['warning'][] = 'QuickTime atom "©xyz" data does not match expected data pattern at offset '.$baseoffset.'. Please report as GetId3Core() bug.';
 				}
 				break;
 

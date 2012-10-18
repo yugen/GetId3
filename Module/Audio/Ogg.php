@@ -4,7 +4,7 @@ namespace GetId3\Module\Audio;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -566,7 +566,7 @@ class Ogg extends BaseHandler
 					// http://wiki.xiph.org/VorbisComment#METADATA_BLOCK_PICTURE
 					// The unencoded format is that of the FLAC picture block. The fields are stored in big endian order as in FLAC, picture data is stored according to the relevant standard.
 					// http://flac.sourceforge.net/format.html#metadata_block_picture
-					$getid3_temp = new GetId3();
+					$getid3_temp = new GetId3Core();
 					$getid3_flac = new GetId3\Module\Audio\Flac($getid3_temp);
 					$getid3_flac->data_string      = $ThisFileInfo_ogg_comments_raw[$i]['data'];
 					$getid3_flac->data_string_flag = true;

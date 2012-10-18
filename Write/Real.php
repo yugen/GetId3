@@ -3,7 +3,7 @@
 namespace GetId3\Write;
 
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -76,7 +76,7 @@ class Real
 		if (is_writeable($this->filename) && is_file($this->filename) && ($fp_source = fopen($this->filename, 'r+b'))) {
 
 			// Initialize GetId3 engine
-			$getID3 = new GetId3();
+			$getID3 = new GetId3Core();
 			$OldThisFileInfo = $getID3->analyze($this->filename);
 			if (empty($OldThisFileInfo['real']['chunks']) && !empty($OldThisFileInfo['real']['old_ra_header'])) {
 				$this->errors[] = 'Cannot write Real tags on old-style file format';
@@ -137,7 +137,7 @@ class Real
 					$BeforeOffset = $oldChunkInfo['CONT']['offset'];
 					$AfterOffset  = $oldChunkInfo['CONT']['offset'] + $oldChunkInfo['CONT']['length'];
 				}
-				if ($tempfilename = tempnam(GetId3::getTempDir(), 'getID3')) {
+				if ($tempfilename = tempnam(GetId3Core::getTempDir(), 'getID3')) {
 					if (is_writable($tempfilename) && is_file($tempfilename) && ($fp_temp = fopen($tempfilename, 'wb'))) {
 
 						rewind($fp_source);
@@ -279,7 +279,7 @@ class Real
 		if (is_writeable($this->filename) && is_file($this->filename) && ($fp_source = fopen($this->filename, 'r+b'))) {
 
 			// Initialize GetId3 engine
-			$getID3 = new GetId3();
+			$getID3 = new GetId3Core();
 			$OldThisFileInfo = $getID3->analyze($this->filename);
 			if (empty($OldThisFileInfo['real']['chunks']) && !empty($OldThisFileInfo['real']['old_ra_header'])) {
 				$this->errors[] = 'Cannot remove Real tags from old-style file format';
@@ -304,7 +304,7 @@ class Real
 
 			$BeforeOffset = $oldChunkInfo['CONT']['offset'];
 			$AfterOffset  = $oldChunkInfo['CONT']['offset'] + $oldChunkInfo['CONT']['length'];
-			if ($tempfilename = tempnam(GetId3::getTempDir(), 'getID3')) {
+			if ($tempfilename = tempnam(GetId3Core::getTempDir(), 'getID3')) {
 				if (is_writable($tempfilename) && is_file($tempfilename) && ($fp_temp = fopen($tempfilename, 'wb'))) {
 
 					rewind($fp_source);

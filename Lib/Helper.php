@@ -2,7 +2,7 @@
 
 namespace GetId3\Lib;
 
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -833,7 +833,7 @@ class Helper
         }
         $size = $end - $offset;
         while (true) {
-            if (GetId3::environmentIsWindows()) {
+            if (GetId3Core::environmentIsWindows()) {
 
                 // It seems that sha1sum.exe for Windows only works on physical files, does not accept piped data
                 // Fall back to create-temp-file method:
@@ -843,16 +843,16 @@ class Helper
 
                 $RequiredFiles = array('cygwin1.dll', 'head.exe', 'tail.exe', $windows_call);
                 foreach ($RequiredFiles as $required_file) {
-                    if (!is_readable(GetId3::getHelperAppsDir() . $required_file)) {
+                    if (!is_readable(GetId3Core::getHelperAppsDir() . $required_file)) {
                         // helper apps not available - fall back to old method
                         break 2;
                     }
                 }
-                $commandline = GetId3::getHelperAppsDir() . 'head.exe -c ' . $end . ' ' . escapeshellarg(str_replace('/',
+                $commandline = GetId3Core::getHelperAppsDir() . 'head.exe -c ' . $end . ' ' . escapeshellarg(str_replace('/',
                                                                                                                             DIRECTORY_SEPARATOR,
                                                                                                                             $file)) . ' | ';
-                $commandline .= GetId3::getHelperAppsDir() . 'tail.exe -c ' . $size . ' | ';
-                $commandline .= GetId3::getHelperAppsDir() . $windows_call;
+                $commandline .= GetId3Core::getHelperAppsDir() . 'tail.exe -c ' . $size . ' | ';
+                $commandline .= GetId3Core::getHelperAppsDir() . $windows_call;
             } else {
 
                 $commandline = 'head -c' . $end . ' ' . escapeshellarg($file) . ' | ';
@@ -868,7 +868,7 @@ class Helper
 
         if (empty($tempdir)) {
             // yes this is ugly, feel free to suggest a better way
-            $getid3_temp = new GetId3();
+            $getid3_temp = new GetId3Core();
             $tempdir = $getid3_temp->tempdir;
             unset($getid3_temp);
         }
@@ -914,7 +914,7 @@ class Helper
                     $byteslefttowrite = $length;
                     while (($byteslefttowrite > 0) && ($buffer = fread($fp_src,
                                                                        min($byteslefttowrite,
-                                                                           GetId3::FREAD_BUFFER_SIZE)))) {
+                                                                           GetId3Core::FREAD_BUFFER_SIZE)))) {
                         $byteswritten = fwrite($fp_dest, $buffer,
                                                $byteslefttowrite);
                         $byteslefttowrite -= $byteswritten;
@@ -975,7 +975,7 @@ class Helper
         if (function_exists('utf8_encode')) {
             return utf8_encode($string);
         }
-        // utf8_encode() unavailable, use GetId3()'s iconv_fallback() conversions (possibly PHP is compiled without XML support)
+        // utf8_encode() unavailable, use GetId3Core()'s iconv_fallback() conversions (possibly PHP is compiled without XML support)
         $newcharstring = '';
         if ($bom) {
             $newcharstring .= "\xEF\xBB\xBF";
@@ -1047,7 +1047,7 @@ class Helper
         if (function_exists('utf8_decode')) {
             return utf8_decode($string);
         }
-        // utf8_decode() unavailable, use GetId3()'s iconv_fallback() conversions (possibly PHP is compiled without XML support)
+        // utf8_decode() unavailable, use GetId3Core()'s iconv_fallback() conversions (possibly PHP is compiled without XML support)
         $newcharstring = '';
         $offset = 0;
         $stringlength = strlen($string);
@@ -1571,7 +1571,7 @@ class Helper
         static $tempdir = '';
         if (empty($tempdir)) {
             // yes this is ugly, feel free to suggest a better way
-            $getid3_temp = new GetId3();
+            $getid3_temp = new GetId3Core();
             $tempdir = $getid3_temp->tempdir;
             unset($getid3_temp);
         }

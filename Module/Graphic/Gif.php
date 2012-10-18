@@ -124,7 +124,7 @@ class Gif extends BaseHandler
 //
 //					if ($ImageDescriptor['flags']['use_local_color_map']) {
 //
-//						$info['warning'][] = 'This version of GetId3() cannot parse local color maps for GIFs';
+//						$info['warning'][] = 'This version of GetId3Core() cannot parse local color maps for GIFs';
 //						return true;
 //
 //					}

@@ -105,7 +105,7 @@ class Tta extends BaseHandler
 				break;
 
 			default:
-				$info['error'][] = 'This version of GetId3() ['.$this->getid3->version().'] only knows how to handle TTA v1 and v2 - it may not work correctly with this file which appears to be TTA v'.$ttaheader{3};
+				$info['error'][] = 'This version of GetId3Core() ['.$this->getid3->version().'] only knows how to handle TTA v1 and v2 - it may not work correctly with this file which appears to be TTA v'.$ttaheader{3};
 				return false;
 				break;
 		}

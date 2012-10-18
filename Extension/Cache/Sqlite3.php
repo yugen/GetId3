@@ -2,7 +2,7 @@
 
 namespace GetId3\Extension\Cache;
 
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>                               //
@@ -135,10 +135,10 @@ class Sqlite3 extends GetId3
         $version = '';
         $sql = $this->version_check;
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':filename', GetId3::VERSION, SQLITE3_TEXT);
+        $stmt->bindValue(':filename', GetId3Core::VERSION, SQLITE3_TEXT);
         $result = $stmt->execute();
         list($version) = $result->fetchArray();
-        if ($version != GetId3::VERSION) { // Check version number and clear cache if changed
+        if ($version != GetId3Core::VERSION) { // Check version number and clear cache if changed
             $this->clear_cache();
         }
         return parent::__construct();
@@ -165,9 +165,9 @@ class Sqlite3 extends GetId3
         $db->exec($sql);
         $sql = $this->set_version;
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':filename', GetId3::VERSION, SQLITE3_TEXT);
-        $stmt->bindValue(':dirname', GetId3::VERSION, SQLITE3_TEXT);
-        $stmt->bindValue(':val', GetId3::VERSION, SQLITE3_TEXT);
+        $stmt->bindValue(':filename', GetId3Core::VERSION, SQLITE3_TEXT);
+        $stmt->bindValue(':dirname', GetId3Core::VERSION, SQLITE3_TEXT);
+        $stmt->bindValue(':val', GetId3Core::VERSION, SQLITE3_TEXT);
         return $stmt->execute();
     }
 

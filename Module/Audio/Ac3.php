@@ -120,7 +120,7 @@ class Ac3 extends BaseHandler
 			// Decoders which can decode version 8 will thus be able to decode version numbers less than 8.
 			// If this standard is extended by the addition of additional elements or features, a value of bsid greater than 8 will be used.
 			// Decoders built to this version of the standard will not be able to decode versions with bsid greater than 8.
-			$this->error('Bit stream identification is version '.$thisfile_ac3_raw_bsi['bsid'].', but GetId3() only understands up to version 8');
+			$this->error('Bit stream identification is version '.$thisfile_ac3_raw_bsi['bsid'].', but GetId3Core() only understands up to version 8');
 		    unset($info['ac3']);
 			return false;
 		}

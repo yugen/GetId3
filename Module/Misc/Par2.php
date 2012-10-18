@@ -37,7 +37,7 @@ class Par2 extends BaseHandler
 
 		$info['fileformat'] = 'par2';
 
-		$info['error'][] = 'PAR2 parsing not enabled in this version of GetId3()';
+		$info['error'][] = 'PAR2 parsing not enabled in this version of GetId3Core()';
 		return false;
 
 	}

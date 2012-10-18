@@ -76,7 +76,7 @@ Quick use example reading audio properties
 <?php
 namespace My\Project;
 
-use \GetId3\GetId3;
+use \GetId3\GetId3Core as GetId3;
 
 class MyClass
 {

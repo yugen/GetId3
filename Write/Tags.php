@@ -3,7 +3,8 @@
 namespace GetId3\Write;
 
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
+use GetId3\Module\Tag;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -127,7 +128,7 @@ class Tags
      * @throws Exception
      */
 	public function __construct() {
-        if (!class_exists('GetId3\\GetId3')) {
+        if (!class_exists('GetId3\\GetId3Core')) {
             throw new Exception('GetId3.php MUST be included before calling GetId3\Write\Tags()');
         }
         if (!class_exists('GetId3\\Lib\\Helper')) {
@@ -165,7 +166,7 @@ class Tags
 
 		} else {
 
-			$getID3 = new GetId3();
+			$getID3 = new GetId3Core();
 			$getID3->encoding = $this->tag_encoding;
 			$this->ThisFileInfo = $getID3->analyze($this->filename);
 
@@ -330,7 +331,7 @@ class Tags
 			$success = false; // overridden if tag writing is successful
 			switch ($tagformat) {
 				case 'ape':
-					$ape_writer = new GetId3\Write\Apetag();
+					$ape_writer = new Apetag();
 					if (($ape_writer->tag_data = $this->FormatDataForAPE()) !== false) {
 						$ape_writer->filename = $this->filename;
 						if (($success = $ape_writer->WriteAPEtag()) === false) {
@@ -342,7 +343,7 @@ class Tags
 					break;
 
 				case 'id3v1':
-					$id3v1_writer = new GetId3\Write\Id3v1();
+					$id3v1_writer = new Id3v1();
 					if (($id3v1_writer->tag_data = $this->FormatDataForID3v1()) !== false) {
 						$id3v1_writer->filename = $this->filename;
 						if (($success = $id3v1_writer->WriteID3v1()) === false) {
@@ -356,7 +357,7 @@ class Tags
 				case 'id3v2.2':
 				case 'id3v2.3':
 				case 'id3v2.4':
-					$id3v2_writer = new GetId3\Write\Id3v2();
+					$id3v2_writer = new Id3v2();
 					$id3v2_writer->majorversion = intval(substr($tagformat, -1));
 					$id3v2_writer->paddedlength = $this->id3v2_paddedlength;
 					if (($id3v2_writer->tag_data = $this->FormatDataForID3v2($id3v2_writer->majorversion)) !== false) {
@@ -370,7 +371,7 @@ class Tags
 					break;
 
 				case 'vorbiscomment':
-					$vorbiscomment_writer = new GetId3\Write\Vorbiscomment();
+					$vorbiscomment_writer = new Vorbiscomment();
 					if (($vorbiscomment_writer->tag_data = $this->FormatDataForVorbisComment()) !== false) {
 						$vorbiscomment_writer->filename = $this->filename;
 						if (($success = $vorbiscomment_writer->WriteVorbisComment()) === false) {
@@ -382,7 +383,7 @@ class Tags
 					break;
 
 				case 'metaflac':
-					$metaflac_writer = new GetId3\Write\Metaflac();
+					$metaflac_writer = new Metaflac();
 					if (($metaflac_writer->tag_data = $this->FormatDataForMetaFLAC()) !== false) {
 						$metaflac_writer->filename = $this->filename;
 						if (($success = $metaflac_writer->WriteMetaFLAC()) === false) {
@@ -394,7 +395,7 @@ class Tags
 					break;
 
 				case 'real':
-					$real_writer = new GetId3\Write\Real();
+					$real_writer = new Real();
 					if (($real_writer->tag_data = $this->FormatDataForReal()) !== false) {
 						$real_writer->filename = $this->filename;
 						if (($success = $real_writer->WriteReal()) === false) {
@@ -428,7 +429,7 @@ class Tags
 			$success = false; // overridden if tag deletion is successful
 			switch ($DeleteTagFormat) {
 				case 'id3v1':
-					$id3v1_writer = new GetId3\Write\Id3v1();
+					$id3v1_writer = new Id3v1();
 					$id3v1_writer->filename = $this->filename;
 					if (($success = $id3v1_writer->RemoveID3v1()) === false) {
 						$this->errors[] = 'RemoveID3v1() failed with message(s):<PRE><UL><LI>'.trim(implode('</LI><LI>', $id3v1_writer->errors)).'</LI></UL></PRE>';
@@ -436,7 +437,7 @@ class Tags
 					break;
 
 				case 'id3v2':
-					$id3v2_writer = new GetId3\Write\Id3v2();
+					$id3v2_writer = new Id3v2();
 					$id3v2_writer->filename = $this->filename;
 					if (($success = $id3v2_writer->RemoveID3v2()) === false) {
 						$this->errors[] = 'RemoveID3v2() failed with message(s):<PRE><UL><LI>'.trim(implode('</LI><LI>', $id3v2_writer->errors)).'</LI></UL></PRE>';
@@ -444,7 +445,7 @@ class Tags
 					break;
 
 				case 'ape':
-					$ape_writer = new GetId3\Write\Apetag();
+					$ape_writer = new Apetag();
 					$ape_writer->filename = $this->filename;
 					if (($success = $ape_writer->DeleteAPEtag()) === false) {
 						$this->errors[] = 'DeleteAPEtag() failed with message(s):<PRE><UL><LI>'.trim(implode('</LI><LI>', $ape_writer->errors)).'</LI></UL></PRE>';
@@ -452,7 +453,7 @@ class Tags
 					break;
 
 				case 'vorbiscomment':
-					$vorbiscomment_writer = new GetId3\Write\Vorbiscomment();
+					$vorbiscomment_writer = new Vorbiscomment();
 					$vorbiscomment_writer->filename = $this->filename;
 					if (($success = $vorbiscomment_writer->DeleteVorbisComment()) === false) {
 						$this->errors[] = 'DeleteVorbisComment() failed with message(s):<PRE><UL><LI>'.trim(implode('</LI><LI>', $vorbiscomment_writer->errors)).'</LI></UL></PRE>';
@@ -460,7 +461,7 @@ class Tags
 					break;
 
 				case 'metaflac':
-					$metaflac_writer = new GetId3\Write\Metaflac();
+					$metaflac_writer = new Metaflac();
 					$metaflac_writer->filename = $this->filename;
 					if (($success = $metaflac_writer->DeleteMetaFLAC()) === false) {
 						$this->errors[] = 'DeleteMetaFLAC() failed with message(s):<PRE><UL><LI>'.trim(implode('</LI><LI>', $metaflac_writer->errors)).'</LI></UL></PRE>';
@@ -468,7 +469,7 @@ class Tags
 					break;
 
 				case 'lyrics3':
-					$lyrics3_writer = new GetId3\Write\Lyrics3();
+					$lyrics3_writer = new Lyrics3();
 					$lyrics3_writer->filename = $this->filename;
 					if (($success = $lyrics3_writer->DeleteLyrics3()) === false) {
 						$this->errors[] = 'DeleteLyrics3() failed with message(s):<PRE><UL><LI>'.trim(implode('</LI><LI>', $lyrics3_writer->errors)).'</LI></UL></PRE>';
@@ -476,7 +477,7 @@ class Tags
 					break;
 
 				case 'real':
-					$real_writer = new GetId3\Write\Real();
+					$real_writer = new Real();
 					$real_writer->filename = $this->filename;
 					if (($success = $real_writer->RemoveReal()) === false) {
 						$this->errors[] = 'RemoveReal() failed with message(s):<PRE><UL><LI>'.trim(implode('</LI><LI>', $real_writer->errors)).'</LI></UL></PRE>';
@@ -554,8 +555,8 @@ class Tags
 		$tag_data_id3v1['genreid'] = 255;
 		if (!empty($this->tag_data['GENRE'])) {
 			foreach ($this->tag_data['GENRE'] as $key => $value) {
-				if (GetId3\Module\Tag\Id3v1::LookupGenreID($value) !== false) {
-					$tag_data_id3v1['genreid'] = GetId3\Module\Tag\Id3v1::LookupGenreID($value);
+				if (Tag\Id3v1::LookupGenreID($value) !== false) {
+					$tag_data_id3v1['genreid'] = Tag\Id3v1::LookupGenreID($value);
 					break;
 				}
 			}
@@ -586,7 +587,7 @@ class Tags
 		$ID3v2_text_encoding_lookup[3] = array('ISO-8859-1'=>0, 'UTF-16'=>1);
 		$ID3v2_text_encoding_lookup[4] = array('ISO-8859-1'=>0, 'UTF-16'=>1, 'UTF-16BE'=>2, 'UTF-8'=>3);
 		foreach ($this->tag_data as $tag_key => $valuearray) {
-			$ID3v2_framename = GetId3\Write\Id3v2::ID3v2ShortFrameNameLookup($id3v2_majorversion, $tag_key);
+			$ID3v2_framename = Id3v2::ID3v2ShortFrameNameLookup($id3v2_majorversion, $tag_key);
 			switch ($ID3v2_framename) {
 				case 'APIC':
 					foreach ($valuearray as $key => $apic_data_array) {

@@ -51,7 +51,7 @@ class Aa extends BaseHandler
 
 		$info['fileformat']            = 'aa';
 		$info['audio']['dataformat']   = 'aa';
-$info['error'][] = 'Audible Audiobook (.aa) parsing not enabled in this version of GetId3() ['.$this->getid3->version().']';
+$info['error'][] = 'Audible Audiobook (.aa) parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
 return false;
 		$info['audio']['bitrate_mode'] = 'cbr'; // is it?
 		$thisfile_au['encoding']       = 'ISO-8859-1';

@@ -2,7 +2,7 @@
 
 namespace GetId3\Write;
 
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -60,7 +60,7 @@ class Lyrics3
 	}
 	public function DeleteLyrics3() {
 		// Initialize GetId3 engine
-		$getID3 = new GetId3();
+		$getID3 = new GetId3Core();
 		$ThisFileInfo = $getID3->analyze($this->filename);
 		if (isset($ThisFileInfo['lyrics3']['tag_offset_start']) && isset($ThisFileInfo['lyrics3']['tag_offset_end'])) {
 			if (is_readable($this->filename) && is_writable($this->filename) && is_file($this->filename) && ($fp = fopen($this->filename, 'a+b'))) {

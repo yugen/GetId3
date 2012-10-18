@@ -3,7 +3,7 @@
 namespace GetId3\Handler;
 
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -65,7 +65,7 @@ abstract class BaseHandler
      * @param GetId3\GetId3 $getid3
      * @param type $call_module
      */
-    public function __construct(GetId3 $getid3, $call_module = null)
+    public function __construct(GetId3Core $getid3, $call_module = null)
     {
         $this->getid3 = $getid3;
 

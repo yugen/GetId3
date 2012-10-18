@@ -3,7 +3,7 @@
 namespace GetId3\Write;
 
 use GetId3\Lib\Helper;
-use GetId3\GetId3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -64,7 +64,7 @@ class Apetag
 	public function WriteAPEtag() {
 		// NOTE: All data passed to this function must be UTF-8 format
 
-		$getID3 = new GetId3();
+		$getID3 = new GetId3Core();
 		$ThisFileInfo = $getID3->analyze($this->filename);
 
 		if (isset($ThisFileInfo['ape']['tag_offset_start']) && isset($ThisFileInfo['lyrics3']['tag_offset_end'])) {
@@ -128,7 +128,7 @@ class Apetag
      * @return boolean
      */
 	public function DeleteAPEtag() {
-		$getID3 = new GetId3;
+		$getID3 = new GetId3Core();
 		$ThisFileInfo = $getID3->analyze($this->filename);
 		if (isset($ThisFileInfo['ape']['tag_offset_start']) && isset($ThisFileInfo['ape']['tag_offset_end'])) {
 			if (is_writable($this->filename) && is_file($this->filename) && ($fp = fopen($this->filename, 'a+b'))) {
