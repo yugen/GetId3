@@ -245,7 +245,10 @@ class GetId3_Write_Tags
 				case 'ape':
 					$GETID3_ERRORARRAY = &$this->errors;
 
-					return class_exists('GetId3_Write_Apetag');
+					if (!class_exists('GetId3_Write_Apetag'))
+                    {
+                        return false;
+                    }
 					break;
 
 				case 'id3v1':
@@ -255,7 +258,10 @@ class GetId3_Write_Tags
 				case 'real':
 					$GETID3_ERRORARRAY = &$this->errors;
 
-                    return class_exists('GetId3_Write_' . ucfirst($tagformat));
+                    if (!class_exists('GetId3_Write_' . ucfirst($tagformat)))
+                    {
+                        return false;
+                    }
 					break;
 
 				case 'id3v2.2':
@@ -264,7 +270,10 @@ class GetId3_Write_Tags
 				case 'id3v2':
 					$GETID3_ERRORARRAY = &$this->errors;
 
-                    return class_exists('GetId3_Write_Id3v2');
+                    if (!class_exists('GetId3_Write_Id3v2'))
+                    {
+                        return false;
+                    }
 					break;
 
 				default:

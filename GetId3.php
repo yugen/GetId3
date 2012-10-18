@@ -66,14 +66,17 @@ class GetId3_GetId3
     public function __construct()
     {
         // Magic autoload function
-        function __autoload($className)
+        if (!function_exists('__autoload'))
         {
-            $realpath = realpath(dirname(__FILE__));
-            $realpath = explode(DIRECTORY_SEPARATOR, $realpath);
-            array_pop($realpath);
-            $realpath = implode(DIRECTORY_SEPARATOR, $realpath);
-            $className = $realpath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, explode('_', $className)) . '.php';
-            include_once $className;
+            function __autoload($className)
+            {
+                $realpath = realpath(dirname(__FILE__));
+                $realpath = explode(DIRECTORY_SEPARATOR, $realpath);
+                array_pop($realpath);
+                $realpath = implode(DIRECTORY_SEPARATOR, $realpath);
+                $className = $realpath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, explode('_', $className)) . '.php';
+                include_once $className;
+            }
         }
 
         $this->tempdir = self::getTempDir();
@@ -1640,7 +1643,7 @@ class GetId3_GetId3
      *
      * @return type
      */
-    protected static function environmentIsWindows()
+    public static function environmentIsWindows()
     {
         // define a static property rather than looking up every time it is needed
         if (null === self::$EnvironmentIsWindows) {
