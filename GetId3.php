@@ -1634,7 +1634,7 @@ class GetId3
      *
      * @return type
      */
-    protected static function environmentIsWindows()
+    public static function environmentIsWindows()
     {
         // define a static property rather than looking up every time it is needed
         if (null === self::$EnvironmentIsWindows) {
