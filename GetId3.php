@@ -1589,7 +1589,7 @@ class GetId3_GetId3
     /**
      *
      */
-    protected static function getTempDir()
+    public static function getTempDir()
     {
         if (null === self::$TempDir) {
             $temp_dir = ini_get('upload_tmp_dir');
