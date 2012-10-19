@@ -36,9 +36,15 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
         $getId3->option_md5_data        = true;
         $getId3->option_md5_data_source = true;
         $getId3->encoding               = 'UTF-8';
-        $properties = $getId3->analyze(self::$quicktimeFile);        
+        
+        $properties = $getId3->analyze(self::$quicktimeFile);
+        
         $this->assertTrue(isset($properties['mime_type']) && $properties['mime_type'] == 'video/quicktime');
         $this->assertTrue(isset($properties['encoding']) && $properties['encoding'] == 'UTF-8');
         $this->assertTrue(isset($properties['filesize']) && $properties['filesize'] == 3284257);
+        $this->assertTrue(!isset($properties['error']));
+        $this->assertTrue(isset($properties['fileformat']) && $properties['fileformat'] == 'quicktime');
+        $this->assertTrue(isset($properties['audio']['dataformat']) && $properties['audio']['dataformat'] == 'mp4');
+        $this->assertTrue(isset($properties['video']['dataformat']) && $properties['video']['dataformat'] == 'mpeg4');
     }        
 }
