@@ -1,10 +1,11 @@
 <?php
 
-namespace GetId3\Module\AudioVideo;
+namespace Module\AudioVideo;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
+use GetId3\Module;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -26,7 +27,7 @@ use GetId3\GetId3Core;
  * @author James Heinrich <info@getid3.org>
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
- * @uses GetId3\Module\Audio\Mp3
+ * @uses Module\Audio\Mp3
  */
 class Quicktime extends BaseHandler
 {
@@ -102,7 +103,7 @@ class Quicktime extends BaseHandler
 						$getid3_temp->openfile($this->getid3->filename);
 						$getid3_temp->info['avdataoffset'] = $info['avdataoffset'];
 						$getid3_temp->info['avdataend']    = $info['avdataend'];
-						$getid3_mp3 = new GetId3\Module\Audio\Mp3($getid3_temp);
+						$getid3_mp3 = new Module\Audio\Mp3($getid3_temp);
 						if ($getid3_mp3->MPEGaudioHeaderValid($getid3_mp3->MPEGaudioHeaderDecode(fread($this->getid3->fp, 4)))) {
 							$getid3_mp3->getOnlyMPEGaudioInfo($getid3_temp->info['avdataoffset'], false);
 							if (!empty($getid3_temp->info['warning'])) {
@@ -458,7 +459,7 @@ class Quicktime extends BaseHandler
 
 												case 'gnre':
 													$GenreID = Helper::BigEndian2Int(substr($boxdata, 8, 4));
-													$atom_structure['data']    = GetId3\Module\Tag\Id3v1::LookupGenreName($GenreID - 1);
+													$atom_structure['data']    = Module\Tag\Id3v1::LookupGenreName($GenreID - 1);
 													break;
 
 												case 'rtng':
