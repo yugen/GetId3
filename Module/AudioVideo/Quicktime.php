@@ -1,6 +1,6 @@
 <?php
 
-namespace Module\AudioVideo;
+namespace GetId3\Module\AudioVideo;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
