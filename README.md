@@ -2,7 +2,7 @@ GetId3
 ======
 [![Build Status](https://secure.travis-ci.org/phansys/GetId3.png?branch=master)](http://travis-ci.org/phansys/GetId3)
 
-This release of GetId3 library updates to [PSR-0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md) CS and makes it Symfony2 installable by deps or composer mechanisms.
+This version of GetId3 library **only works in PHP >= 5.3** and updates to [PSR-0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md) CS and makes it Symfony2 installable by deps or composer mechanisms.
 
 * [Main site] http://www.getid3.org
 * [Support] http://support.getid3.org/
