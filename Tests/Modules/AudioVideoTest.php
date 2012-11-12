@@ -13,38 +13,56 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
     {
         self::$quicktimeFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'sample_iTunes.mov';
         self::$class = 'GetId3\\GetId3Core';
+    }
 
+    public function testClass()
+    {
         if (!class_exists(self::$class)) {
             $this->markTestSkipped(self::$class . ' is not available.');
         }
         $this->assertTrue(class_exists(self::$class));
+        $this->assertClassHasAttribute('option_md5_data', self::$class);
+        $this->assertClassHasAttribute('option_md5_data_source', self::$class);
+        $this->assertClassHasAttribute('encoding', self::$class);
         $rc = new \ReflectionClass(self::$class);
-        $this->assertTrue($rc->hasProperty('option_md5_data') && $rc->hasProperty('option_md5_data_source') && $rc->hasProperty('encoding'));
         $this->assertTrue($rc->hasMethod('analyze'));
         $rm = new \ReflectionMethod(self::$class, 'analyze');
         $this->assertTrue($rm->isPublic());
     }
 
-    public function testFile()
+    public function testQuicktimeFile()
     {
-        $this->assertTrue(file_exists(self::$quicktimeFile) && is_readable(self::$quicktimeFile));
+        $this->assertFileExists(self::$quicktimeFile);
+        $this->assertTrue(is_readable(self::$quicktimeFile));
     }
 
+    /**
+     * @depends testClass
+     * @depends testQuicktimeFile
+     */
     public function testReadQuicktime()
     {
         $getId3 = new GetId3Core();
         $getId3->option_md5_data        = true;
         $getId3->option_md5_data_source = true;
         $getId3->encoding               = 'UTF-8';
-        
+
         $properties = $getId3->analyze(self::$quicktimeFile);
-        
-        $this->assertTrue(isset($properties['mime_type']) && $properties['mime_type'] == 'video/quicktime');
-        $this->assertTrue(isset($properties['encoding']) && $properties['encoding'] == 'UTF-8');
-        $this->assertTrue(isset($properties['filesize']) && $properties['filesize'] == 3284257);
-        $this->assertTrue(!isset($properties['error']));
-        $this->assertTrue(isset($properties['fileformat']) && $properties['fileformat'] == 'quicktime');
-        $this->assertTrue(isset($properties['audio']['dataformat']) && $properties['audio']['dataformat'] == 'mp4');
-        $this->assertTrue(isset($properties['video']['dataformat']) && $properties['video']['dataformat'] == 'mpeg4');
-    }        
+
+        $this->assertArrayNotHasKey('error', $properties);
+        $this->assertArrayHasKey('mime_type', $properties);
+        $this->assertEquals('video/quicktime', $properties['mime_type']);
+        $this->assertArrayHasKey('encoding', $properties);
+        $this->assertEquals('UTF-8', $properties['encoding']);
+        $this->assertArrayHasKey('filesize', $properties);
+        $this->assertSame(3284257, $properties['filesize']);
+        $this->assertArrayHasKey('fileformat', $properties);
+        $this->assertEquals('quicktime', $properties['fileformat']);
+        $this->assertArrayHasKey('audio', $properties);
+        $this->assertArrayHasKey('dataformat', $properties['audio']);
+        $this->assertEquals('mp4', $properties['audio']['dataformat']);
+        $this->assertArrayHasKey('video', $properties);
+        $this->assertArrayHasKey('dataformat', $properties['video']);
+        $this->assertEquals('mpeg4', $properties['video']['dataformat']);
+    }
 }

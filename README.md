@@ -57,7 +57,7 @@ ___
 Add following lines to your `composer.json` `"require"` definitions:
 
 ``` json
-"phansys/getid3": "master"
+"phansys/getid3": "v2.0.0.x-dev"
 ```
 
 ##### Step 2: Run composer
