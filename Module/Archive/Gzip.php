@@ -256,7 +256,7 @@ class Gzip
                                     $getid3_temp = new GetId3Core();
                                     $getid3_temp->openfile($temp_tar_filename);
                                     $getid3_tar = new Tar($getid3_temp);
-                                    $getid3_tar->Analyze();
+                                    $getid3_tar->analyze();
                                     $info['gzip']['member_header'][$idx]['tar'] = $getid3_temp->info['tar'];
                                     unset($getid3_temp, $getid3_tar);
                                     unlink($temp_tar_filename);

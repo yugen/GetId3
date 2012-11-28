@@ -1158,7 +1158,7 @@ class Asf extends BaseHandler
                                     $getid3_temp = new GetId3Core();
                                     $getid3_temp->openfile($tempfile);
                                     $getid3_id3v2 = new GetId3\Module\Tag\Id3v2($getid3_temp);
-                                    $getid3_id3v2->Analyze();
+                                    $getid3_id3v2->analyze();
                                     $info['id3v2'] = $getid3_temp->info['id3v2'];
                                     unset($getid3_temp, $getid3_id3v2);
 

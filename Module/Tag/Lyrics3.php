@@ -125,7 +125,7 @@ class Lyrics3 extends BaseHandler
 					$getid3_temp->openfile($this->getid3->filename);
 					$getid3_apetag = new GetId3\Module\Tag\Apetag($getid3_temp);
 					$getid3_apetag->overrideendoffset = $info['lyrics3']['tag_offset_start'];
-					$getid3_apetag->Analyze();
+					$getid3_apetag->analyze();
 					if (!empty($getid3_temp->info['ape'])) {
 						$info['ape'] = $getid3_temp->info['ape'];
 					}

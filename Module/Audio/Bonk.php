@@ -218,7 +218,7 @@ class Bonk extends BaseHandler
 					$getid3_temp->openfile($this->getid3->filename);
 					$getid3_id3v2 = new GetId3\Module\Tag\Id3v2($getid3_temp);
 					$getid3_id3v2->StartingOffset = $info['bonk'][' ID3']['offset'] + 2;
-					$info['bonk'][' ID3']['valid'] = $getid3_id3v2->Analyze();
+					$info['bonk'][' ID3']['valid'] = $getid3_id3v2->analyze();
 					if ($info['bonk'][' ID3']['valid']) {
 						$info['id3v2'] = $getid3_temp->info['id3v2'];
 					}

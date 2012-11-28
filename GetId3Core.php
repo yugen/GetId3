@@ -357,7 +357,7 @@ class GetId3Core
                     try {
                         $tag_class = 'GetId3\\Module\\Tag\\' . ucfirst($tag_name);
                         $tag = new $tag_class($this);
-                        $tag->Analyze();
+                        $tag->analyze();
                     } catch (DefaultException $e) {
                         throw $e;
                     }
@@ -462,7 +462,7 @@ class GetId3Core
             if (!empty($determined_format['set_inline_attachments'])) {
                 $class->inline_attachments = $this->option_save_attachments;
             }
-            $class->Analyze();
+            $class->analyze();
 
             unset($class);
 

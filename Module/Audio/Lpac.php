@@ -95,7 +95,7 @@ class Lpac extends BaseHandler
 		$getid3_temp->openfile($this->getid3->filename);
 		$getid3_temp->info = $info;
 		$getid3_riff = new GetId3\Module\AudioVideo\Riff($getid3_temp);
-		$getid3_riff->Analyze();
+		$getid3_riff->analyze();
 		$info['avdataoffset']                = $getid3_temp->info['avdataoffset'];
 		$info['riff']                        = $getid3_temp->info['riff'];
 		$info['error']                       = $getid3_temp->info['error'];

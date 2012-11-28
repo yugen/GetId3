@@ -192,7 +192,7 @@ class La extends BaseHandler
 							$getid3_temp = new GetId3Core();
 							$getid3_temp->openfile($RIFFtempfilename);
 							$getid3_riff = new GetId3\Module\AudioVideo\Riff($getid3_temp);
-							$getid3_riff->Analyze();
+							$getid3_riff->analyze();
 
 							if (empty($getid3_temp->info['error'])) {
 								$info['riff'] = $getid3_temp->info['riff'];

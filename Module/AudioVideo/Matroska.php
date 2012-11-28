@@ -396,7 +396,7 @@ class Matroska extends BaseHandler
 									$getid3_audio->AnalyzeString($trackarray['CodecPrivate']);
 								}
 								else {
-									$getid3_audio->Analyze();
+									$getid3_audio->analyze();
 								}
 								if (!empty($getid3_temp->info[$header_data_key])) {
 									$info['matroska']['track_codec_parsed'][$trackarray['TrackNumber']] = $getid3_temp->info[$header_data_key];

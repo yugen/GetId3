@@ -97,7 +97,7 @@ abstract class BaseHandler
         $this->getid3->info['avdataend'] = $this->getid3->info['filesize'] = $this->data_string_length = strlen($string);
 
         // Analyze
-        $this->Analyze();
+        $this->analyze();
 
         // Restore some info
         $this->getid3->info['avdataoffset'] = $saved_avdataoffset;

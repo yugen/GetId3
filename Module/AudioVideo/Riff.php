@@ -1081,7 +1081,7 @@ class Riff extends BaseHandler
 						$getid3_temp = new GetId3Core();
 						$getid3_temp->openfile($this->getid3->filename);
 						$getid3_mpeg = new GetId3\Module\AudioVideo\Mpeg($getid3_temp);
-						$getid3_mpeg->Analyze();
+						$getid3_mpeg->analyze();
 						if (empty($getid3_temp->info['error'])) {
 							$info['audio']   = $getid3_temp->info['audio'];
 							$info['video']   = $getid3_temp->info['video'];
@@ -1116,7 +1116,7 @@ class Riff extends BaseHandler
 					$getid3_temp->openfile($this->getid3->filename);
 					$getid3_id3v2 = new GetId3\Module\Tag\Id3v2($getid3_temp);
 					$getid3_id3v2->StartingOffset = $thisfile_riff[$RIFFsubtype]['id3 '][0]['offset'] + 8;
-					if ($thisfile_riff[$RIFFsubtype]['id3 '][0]['valid'] = $getid3_id3v2->Analyze()) {
+					if ($thisfile_riff[$RIFFsubtype]['id3 '][0]['valid'] = $getid3_id3v2->analyze()) {
 						$info['id3v2'] = $getid3_temp->info['id3v2'];
 					}
 					unset($getid3_temp, $getid3_id3v2);
@@ -1415,7 +1415,7 @@ class Riff extends BaseHandler
 										$getid3_temp->info['avdataoffset'] = ftell($this->getid3->fp) - 4;
 										$getid3_temp->info['avdataend']    = ftell($this->getid3->fp) + $AudioChunkSize;
 										$getid3_ac3 = new GetId3\Module\Audio\Ac3($getid3_temp);
-										$getid3_ac3->Analyze();
+										$getid3_ac3->analyze();
 										if (empty($getid3_temp->info['error'])) {
 											$info['audio']   = $getid3_temp->info['audio'];
 											$info['ac3']     = $getid3_temp->info['ac3'];
@@ -1505,7 +1505,7 @@ class Riff extends BaseHandler
 									$getid3_temp->info['avdataoffset'] = $RIFFchunk[$chunkname][$thisindex]['offset'];
 									$getid3_temp->info['avdataend']    = $RIFFchunk[$chunkname][$thisindex]['offset'] + $RIFFchunk[$chunkname][$thisindex]['size'];
 									$getid3_ac3 = new GetId3\Module\Audio\Ac3($getid3_temp);
-									$getid3_ac3->Analyze();
+									$getid3_ac3->analyze();
 									if (empty($getid3_temp->info['error'])) {
 										$info['audio']   = $getid3_temp->info['audio'];
 										$info['ac3']     = $getid3_temp->info['ac3'];
@@ -1535,7 +1535,7 @@ class Riff extends BaseHandler
 											$getid3_temp->openfile($RIFFtempfilename);
 											$getid3_temp->info['avdataend'] = 20;
 											$getid3_ac3 = new GetId3\Module\Audio\Ac3($getid3_temp);
-											$getid3_ac3->Analyze();
+											$getid3_ac3->analyze();
 											if (empty($getid3_temp->info['error'])) {
 												$info['audio']   = $getid3_temp->info['audio'];
 												$info['ac3']     = $getid3_temp->info['ac3'];
@@ -1678,7 +1678,7 @@ class Riff extends BaseHandler
 			$getid3_temp->info['audio']        = (isset($info['audio']) ? $info['audio'] : array());
 			$getid3_temp->info['video']        = (isset($info['video']) ? $info['video'] : array());
 			$getid3_riff = new GetId3\Module\AudioVideo\Riff($getid3_temp);
-			$getid3_riff->Analyze();
+			$getid3_riff->analyze();
 
 			$info['riff']     = $getid3_temp->info['riff'];
 			$info['warning']  = $getid3_temp->info['warning'];
