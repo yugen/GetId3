@@ -13,6 +13,7 @@
         }     
     ],
     "suggest": {
+        "ext-rar": "RAR extension is required for RAR archive module.",
         "ext-exif": "EXIF extension is required for graphic modules."
     },
     "autoload": {

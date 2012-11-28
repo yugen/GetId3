@@ -505,7 +505,7 @@ class GetId3Core
 
             // remove undesired keys
             $this->CleanUp();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->error('Caught exception: ' . $e->getMessage());
         }
 
