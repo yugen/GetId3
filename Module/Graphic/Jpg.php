@@ -5,6 +5,7 @@ namespace GetId3\Module\Graphic;
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
+use GetId3\Module\Tag\Xmp;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -161,7 +162,7 @@ class Jpg extends BaseHandler
 
         if (class_exists('GetId3\\Module\\Tag\\Xmp')) {
             if (isset($info['filenamepath'])) {
-                $image_xmp = new GetId3\Module\Tag\Xmp($info['filenamepath']);
+                $image_xmp = new Xmp($info['filenamepath']);
                 $xmp_raw = $image_xmp->getAllTags();
                 foreach ($xmp_raw as $key => $value) {
                     list($subsection, $tagname) = explode(':', $key);
