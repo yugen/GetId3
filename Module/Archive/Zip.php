@@ -46,6 +46,7 @@ class Zip extends BaseHandler
 
         if (!Helper::intValueSupported($info['filesize'])) {
             $info['error'][] = 'File is larger than ' . round(PHP_INT_MAX / 1073741824) . 'GB, not supported by PHP';
+
             return false;
         } else {
             $EOCDsearchData = '';
@@ -82,6 +83,7 @@ class Zip extends BaseHandler
 
                     if ($info['zip']['entries_count'] == 0) {
                         $info['error'][] = 'No Central Directory entries found (truncated file?)';
+
                         return false;
                     }
 
@@ -115,12 +117,14 @@ class Zip extends BaseHandler
             foreach ($info['zip']['entries'] as $key => $valuearray) {
                 $info['zip']['files'][$valuearray['filename']] = $valuearray['uncompressed_size'];
             }
+
             return true;
         } else {
 
             unset($info['zip']);
             $info['fileformat'] = '';
             $info['error'][] = 'Cannot find End Of Central Directory (truncated file?)';
+
             return false;
         }
     }
@@ -146,6 +150,7 @@ class Zip extends BaseHandler
         }
         if ($info['zip']['entries_count'] == 0) {
             $info['error'][] = 'No Local File Header entries found';
+
             return false;
         }
 
@@ -158,6 +163,7 @@ class Zip extends BaseHandler
         }
         if ($info['zip']['entries_count'] == 0) {
             $info['error'][] = 'No Central Directory entries found (truncated file?)';
+
             return false;
         }
 
@@ -165,6 +171,7 @@ class Zip extends BaseHandler
             $info['zip']['end_central_directory'] = $EOCD;
         } else {
             $info['error'][] = 'No End Of Central Directory entry found (truncated file?)';
+
             return false;
         }
 
@@ -196,6 +203,7 @@ class Zip extends BaseHandler
         }
         if ($info['zip']['entries_count'] == 0) {
             $info['error'][] = 'No Local File Header entries found';
+
             return false;
         }
 
@@ -218,6 +226,7 @@ class Zip extends BaseHandler
         if ($LocalFileHeader['raw']['signature'] != 0x04034B50) {
             // invalid Local File Header Signature
             fseek($this->getid3->fp, $LocalFileHeader['offset'], SEEK_SET); // seek back to where filepointer originally was so it can be handled properly
+
             return false;
         }
         $LocalFileHeader['raw']['extract_version'] = Helper::LittleEndian2Int(substr($ZIPlocalFileHeader,
@@ -315,6 +324,7 @@ class Zip extends BaseHandler
         if ($CentralDirectory['raw']['signature'] != 0x02014B50) {
             // invalid Central Directory Signature
             fseek($this->getid3->fp, $CentralDirectory['offset'], SEEK_SET); // seek back to where filepointer originally was so it can be handled properly
+
             return false;
         }
         $CentralDirectory['raw']['create_version'] = Helper::LittleEndian2Int(substr($ZIPcentralDirectory,
@@ -421,6 +431,7 @@ class Zip extends BaseHandler
         if ($EndOfCentralDirectory['signature'] != 0x06054B50) {
             // invalid End Of Central Directory Signature
             fseek($this->getid3->fp, $EndOfCentralDirectory['offset'], SEEK_SET); // seek back to where filepointer originally was so it can be handled properly
+
             return false;
         }
         $EndOfCentralDirectory['disk_number_current'] = Helper::LittleEndian2Int(substr($ZIPendOfCentralDirectory,
@@ -455,8 +466,8 @@ class Zip extends BaseHandler
 
     /**
      *
-     * @param type $flagbytes
-     * @param type $compressionmethod
+     * @param  type $flagbytes
+     * @param  type $compressionmethod
      * @return type
      */
     public static function ZIPparseGeneralPurposeFlags($flagbytes,
@@ -496,7 +507,7 @@ class Zip extends BaseHandler
     /**
      *
      * @staticvar array $ZIPversionOSLookup
-     * @param type $index
+     * @param  type $index
      * @return type
      */
     public static function ZIPversionOSLookup($index)
@@ -528,7 +539,7 @@ class Zip extends BaseHandler
     /**
      *
      * @staticvar array $ZIPcompressionMethodLookup
-     * @param type $index
+     * @param  type $index
      * @return type
      */
     public static function ZIPcompressionMethodLookup($index)
@@ -552,8 +563,8 @@ class Zip extends BaseHandler
 
     /**
      *
-     * @param type $DOSdate
-     * @param type $DOStime
+     * @param  type $DOSdate
+     * @param  type $DOStime
      * @return type
      */
     public static function DOStime2UNIXtime($DOSdate, $DOStime)

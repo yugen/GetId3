@@ -60,6 +60,7 @@ class Gzip
 
         if ($info['filesize'] > $info['php_memory_limit']) {
             $info['error'][] = 'File is too large (' . number_format($info['filesize']) . ' bytes) to read into memory (limit: ' . number_format($info['php_memory_limit'] / 1048576) . 'MB)';
+
             return false;
         }
         fseek($this->getid3->fp, 0);
@@ -120,6 +121,7 @@ class Gzip
             $thisInfo['os'] = $this->get_os_type($thisInfo['raw']['os']);
             if (!$thisInfo['os']) {
                 $info['error'][] = 'Read error on gzip file';
+
                 return false;
             }
 
@@ -275,6 +277,7 @@ class Gzip
                 }
             }
         }
+
         return true;
     }
 
@@ -282,7 +285,7 @@ class Gzip
      * Converts the OS type
      *
      * @staticvar array $os_type
-     * @param type $key
+     * @param  type $key
      * @return type
      */
     public function get_os_type($key)
@@ -304,6 +307,7 @@ class Gzip
             '13' => 'Acorn RISCOS',
             '255' => 'unknown'
         );
+
         return (isset($os_type[$key]) ? $os_type[$key] : '');
     }
 
@@ -311,7 +315,7 @@ class Gzip
      * Converts the eXtra FLags
      *
      * @staticvar array $xflag_type
-     * @param type $key
+     * @param  type $key
      * @return type
      */
     public function get_xflag_type($key)
@@ -321,6 +325,7 @@ class Gzip
             '2' => 'maximum compression',
             '4' => 'fastest algorithm'
         );
+
         return (isset($xflag_type[$key]) ? $xflag_type[$key] : '');
     }
 }

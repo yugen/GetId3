@@ -33,7 +33,7 @@ class ArchiveTest extends \PHPUnit_Framework_TestCase
     public function testZipFile()
     {
         $this->assertFileExists(self::$zipFile);
-        $this->assertTrue(is_readable(self::$zipFile));        
+        $this->assertTrue(is_readable(self::$zipFile));
     }
 
     /**
@@ -43,18 +43,18 @@ class ArchiveTest extends \PHPUnit_Framework_TestCase
     public function testReadZip()
     {
         $getId3 = new GetId3Core();
-		$getId3->option_md5_data        = true;
-		$getId3->option_md5_data_source = true;
-		$getId3->encoding               = 'UTF-8';
-		$archive = $getId3->analyze(self::$zipFile);
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';
+        $archive = $getId3->analyze(self::$zipFile);
         $this->assertArrayNotHasKey('error', $archive);
         $this->assertArrayHasKey('mime_type', $archive);
         $this->assertEquals('application/zip', $archive['mime_type']);
         $this->assertArrayHasKey('zip', $archive);
         $this->assertArrayHasKey('fileformat', $archive);
-        $this->assertEquals('zip', $archive['fileformat']);         
+        $this->assertEquals('zip', $archive['fileformat']);
         $this->assertArrayHasKey('encoding', $archive['zip']);
         $this->assertArrayHasKey('files', $archive['zip']);
-        $this->assertArrayHasKey('entries_count', $archive['zip']);         
+        $this->assertArrayHasKey('entries_count', $archive['zip']);
     }
 }

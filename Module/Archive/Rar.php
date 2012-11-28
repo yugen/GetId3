@@ -56,6 +56,7 @@ class Rar extends BaseHandler
                                                                                                                           $entry->getUnpackedSize()));
                     }
                     rar_close($rp);
+
                     return true;
                 } else {
                     $info['error'][] = 'failed to rar_open(' . $info['filename'] . ')';
@@ -66,6 +67,7 @@ class Rar extends BaseHandler
         } else {
             $info['error'][] = 'PHP-RAR processing has been disabled (set $getid3_rar->option_use_rar_extension=true to enable)';
         }
+
         return false;
     }
 }

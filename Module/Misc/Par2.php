@@ -32,14 +32,16 @@ class Par2 extends BaseHandler
      *
      * @return boolean
      */
-	public function analyze() {
-		$info = &$this->getid3->info;
+    public function analyze()
+    {
+        $info = &$this->getid3->info;
 
-		$info['fileformat'] = 'par2';
+        $info['fileformat'] = 'par2';
 
-		$info['error'][] = 'PAR2 parsing not enabled in this version of GetId3Core()';
-		return false;
+        $info['error'][] = 'PAR2 parsing not enabled in this version of GetId3Core()';
 
-	}
+        return false;
+
+    }
 
 }

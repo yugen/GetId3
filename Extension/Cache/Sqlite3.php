@@ -119,7 +119,7 @@ class Sqlite3 extends GetId3
 
     /**
      * __construct()
-     * @param string $table holds name of sqlite table
+     * @param  string $table holds name of sqlite table
      * @return type
      */
     public function __construct($table = 'getid3_cache', $hide = false)
@@ -141,6 +141,7 @@ class Sqlite3 extends GetId3
         if ($version != GetId3Core::VERSION) { // Check version number and clear cache if changed
             $this->clear_cache();
         }
+
         return parent::__construct();
     }
 
@@ -168,12 +169,13 @@ class Sqlite3 extends GetId3
         $stmt->bindValue(':filename', GetId3Core::VERSION, SQLITE3_TEXT);
         $stmt->bindValue(':dirname', GetId3Core::VERSION, SQLITE3_TEXT);
         $stmt->bindValue(':val', GetId3Core::VERSION, SQLITE3_TEXT);
+
         return $stmt->execute();
     }
 
     /**
      * analyze file and cache them, if cached pull from the db
-     * @param type $filename
+     * @param  type    $filename
      * @return boolean
      */
     public function analyze($filename)
@@ -212,6 +214,7 @@ class Sqlite3 extends GetId3
         $stmt->bindValue(':val', base64_encode(serialize($analysis)),
                                                          SQLITE3_TEXT);
         $res = $stmt->execute();
+
         return $analysis;
     }
 
@@ -224,6 +227,7 @@ class Sqlite3 extends GetId3
     {
         $db = $this->db;
         $sql = $this->make_table;
+
         return $db->exec($sql);
     }
 
@@ -234,8 +238,8 @@ class Sqlite3 extends GetId3
      * which is ideal for podcasting, playlists, etc.
      *
      * @access public
-     * @param string $dir directory to search the cache database for
-     * @return array return an array of matching id3 data
+     * @param  string $dir directory to search the cache database for
+     * @return array  return an array of matching id3 data
      */
     public function get_cached_dir($dir)
     {
@@ -248,6 +252,7 @@ class Sqlite3 extends GetId3
         while ($row = $res->fetchArray()) {
             $rows[] = unserialize(base64_decode($row));
         }
+
         return $rows;
     }
 

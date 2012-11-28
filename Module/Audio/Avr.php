@@ -82,6 +82,7 @@ class Avr extends BaseHandler
             $info['error'][] = 'Expecting "' . Helper::PrintHexBytes($magic) . '" at offset ' . $info['avdataoffset'] . ', found "' . Helper::PrintHexBytes($info['avr']['raw']['magic']) . '"';
             unset($info['fileformat']);
             unset($info['avr']);
+
             return false;
         }
         $info['avdataoffset'] += 128;
@@ -151,7 +152,6 @@ class Avr extends BaseHandler
         $info['audio']['channels'] = ($info['avr']['flags']['stereo'] ? 2 : 1);
         $info['playtime_seconds'] = ($info['avr']['sample_length'] / $info['audio']['channels']) / $info['avr']['sample_rate'];
         $info['audio']['bitrate'] = ($info['avr']['sample_length'] * (($info['avr']['bits_per_sample'] == 8) ? 8 : 16)) / $info['playtime_seconds'];
-
 
         return true;
     }

@@ -63,7 +63,7 @@ abstract class BaseHandler
     /**
      *
      * @param GetId3\GetId3 $getid3
-     * @param type $call_module
+     * @param type          $call_module
      */
     public function __construct(GetId3Core $getid3, $call_module = null)
     {
@@ -117,28 +117,31 @@ abstract class BaseHandler
         if ($this->data_string_flag) {
             return $this->data_string_position;
         }
+
         return ftell($this->getid3->fp);
     }
 
     /**
      *
-     * @param type $bytes
+     * @param  type $bytes
      * @return type
      */
     protected function fread($bytes)
     {
         if ($this->data_string_flag) {
             $this->data_string_position += $bytes;
+
             return substr($this->data_string,
                           $this->data_string_position - $bytes, $bytes);
         }
+
         return fread($this->getid3->fp, $bytes);
     }
 
     /**
      *
-     * @param type $bytes
-     * @param type $whence
+     * @param  type $bytes
+     * @param  type $whence
      * @return int
      */
     protected function fseek($bytes, $whence = SEEK_SET)
@@ -157,8 +160,10 @@ abstract class BaseHandler
                     $this->data_string_position = $this->data_string_length + $bytes;
                     break;
             }
+
             return 0;
         }
+
         return fseek($this->getid3->fp, $bytes, $whence);
     }
 
@@ -171,12 +176,13 @@ abstract class BaseHandler
         if ($this->data_string_flag) {
             return $this->data_string_position >= $this->data_string_length;
         }
+
         return feof($this->getid3->fp);
     }
 
     /**
      *
-     * @param type $module
+     * @param  type $module
      * @return type
      */
     final protected function isDependencyFor($module)
@@ -186,7 +192,7 @@ abstract class BaseHandler
 
     /**
      *
-     * @param type $text
+     * @param  type    $text
      * @return boolean
      */
     protected function error($text)
@@ -198,7 +204,7 @@ abstract class BaseHandler
 
     /**
      *
-     * @param type $text
+     * @param  type $text
      * @return type
      */
     protected function warning($text)
@@ -208,10 +214,10 @@ abstract class BaseHandler
 
     /**
      *
-     * @param type $ThisFileInfoIndex
-     * @param type $filename
-     * @param type $offset
-     * @param type $length
+     * @param  type      $ThisFileInfoIndex
+     * @param  type      $filename
+     * @param  type      $offset
+     * @param  type      $length
      * @return boolean
      * @throws Exception
      */
@@ -277,8 +283,10 @@ abstract class BaseHandler
 
             unset($ThisFileInfoIndex); // do not set any is case of error
             $this->warning('Failed to extract attachment ' . $filename . ': ' . $e->getMessage());
+
             return false;
         }
+
         return true;
     }
 }

@@ -133,12 +133,13 @@ class AVCSequenceParameterSetReader
                                                            $this->currentBytes,
                                                            1)) >> (7 - $this->currentBits)) & 0x01;
         $this->skipBits(1);
+
         return $result;
     }
 
     /**
      *
-     * @param type $bits
+     * @param  type $bits
      * @return type
      */
     public function getBits($bits)
@@ -147,6 +148,7 @@ class AVCSequenceParameterSetReader
         for ($i = 0; $i < $bits; $i++) {
             $result = ($result << 1) + $this->getBit();
         }
+
         return $result;
     }
 
@@ -167,6 +169,7 @@ class AVCSequenceParameterSetReader
                 return 0;
             }
         }
+
         return (1 << $significantBits) + $this->getBits($significantBits) - 1;
     }
 

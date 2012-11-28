@@ -52,6 +52,7 @@ class Bink extends BaseHandler
 
             default:
                 $info['error'][] = 'Expecting "BIK" or "SMK" at offset ' . $info['avdataoffset'] . ', found "' . Helper::PrintHexBytes($fileTypeID) . '"';
+
                 return false;
                 break;
         }

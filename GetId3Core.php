@@ -75,6 +75,7 @@ class GetId3Core
         $required_php_version = '5.0.5';
         if (version_compare(PHP_VERSION, $required_php_version, '<')) {
             $this->startup_error .= 'getID3() requires PHP v' . $required_php_version . ' or higher - you are running v' . PHP_VERSION;
+
             return false;
         }
 
@@ -207,7 +208,7 @@ class GetId3Core
 
     /**
      * public: setOption
-     * @param type $optArray
+     * @param  type    $optArray
      * @return boolean
      */
     public function setOption($optArray)
@@ -221,12 +222,13 @@ class GetId3Core
             }
             $this->$opt = $val;
         }
+
         return true;
     }
 
     /**
      *
-     * @param type $filename
+     * @param  type             $filename
      * @return boolean
      * @throws DefaultException
      */
@@ -234,7 +236,7 @@ class GetId3Core
     {
         try {
             if (!empty($this->startup_error)) {
-                throw new \GetId3\Exception\DefaultException($this->startup_error);
+                throw new DefaultException($this->startup_error);
             }
             if (!empty($this->startup_warning)) {
                 $this->warning($this->startup_warning);
@@ -270,7 +272,6 @@ class GetId3Core
             $this->info['filepath'] = str_replace('\\', '/',
                                                   realpath(dirname($filename)));
             $this->info['filenamepath'] = $this->info['filepath'] . '/' . $this->info['filename'];
-
 
             // option_max_2gb_check
             if ($this->option_max_2gb_check) {
@@ -334,12 +335,13 @@ class GetId3Core
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
+
         return false;
     }
 
     /**
      * public: analyze file
-     * @param type $filename
+     * @param  type      $filename
      * @return type
      * @throws Exception
      */
@@ -399,6 +401,7 @@ class GetId3Core
             // unable to determine file format
             if (!$determined_format) {
                 fclose($this->fp);
+
                 return $this->error('unable to determine file format');
             }
 
@@ -408,6 +411,7 @@ class GetId3Core
                                                                                                     $this->info['tags']))) {
                 if ($determined_format['fail_id3'] === 'ERROR') {
                     fclose($this->fp);
+
                     return $this->error('ID3 tags not allowed on this file type.');
                 } elseif ($determined_format['fail_id3'] === 'WARNING') {
                     $this->warning('ID3 tags not allowed on this file type.');
@@ -419,6 +423,7 @@ class GetId3Core
                                                                   $this->info['tags'])) {
                 if ($determined_format['fail_ape'] === 'ERROR') {
                     fclose($this->fp);
+
                     return $this->error('APE tags not allowed on this file type.');
                 } elseif ($determined_format['fail_ape'] === 'WARNING') {
                     $this->warning('APE tags not allowed on this file type.');
@@ -431,6 +436,7 @@ class GetId3Core
             // supported format signature pattern detected, but module deleted
             if (!class_exists($determined_format['class'])) {
                 fclose($this->fp);
+
                 return $this->error('Format not supported, module "' . $determined_format['include'] . '" was removed.');
             }
 
@@ -444,6 +450,7 @@ class GetId3Core
                 } else {
                     $errormessage .= 'PHP is not compiled with iconv() support. Please recompile with the --with-iconv switch';
                 }
+
                 return $this->error($errormessage);
             }
 
@@ -508,7 +515,7 @@ class GetId3Core
 
     /**
      * private: error handling
-     * @param type $message
+     * @param  type $message
      * @return type
      */
     private function error($message)
@@ -518,17 +525,19 @@ class GetId3Core
             $this->info['error'] = array();
         }
         $this->info['error'][] = $message;
+
         return $this->info;
     }
 
     /**
      * private: warning handling
-     * @param type $message
+     * @param  type    $message
      * @return boolean
      */
     private function warning($message)
     {
         $this->info['warning'][] = $message;
+
         return true;
     }
 
@@ -1056,8 +1065,8 @@ class GetId3Core
 
     /**
      *
-     * @param type $filedata
-     * @param type $filename
+     * @param  type           $filedata
+     * @param  type           $filename
      * @return string|boolean
      */
     public function GetFileFormat(&$filedata, $filename = '')
@@ -1076,6 +1085,7 @@ class GetId3Core
             ) {
                 $info['class'] = 'GetId3\\Module\\' . Helper::toCamelCase($info['group'], '-', true) . '\\' . ucfirst($info['module']);
                 $info['include'] = str_replace('\\', DIRECTORY_SEPARATOR, $info['class']) . '.php';
+
                 return $info;
             }
         }
@@ -1086,6 +1096,7 @@ class GetId3Core
             $info = $GetFileFormatArray['mp3'];
             $info['class'] = 'GetId3\\Module\\' . Helper::toCamelCase($info['group'], '-', true) . '\\' . ucfirst($info['module']);
             $info['include'] = str_replace('\\', DIRECTORY_SEPARATOR, $info['class']) . '.php';
+
             return $info;
         } elseif (preg_match('/\.cue$/i', $filename) && preg_match('#FILE "[^"]+" (BINARY|MOTOROLA|AIFF|WAVE|MP3)#',
                                                                    $filedata)) {
@@ -1095,6 +1106,7 @@ class GetId3Core
             $info = $GetFileFormatArray['cue'];
             $info['class'] = 'GetId3\\Module\\' . Helper::toCamelCase($info['group'], '-', true) . '\\' . ucfirst($info['module']);
             $info['include'] = str_replace('\\', DIRECTORY_SEPARATOR, $info['class']) . '.php';
+
             return $info;
         }
 
@@ -1103,8 +1115,8 @@ class GetId3Core
 
     /**
      *
-     * @param type $array
-     * @param type $encoding
+     * @param  type $array
+     * @param  type $encoding
      * @return type converts array to $encoding charset from $this->encoding
      */
     public function CharConvert(&$array, $encoding)
@@ -1259,12 +1271,13 @@ class GetId3Core
                 }
             }
         }
+
         return true;
     }
 
     /**
      *
-     * @param type $algorithm
+     * @param  type    $algorithm
      * @return boolean
      */
     public function getHashdata($algorithm)
@@ -1380,6 +1393,7 @@ class GetId3Core
                 }
             }
         }
+
         return true;
     }
 
@@ -1499,6 +1513,7 @@ class GetId3Core
         $BitrateUncompressed = $this->info['video']['resolution_x'] * $this->info['video']['resolution_y'] * $this->info['video']['bits_per_sample'] * $FrameRate;
 
         $this->info['video']['compression_ratio'] = $BitrateCompressed / $BitrateUncompressed;
+
         return true;
     }
 
@@ -1520,6 +1535,7 @@ class GetId3Core
                 }
             }
         }
+
         return true;
     }
 
@@ -1547,6 +1563,7 @@ class GetId3Core
                 $this->info['replay_gain']['album']['max_noclip_gain'] = 0 - Helper::RGADamplitude2dB($this->info['replay_gain']['album']['peak']);
             }
         }
+
         return true;
     }
 
@@ -1565,6 +1582,7 @@ class GetId3Core
                 }
             }
         }
+
         return true;
     }
 
@@ -1640,6 +1658,7 @@ class GetId3Core
         if (null === self::$EnvironmentIsWindows) {
             self::$EnvironmentIsWindows = strtolower(substr(PHP_OS, 0, 3)) == 'win';
         }
+
         return self::$EnvironmentIsWindows;
     }
 
@@ -1657,6 +1676,7 @@ class GetId3Core
                 }
             }
         }
+
         return self::$IncludePath;
     }
 }

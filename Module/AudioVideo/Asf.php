@@ -156,8 +156,7 @@ class Asf extends BaseHandler
         // initialize all GUID statics
         $GUIDarray = self::KnownGUIDs();
         foreach ($GUIDarray as $GUIDname => $hexstringvalue) {
-            if (isset(self::$$GUIDname))
-            {
+            if (isset(self::$$GUIDname)) {
                 self::$$GUIDname = self::GUIDtoBytestring($hexstringvalue);
             }
         }
@@ -180,7 +179,6 @@ class Asf extends BaseHandler
         $thisfile_asf_comments = &$thisfile_asf['comments'];
         $thisfile_asf['header_object'] = array();
         $thisfile_asf_headerobject = &$thisfile_asf['header_object'];
-
 
         // ASF structure:
         // * Header Object [required]
@@ -212,6 +210,7 @@ class Asf extends BaseHandler
             $info['warning'][] = 'ASF header GUID {' . self::BytestringToGUID($thisfile_asf_headerobject['objectid']) . '} does not match expected "GETID3_ASF_Header_Object" GUID {' . self::BytestringToGUID(self::$GETID3_ASF_Header_Object) . '}';
             unset($info['fileformat']);
             unset($info['asf']);
+
             return false;
         }
         $thisfile_asf_headerobject['objectsize'] = Helper::LittleEndian2Int(substr($HeaderObjectData,
@@ -1522,9 +1521,7 @@ class Asf extends BaseHandler
                         break;
                 }
             }
-        }
-
-        while (ftell($this->getid3->fp) < $info['avdataend']) {
+        } while (ftell($this->getid3->fp) < $info['avdataend']) {
             $NextObjectDataHeader = fread($this->getid3->fp, 24);
             $offset = 0;
             $NextObjectGUID = substr($NextObjectDataHeader, 0, 16);
@@ -1994,6 +1991,7 @@ class Asf extends BaseHandler
             'GETID3_ASF_Index_Placeholder_Object' => 'D9AADE20-7C17-4F9C-BC28-8555DD98E2A2', // http://cpan.uwinnipeg.ca/htdocs/Audio-WMA/Audio/WMA.pm.html
             'GETID3_ASF_Compatibility_Object' => '26F18B5D-4584-47EC-9F5F-0E651F0452C9', // http://cpan.uwinnipeg.ca/htdocs/Audio-WMA/Audio/WMA.pm.html
         );
+
         return $GUIDarray;
     }
 
@@ -2003,6 +2001,7 @@ class Asf extends BaseHandler
         if (empty($GUIDarray)) {
             $GUIDarray = self::KnownGUIDs();
         }
+
         return array_search($GUIDstring, $GUIDarray);
     }
 
@@ -2014,6 +2013,7 @@ class Asf extends BaseHandler
             $ASFIndexObjectIndexTypeLookup[2] = 'Nearest Past Media Object';
             $ASFIndexObjectIndexTypeLookup[3] = 'Nearest Past Cleanpoint';
         }
+
         return (isset($ASFIndexObjectIndexTypeLookup[$id]) ? $ASFIndexObjectIndexTypeLookup[$id] : 'invalid');
     }
 
@@ -2093,6 +2093,7 @@ class Asf extends BaseHandler
         if ($round) {
             return intval(round(($FILETIME - 116444736000000000) / 10000000));
         }
+
         return ($FILETIME - 116444736000000000) / 10000000;
     }
 
@@ -2155,13 +2156,14 @@ class Asf extends BaseHandler
                                                                            'UTF-16LE',
                                                                            'Publisher Logotype');
         }
+
         return (isset($WMpictureTypeLookup[$WMpictureType]) ? $WMpictureTypeLookup[$WMpictureType] : '');
     }
 
     /**
      *
-     * @param type $asf_header_extension_object_data
-     * @param type $unhandled_sections
+     * @param  type $asf_header_extension_object_data
+     * @param  type $unhandled_sections
      * @return type
      * @link http://msdn.microsoft.com/en-us/library/bb643323.aspx
      */
@@ -2500,6 +2502,7 @@ class Asf extends BaseHandler
 
             $objectOffset += $thisObject['size'];
         }
+
         return $HeaderExtensionObjectParsed;
     }
 
@@ -2514,6 +2517,7 @@ class Asf extends BaseHandler
             0x0005 => 'WORD', // The data is 2 bytes long and should be interpreted as a 16-bit unsigned integer
             0x0006 => 'GUID', // The data is 16 bytes long and should be interpreted as a 128-bit GUID
         );
+
         return (isset($ASFmetadataLibraryObjectDataTypeLookup[$id]) ? $ASFmetadataLibraryObjectDataTypeLookup[$id] : 'invalid');
     }
 
@@ -2588,6 +2592,7 @@ class Asf extends BaseHandler
         if (substr($string, -2) === "\x00\x00") {
             $string = substr($string, 0, -2);
         }
+
         return $string;
     }
 }

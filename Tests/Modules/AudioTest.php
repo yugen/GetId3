@@ -45,10 +45,10 @@ class AudioTest extends \PHPUnit_Framework_TestCase
     public function testReadMp3()
     {
         $getId3 = new GetId3Core();
-		$getId3->option_md5_data        = true;
-		$getId3->option_md5_data_source = true;
-		$getId3->encoding               = 'UTF-8';
-		$audio = $getId3->analyze(self::$mp3File);
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';
+        $audio = $getId3->analyze(self::$mp3File);
         $this->assertArrayNotHasKey('error', $audio);
         $this->assertArrayHasKey('audio', $audio);
         $this->assertArrayHasKey('dataformat', $audio['audio']);
@@ -68,10 +68,10 @@ class AudioTest extends \PHPUnit_Framework_TestCase
     public function testReadWav()
     {
         $getId3 = new GetId3Core();
-		$getId3->option_md5_data        = true;
-		$getId3->option_md5_data_source = true;
-		$getId3->encoding               = 'UTF-8';
-		$audio = $getId3->analyze(self::$wavFile);
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';
+        $audio = $getId3->analyze(self::$wavFile);
         $this->assertArrayNotHasKey('error', $audio);
         $this->assertArrayHasKey('audio', $audio);
         $this->assertArrayHasKey('dataformat', $audio['audio']);

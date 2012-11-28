@@ -32,14 +32,16 @@ class Pdf extends BaseHandler
      *
      * @return boolean
      */
-	public function analyze() {
-		$info = &$this->getid3->info;
+    public function analyze()
+    {
+        $info = &$this->getid3->info;
 
-		$info['fileformat'] = 'pdf';
+        $info['fileformat'] = 'pdf';
 
-		$info['error'][] = 'PDF parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
-		return false;
+        $info['error'][] = 'PDF parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
 
-	}
+        return false;
+
+    }
 
 }

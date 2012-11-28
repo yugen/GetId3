@@ -134,13 +134,14 @@ class Tar extends BaseHandler
                                                                                                               '/',
                                                                                                               $size));
         }
+
         return true;
     }
 
     /**
      * Parses the file mode to file permissions
      *
-     * @param type $mode
+     * @param  type $mode
      * @return type
      */
     public function display_perms($mode)
@@ -182,6 +183,7 @@ class Tar extends BaseHandler
                       $group['execute']);
         $s .= sprintf('%1s%1s%1s' . "\n", $world['read'], $world['write'],
                       $world['execute']);
+
         return $s;
     }
 
@@ -189,7 +191,7 @@ class Tar extends BaseHandler
      * Converts the file type
      *
      * @staticvar array $flag_types
-     * @param type $typflag
+     * @param  type $typflag
      * @return type
      */
     public function get_flag_type($typflag)
@@ -211,6 +213,7 @@ class Tar extends BaseHandler
             'S' => 'LF_SPARSE',
             'V' => 'LF_VOLHDR'
         );
+
         return (isset($flag_types[$typflag]) ? $flag_types[$typflag] : '');
     }
 }

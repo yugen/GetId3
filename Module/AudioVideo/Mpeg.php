@@ -48,6 +48,7 @@ class Mpeg extends BaseHandler
 
         if ($info['avdataend'] <= $info['avdataoffset']) {
             $info['error'][] = '"avdataend" (' . $info['avdataend'] . ') is unexpectedly less-than-or-equal-to "avdataoffset" (' . $info['avdataoffset'] . ')';
+
             return false;
         }
         $info['fileformat'] = 'mpeg';
@@ -200,7 +201,6 @@ class Mpeg extends BaseHandler
             $info['video']['codec'] = 'MPEG-1';
         }
 
-
         $AudioChunkOffset = 0;
         while (true) {
             while (substr($MPEGstreamData, $AudioChunkOffset++, 4) !== self::GETID3_MPEG_AUDIO_START) {
@@ -271,8 +271,8 @@ class Mpeg extends BaseHandler
 
     /**
      *
-     * @param type $VideoBitrate
-     * @param type $AudioBitrate
+     * @param  type $VideoBitrate
+     * @param  type $AudioBitrate
      * @return type
      */
     public function MPEGsystemNonOverheadPercentage($VideoBitrate, $AudioBitrate)
@@ -327,34 +327,37 @@ class Mpeg extends BaseHandler
 
     /**
      *
-     * @param type $rawframerate
+     * @param  type $rawframerate
      * @return type
      */
     public function MPEGvideoFramerateLookup($rawframerate)
     {
         $MPEGvideoFramerateLookup = array(0, 23.976, 24, 25, 29.97, 30, 50, 59.94, 60);
+
         return (isset($MPEGvideoFramerateLookup[$rawframerate]) ? (float) $MPEGvideoFramerateLookup[$rawframerate] : (float) 0);
     }
 
     /**
      *
-     * @param type $rawaspectratio
+     * @param  type $rawaspectratio
      * @return type
      */
     public function MPEGvideoAspectRatioLookup($rawaspectratio)
     {
         $MPEGvideoAspectRatioLookup = array(0, 1, 0.6735, 0.7031, 0.7615, 0.8055, 0.8437, 0.8935, 0.9157, 0.9815, 1.0255, 1.0695, 1.0950, 1.1575, 1.2015, 0);
+
         return (isset($MPEGvideoAspectRatioLookup[$rawaspectratio]) ? (float) $MPEGvideoAspectRatioLookup[$rawaspectratio] : (float) 0);
     }
 
     /**
      *
-     * @param type $rawaspectratio
+     * @param  type $rawaspectratio
      * @return type
      */
     public function MPEGvideoAspectRatioTextLookup($rawaspectratio)
     {
         $MPEGvideoAspectRatioTextLookup = array('forbidden', 'square pixels', '0.6735', '16:9, 625 line, PAL', '0.7615', '0.8055', '16:9, 525 line, NTSC', '0.8935', '4:3, 625 line, PAL, CCIR601', '0.9815', '1.0255', '1.0695', '4:3, 525 line, NTSC, CCIR601', '1.1575', '1.2015', 'reserved');
+
         return (isset($MPEGvideoAspectRatioTextLookup[$rawaspectratio]) ? $MPEGvideoAspectRatioTextLookup[$rawaspectratio] : '');
     }
 }

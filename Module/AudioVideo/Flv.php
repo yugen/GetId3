@@ -108,6 +108,7 @@ class Flv extends BaseHandler
             $info['error'][] = 'Expecting "' . Helper::PrintHexBytes($magic) . '" at offset ' . $info['avdataoffset'] . ', found "' . Helper::PrintHexBytes($info['flv']['header']['signature']) . '"';
             unset($info['flv']);
             unset($info['fileformat']);
+
             return false;
         }
 
@@ -361,12 +362,13 @@ class Flv extends BaseHandler
         if (isset($info['flv']['meta']['onMetaData']['videocodecid'])) {
             $info['video']['codec'] = $this->FLVvideoCodec($info['flv']['meta']['onMetaData']['videocodecid']);
         }
+
         return true;
     }
 
     /**
      *
-     * @param type $id
+     * @param  type $id
      * @return type
      */
     public function FLVaudioFormat($id)
@@ -389,12 +391,13 @@ class Flv extends BaseHandler
                 14 => 'mp3 8kHz',
                 15 => 'Device-specific sound',
         );
+
         return (isset($FLVaudioFormat[$id]) ? $FLVaudioFormat[$id] : false);
     }
 
     /**
      *
-     * @param type $id
+     * @param  type $id
      * @return type
      */
     public function FLVaudioRate($id)
@@ -405,12 +408,13 @@ class Flv extends BaseHandler
                 2 => 22050,
                 3 => 44100,
         );
+
         return (isset($FLVaudioRate[$id]) ? $FLVaudioRate[$id] : false);
     }
 
     /**
      *
-     * @param type $id
+     * @param  type $id
      * @return type
      */
     public function FLVaudioBitDepth($id)
@@ -419,12 +423,13 @@ class Flv extends BaseHandler
                 0 => 8,
                 1 => 16,
         );
+
         return (isset($FLVaudioBitDepth[$id]) ? $FLVaudioBitDepth[$id] : false);
     }
 
     /**
      *
-     * @param type $id
+     * @param  type $id
      * @return type
      */
     public function FLVvideoCodec($id)
@@ -437,6 +442,7 @@ class Flv extends BaseHandler
             self::GETID3_FLV_VIDEO_SCREENV2 => 'Screen video v2',
             self::GETID3_FLV_VIDEO_H264 => 'Sorenson H.264',
         );
+
         return (isset($FLVvideoCodec[$id]) ? $FLVvideoCodec[$id] : false);
     }
 }

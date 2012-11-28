@@ -62,7 +62,6 @@ class Mp3 extends BaseHandler
             }
         }
 
-
         if (isset($info['mpeg']['audio']['bitrate_mode'])) {
             $info['audio']['bitrate_mode'] = strtolower($info['mpeg']['audio']['bitrate_mode']);
         }
@@ -174,6 +173,7 @@ class Mp3 extends BaseHandler
             unset($info['audio']['bitrate_mode']);
             unset($info['avdataoffset']);
             unset($info['avdataend']);
+
             return false;
         }
 
@@ -288,7 +288,6 @@ class Mp3 extends BaseHandler
 
                 // http://gabriel.mp3-tech.org/mp3infotag.html
                 // int    Quality = (100 - 10 * gfp->VBR_q - gfp->quality)h
-
 
                 $LAME_V_value = 10 - ceil($thisfile_mpeg_audio_lame['vbr_quality'] / 10);
                 $LAME_q_value = 100 - $thisfile_mpeg_audio_lame['vbr_quality'] - ($LAME_V_value * 10);
@@ -444,11 +443,11 @@ class Mp3 extends BaseHandler
      * @staticvar type $MPEGaudioEmphasisLookup
      * @staticvar array $MPEGaudioHeaderDecodeCache
      * @staticvar array $MPEGaudioHeaderValidCache
-     * @param type $offset
-     * @param type $info
-     * @param type $recursivesearch
-     * @param type $ScanAsCBR
-     * @param type $FastMPEGheaderScan
+     * @param  type    $offset
+     * @param  type    $info
+     * @param  type    $recursivesearch
+     * @param  type    $ScanAsCBR
+     * @param  type    $FastMPEGheaderScan
      * @return boolean
      */
     public function decodeMPEGaudioHeader($offset, &$info,
@@ -475,6 +474,7 @@ class Mp3 extends BaseHandler
 
         if (fseek($this->getid3->fp, $offset, SEEK_SET) != 0) {
             $info['error'][] = 'decodeMPEGaudioHeader() failed to seek to next offset at ' . $offset;
+
             return false;
         }
         //$headerstring = fread($this->getid3->fp, 1441); // worst-case max length = 32kHz @ 320kbps layer 3 = 1441 bytes/frame
@@ -509,11 +509,11 @@ class Mp3 extends BaseHandler
         }
         $thisfile_mpeg_audio = &$info['mpeg']['audio'];
 
-
         if ($MPEGaudioHeaderValidCache[$head4]) {
             $thisfile_mpeg_audio['raw'] = $MPEGheaderRawArray;
         } else {
             $info['error'][] = 'Invalid MPEG audio header (' . Helper::PrintHexBytes($head4) . ') at offset ' . $offset;
+
             return false;
         }
 
@@ -566,6 +566,7 @@ class Mp3 extends BaseHandler
                         // these are ok
                     } else {
                         $info['error'][] = $thisfile_mpeg_audio['bitrate'] . 'kbps not allowed in Layer 2, ' . $thisfile_mpeg_audio['channelmode'] . '.';
+
                         return false;
                     }
                     break;
@@ -577,12 +578,12 @@ class Mp3 extends BaseHandler
                         // these are ok
                     } else {
                         $info['error'][] = intval(round($thisfile_mpeg_audio['bitrate'] / 1000)) . 'kbps not allowed in Layer 2, ' . $thisfile_mpeg_audio['channelmode'] . '.';
+
                         return false;
                     }
                     break;
             }
         }
-
 
         if ($info['audio']['sample_rate'] > 0) {
             $thisfile_mpeg_audio['framelength'] = self::MPEGaudioFrameLength($thisfile_mpeg_audio['bitrate'],
@@ -601,6 +602,7 @@ class Mp3 extends BaseHandler
                 $nextframetestoffset = $offset + $thisfile_mpeg_audio['framelength'];
             } else {
                 $info['error'][] = 'Frame at offset(' . $offset . ') is has an invalid frame length.';
+
                 return false;
             }
         }
@@ -1085,10 +1087,10 @@ class Mp3 extends BaseHandler
         //if (false) {
         //    // experimental side info parsing section - not returning anything useful yet
         //
-		//    $SideInfoBitstream = GetId3_lib::BigEndian2Bin($SideInfoData);
+        //    $SideInfoBitstream = GetId3_lib::BigEndian2Bin($SideInfoData);
         //    $SideInfoOffset = 0;
         //
-		//    if ($thisfile_mpeg_audio['version'] == '1') {
+        //    if ($thisfile_mpeg_audio['version'] == '1') {
         //        if ($thisfile_mpeg_audio['channelmode'] == 'mono') {
         //            // MPEG-1 (mono)
         //            $thisfile_mpeg_audio['side_info']['main_data_begin'] = substr($SideInfoBitstream, $SideInfoOffset, 9);
@@ -1114,7 +1116,7 @@ class Mp3 extends BaseHandler
         //        }
         //    }
         //
-		//    if ($thisfile_mpeg_audio['version'] == '1') {
+        //    if ($thisfile_mpeg_audio['version'] == '1') {
         //        for ($channel = 0; $channel < $info['audio']['channels']; $channel++) {
         //            for ($scfsi_band = 0; $scfsi_band < 4; $scfsi_band++) {
         //                $thisfile_mpeg_audio['scfsi'][$channel][$scfsi_band] = substr($SideInfoBitstream, $SideInfoOffset, 1);
@@ -1140,39 +1142,39 @@ class Mp3 extends BaseHandler
         //            $thisfile_mpeg_audio['window_switching_flag'][$granule][$channel] = substr($SideInfoBitstream, $SideInfoOffset, 1);
         //            $SideInfoOffset += 1;
         //
-		//            if ($thisfile_mpeg_audio['window_switching_flag'][$granule][$channel] == '1') {
+        //            if ($thisfile_mpeg_audio['window_switching_flag'][$granule][$channel] == '1') {
         //
-		//                $thisfile_mpeg_audio['block_type'][$granule][$channel] = substr($SideInfoBitstream, $SideInfoOffset, 2);
+        //                $thisfile_mpeg_audio['block_type'][$granule][$channel] = substr($SideInfoBitstream, $SideInfoOffset, 2);
         //                $SideInfoOffset += 2;
         //                $thisfile_mpeg_audio['mixed_block_flag'][$granule][$channel] = substr($SideInfoBitstream, $SideInfoOffset, 1);
         //                $SideInfoOffset += 1;
         //
-		//                for ($region = 0; $region < 2; $region++) {
+        //                for ($region = 0; $region < 2; $region++) {
         //                    $thisfile_mpeg_audio['table_select'][$granule][$channel][$region] = substr($SideInfoBitstream, $SideInfoOffset, 5);
         //                    $SideInfoOffset += 5;
         //                }
         //                $thisfile_mpeg_audio['table_select'][$granule][$channel][2] = 0;
         //
-		//                for ($window = 0; $window < 3; $window++) {
+        //                for ($window = 0; $window < 3; $window++) {
         //                    $thisfile_mpeg_audio['subblock_gain'][$granule][$channel][$window] = substr($SideInfoBitstream, $SideInfoOffset, 3);
         //                    $SideInfoOffset += 3;
         //                }
         //
-		//            } else {
+        //            } else {
         //
-		//                for ($region = 0; $region < 3; $region++) {
+        //                for ($region = 0; $region < 3; $region++) {
         //                    $thisfile_mpeg_audio['table_select'][$granule][$channel][$region] = substr($SideInfoBitstream, $SideInfoOffset, 5);
         //                    $SideInfoOffset += 5;
         //                }
         //
-		//                $thisfile_mpeg_audio['region0_count'][$granule][$channel] = substr($SideInfoBitstream, $SideInfoOffset, 4);
+        //                $thisfile_mpeg_audio['region0_count'][$granule][$channel] = substr($SideInfoBitstream, $SideInfoOffset, 4);
         //                $SideInfoOffset += 4;
         //                $thisfile_mpeg_audio['region1_count'][$granule][$channel] = substr($SideInfoBitstream, $SideInfoOffset, 3);
         //                $SideInfoOffset += 3;
         //                $thisfile_mpeg_audio['block_type'][$granule][$channel] = 0;
         //            }
         //
-		//            if ($thisfile_mpeg_audio['version'] == '1') {
+        //            if ($thisfile_mpeg_audio['version'] == '1') {
         //                $thisfile_mpeg_audio['preflag'][$granule][$channel] = substr($SideInfoBitstream, $SideInfoOffset, 1);
         //                $SideInfoOffset += 1;
         //            }
@@ -1183,15 +1185,14 @@ class Mp3 extends BaseHandler
         //        }
         //    }
         //}
-
         return true;
     }
 
     /**
      *
-     * @param type $offset
-     * @param type $nextframetestoffset
-     * @param type $ScanAsCBR
+     * @param  type    $offset
+     * @param  type    $nextframetestoffset
+     * @param  type    $ScanAsCBR
      * @return boolean
      */
     public function RecursiveFrameScanning(&$offset, &$nextframetestoffset,
@@ -1218,12 +1219,12 @@ class Mp3 extends BaseHandler
                     }
                 }
 
-
                 // next frame is OK, get ready to check the one after that
                 if (isset($nextframetestarray['mpeg']['audio']['framelength']) && ($nextframetestarray['mpeg']['audio']['framelength'] > 0)) {
                     $nextframetestoffset += $nextframetestarray['mpeg']['audio']['framelength'];
                 } else {
                     $info['error'][] = 'Frame at offset (' . $offset . ') is has an invalid frame length.';
+
                     return false;
                 }
             } elseif (!empty($firstframetestarray['mpeg']['audio']['framelength']) && (($nextframetestoffset + $firstframetestarray['mpeg']['audio']['framelength']) > $info['avdataend'])) {
@@ -1238,13 +1239,14 @@ class Mp3 extends BaseHandler
                 return false;
             }
         }
+
         return true;
     }
 
     /**
      *
-     * @param type $offset
-     * @param type $deepscan
+     * @param  type    $offset
+     * @param  type    $deepscan
      * @return boolean
      */
     public function FreeFormatFrameLength($offset, $deepscan = false)
@@ -1286,6 +1288,7 @@ class Mp3 extends BaseHandler
             }
             if (!$framelength) {
                 $info['error'][] = 'Cannot find next free-format synch pattern (' . Helper::PrintHexBytes($SyncPattern1) . ' or ' . Helper::PrintHexBytes($SyncPattern2) . ') after offset ' . $offset;
+
                 return false;
             } else {
                 $info['warning'][] = 'ModeExtension varies between first frame and other frames (known free-format issue in LAME 3.88)';
@@ -1322,6 +1325,7 @@ class Mp3 extends BaseHandler
                     $nextoffset++;
                 } else {
                     $info['error'][] = 'Did not find expected free-format sync pattern at offset ' . $nextoffset;
+
                     return false;
                 }
                 $nextoffset += $framelength;
@@ -1330,6 +1334,7 @@ class Mp3 extends BaseHandler
                 $framelength = intval(round(array_sum($ActualFrameLengthValues) / count($ActualFrameLengthValues)));
             }
         }
+
         return $framelength;
     }
 
@@ -1475,6 +1480,7 @@ class Mp3 extends BaseHandler
         $info['mpeg']['audio']['frame_count'] = array_sum($Distribution['bitrate']);
         if ($info['mpeg']['audio']['frame_count'] == 0) {
             $info['error'][] = 'no MPEG audio frames found';
+
             return false;
         }
         $info['mpeg']['audio']['bitrate'] = ($bittotal / $info['mpeg']['audio']['frame_count']);
@@ -1497,8 +1503,8 @@ class Mp3 extends BaseHandler
      * @staticvar type $MPEGaudioVersionLookup
      * @staticvar type $MPEGaudioLayerLookup
      * @staticvar type $MPEGaudioBitrateLookup
-     * @param type $avdataoffset
-     * @param boolean $BitrateHistogram
+     * @param  type    $avdataoffset
+     * @param  boolean $BitrateHistogram
      * @return boolean
      */
     public function getOnlyMPEGaudioInfo($avdataoffset, $BitrateHistogram = false)
@@ -1521,6 +1527,7 @@ class Mp3 extends BaseHandler
                                      $info['avdataend'] - $avdataoffset);
         if ($sync_seek_buffer_size <= 0) {
             $info['error'][] = 'Invalid $sync_seek_buffer_size at offset ' . $avdataoffset;
+
             return false;
         }
         $header = fread($this->getid3->fp, $sync_seek_buffer_size);
@@ -1541,6 +1548,7 @@ class Mp3 extends BaseHandler
                     if (empty($info['mpeg'])) {
                         unset($info['mpeg']);
                     }
+
                     return false;
                 } elseif (feof($this->getid3->fp)) {
 
@@ -1554,12 +1562,14 @@ class Mp3 extends BaseHandler
                     if (isset($info['mpeg']) && (!is_array($info['mpeg']) || (count($info['mpeg']) == 0))) {
                         unset($info['mpeg']);
                     }
+
                     return false;
                 }
             }
 
             if (($SynchSeekOffset + 1) >= strlen($header)) {
                 $info['error'][] = 'Could not find valid MPEG synch before end of file';
+
                 return false;
             }
 
@@ -1743,6 +1753,7 @@ class Mp3 extends BaseHandler
                         }
                         if ($framecounter == 0) {
                             $info['error'][] = 'Corrupt MP3 file: framecounter == zero';
+
                             return false;
                         }
                         $info['mpeg']['audio']['frame_count'] = Helper::CastAsInt($framecounter);
@@ -1786,6 +1797,7 @@ class Mp3 extends BaseHandler
                     if (isset($info['mpeg']) && (!is_array($info['mpeg']) || empty($info['mpeg']))) {
                         unset($info['mpeg']);
                     }
+
                     return false;
                 }
                 break;
@@ -1794,6 +1806,7 @@ class Mp3 extends BaseHandler
         $info['audio']['channels'] = $info['mpeg']['audio']['channels'];
         $info['audio']['channelmode'] = $info['mpeg']['audio']['channelmode'];
         $info['audio']['sample_rate'] = $info['mpeg']['audio']['sample_rate'];
+
         return true;
     }
 
@@ -1805,6 +1818,7 @@ class Mp3 extends BaseHandler
     public static function MPEGaudioVersionArray()
     {
         static $MPEGaudioVersion = array('2.5', false, '2', '1');
+
         return $MPEGaudioVersion;
     }
 
@@ -1816,6 +1830,7 @@ class Mp3 extends BaseHandler
     public static function MPEGaudioLayerArray()
     {
         static $MPEGaudioLayer = array(false, 3, 2, 1);
+
         return $MPEGaudioLayer;
     }
 
@@ -1840,6 +1855,7 @@ class Mp3 extends BaseHandler
             $MPEGaudioBitrate['2'][3] = $MPEGaudioBitrate['2'][2];
             $MPEGaudioBitrate['2.5'] = $MPEGaudioBitrate['2'];
         }
+
         return $MPEGaudioBitrate;
     }
 
@@ -1858,6 +1874,7 @@ class Mp3 extends BaseHandler
                     '2.5' => array(11025, 12000, 8000)
             );
         }
+
         return $MPEGaudioFrequency;
     }
 
@@ -1869,6 +1886,7 @@ class Mp3 extends BaseHandler
     public static function MPEGaudioChannelModeArray()
     {
         static $MPEGaudioChannelMode = array('stereo', 'joint stereo', 'dual channel', 'mono');
+
         return $MPEGaudioChannelMode;
     }
 
@@ -1887,6 +1905,7 @@ class Mp3 extends BaseHandler
                     3 => array('', 'IS', 'MS', 'IS+MS')
             );
         }
+
         return $MPEGaudioModeExtension;
     }
 
@@ -1898,13 +1917,14 @@ class Mp3 extends BaseHandler
     public static function MPEGaudioEmphasisArray()
     {
         static $MPEGaudioEmphasis = array('none', '50/15ms', false, 'CCIT J.17');
+
         return $MPEGaudioEmphasis;
     }
 
     /**
      *
-     * @param type $head4
-     * @param type $allowBitrate15
+     * @param  type $head4
+     * @param  type $allowBitrate15
      * @return type
      */
     public static function MPEGaudioHeaderBytesValid($head4,
@@ -1924,9 +1944,9 @@ class Mp3 extends BaseHandler
      * @staticvar type $MPEGaudioChannelModeLookup
      * @staticvar type $MPEGaudioModeExtensionLookup
      * @staticvar type $MPEGaudioEmphasisLookup
-     * @param type $rawarray
-     * @param type $echoerrors
-     * @param type $allowBitrate15
+     * @param  type    $rawarray
+     * @param  type    $echoerrors
+     * @param  type    $allowBitrate15
      * @return boolean
      */
     public static function MPEGaudioHeaderValid($rawarray, $echoerrors = false,
@@ -1957,12 +1977,14 @@ class Mp3 extends BaseHandler
             $decodedVersion = $MPEGaudioVersionLookup[$rawarray['version']];
         } else {
             echo ($echoerrors ? "\n" . 'invalid Version (' . $rawarray['version'] . ')' : '');
+
             return false;
         }
         if (isset($MPEGaudioLayerLookup[$rawarray['layer']])) {
             $decodedLayer = $MPEGaudioLayerLookup[$rawarray['layer']];
         } else {
             echo ($echoerrors ? "\n" . 'invalid Layer (' . $rawarray['layer'] . ')' : '');
+
             return false;
         }
         if (!isset($MPEGaudioBitrateLookup[$decodedVersion][$decodedLayer][$rawarray['bitrate']])) {
@@ -1979,18 +2001,22 @@ class Mp3 extends BaseHandler
         }
         if (!isset($MPEGaudioFrequencyLookup[$decodedVersion][$rawarray['sample_rate']])) {
             echo ($echoerrors ? "\n" . 'invalid Frequency (' . $rawarray['sample_rate'] . ')' : '');
+
             return false;
         }
         if (!isset($MPEGaudioChannelModeLookup[$rawarray['channelmode']])) {
             echo ($echoerrors ? "\n" . 'invalid ChannelMode (' . $rawarray['channelmode'] . ')' : '');
+
             return false;
         }
         if (!isset($MPEGaudioModeExtensionLookup[$decodedLayer][$rawarray['modeextension']])) {
             echo ($echoerrors ? "\n" . 'invalid Mode Extension (' . $rawarray['modeextension'] . ')' : '');
+
             return false;
         }
         if (!isset($MPEGaudioEmphasisLookup[$rawarray['emphasis']])) {
             echo ($echoerrors ? "\n" . 'invalid Emphasis (' . $rawarray['emphasis'] . ')' : '');
+
             return false;
         }
         // These are just either set or not set, you can't mess that up :)
@@ -1999,13 +2025,12 @@ class Mp3 extends BaseHandler
         // $rawarray['private'];
         // $rawarray['copyright'];
         // $rawarray['original'];
-
         return true;
     }
 
     /**
      *
-     * @param type $Header4Bytes
+     * @param  type    $Header4Bytes
      * @return boolean
      */
     public static function MPEGaudioHeaderDecode($Header4Bytes)
@@ -2050,11 +2075,11 @@ class Mp3 extends BaseHandler
     /**
      *
      * @staticvar array $AudioFrameLengthCache
-     * @param type $bitrate
-     * @param type $version
-     * @param type $layer
-     * @param type $padding
-     * @param type $samplerate
+     * @param  type $bitrate
+     * @param  type $version
+     * @param  type $layer
+     * @param  type $padding
+     * @param  type $samplerate
      * @return type
      */
     public static function MPEGaudioFrameLength(&$bitrate, &$version, &$layer,
@@ -2107,6 +2132,7 @@ class Mp3 extends BaseHandler
                 }
             }
         }
+
         return $AudioFrameLengthCache[$bitrate][$version][$layer][$padding][$samplerate];
     }
 
@@ -2114,7 +2140,7 @@ class Mp3 extends BaseHandler
      *
      * @staticvar array $standard_bit_rates
      * @staticvar array $bit_rate_table
-     * @param type $bit_rate
+     * @param  type $bit_rate
      * @return int
      */
     public static function ClosestStandardMP3Bitrate($bit_rate)
@@ -2136,14 +2162,15 @@ class Mp3 extends BaseHandler
                 }
             }
         }
+
         return $bit_rate_table[$round_bit_rate];
     }
 
     /**
      *
      * @staticvar array $XingVBRidOffsetCache
-     * @param type $version
-     * @param type $channelmode
+     * @param  type  $version
+     * @param  type  $channelmode
      * @return array
      */
     public static function XingVBRidOffset($version, $channelmode)
@@ -2168,13 +2195,14 @@ class Mp3 extends BaseHandler
                     )
             );
         }
+
         return $XingVBRidOffset[$version][$channelmode];
     }
 
     /**
      *
      * @staticvar array $LAMEvbrMethodLookup
-     * @param type $VBRmethodID
+     * @param  type $VBRmethodID
      * @return type
      */
     public static function LAMEvbrMethodLookup($VBRmethodID)
@@ -2191,13 +2219,14 @@ class Mp3 extends BaseHandler
             0x09 => 'abr (2 pass)',
             0x0F => 'reserved'
         );
+
         return (isset($LAMEvbrMethodLookup[$VBRmethodID]) ? $LAMEvbrMethodLookup[$VBRmethodID] : '');
     }
 
     /**
      *
      * @staticvar array $LAMEmiscStereoModeLookup
-     * @param type $StereoModeID
+     * @param  type $StereoModeID
      * @return type
      */
     public static function LAMEmiscStereoModeLookup($StereoModeID)
@@ -2212,13 +2241,14 @@ class Mp3 extends BaseHandler
             6 => 'intensity stereo',
             7 => 'other'
         );
+
         return (isset($LAMEmiscStereoModeLookup[$StereoModeID]) ? $LAMEmiscStereoModeLookup[$StereoModeID] : '');
     }
 
     /**
      *
      * @staticvar array $LAMEmiscSourceSampleFrequencyLookup
-     * @param type $SourceSampleFrequencyID
+     * @param  type $SourceSampleFrequencyID
      * @return type
      */
     public static function LAMEmiscSourceSampleFrequencyLookup($SourceSampleFrequencyID)
@@ -2229,13 +2259,14 @@ class Mp3 extends BaseHandler
             2 => '48 kHz',
             3 => '> 48kHz'
         );
+
         return (isset($LAMEmiscSourceSampleFrequencyLookup[$SourceSampleFrequencyID]) ? $LAMEmiscSourceSampleFrequencyLookup[$SourceSampleFrequencyID] : '');
     }
 
     /**
      *
      * @staticvar array $LAMEsurroundInfoLookup
-     * @param type $SurroundInfoID
+     * @param  type $SurroundInfoID
      * @return type
      */
     public static function LAMEsurroundInfoLookup($SurroundInfoID)
@@ -2246,12 +2277,13 @@ class Mp3 extends BaseHandler
             2 => 'DPL2 encoding',
             3 => 'Ambisonic encoding'
         );
+
         return (isset($LAMEsurroundInfoLookup[$SurroundInfoID]) ? $LAMEsurroundInfoLookup[$SurroundInfoID] : 'reserved');
     }
 
     /**
      *
-     * @param type $LAMEtag
+     * @param  type   $LAMEtag
      * @return string
      */
     public static function LAMEpresetUsedLookup($LAMEtag)

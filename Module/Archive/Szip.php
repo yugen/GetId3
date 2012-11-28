@@ -42,6 +42,7 @@ class Szip extends BaseHandler
             $info['error'][] = 'Expecting "53 5A 0A 04" at offset ' . $info['avdataoffset'] . ', found "' . Helper::PrintHexBytes(substr($SZIPHeader,
                                                                                                                                                     0,
                                                                                                                                                     4)) . '"';
+
             return false;
         }
         $info['fileformat'] = 'szip';

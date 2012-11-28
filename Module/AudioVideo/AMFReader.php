@@ -2,7 +2,6 @@
 
 namespace GetId3\Module\AudioVideo;
 
-
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
 //  available at http://getid3.sourceforge.net                 //
@@ -159,6 +158,7 @@ class AMFReader
             // Consume byte
             $this->stream->readByte();
         }
+
         return $data;
     }
 
@@ -200,6 +200,7 @@ class AMFReader
         for ($i = 0; $i < $length; $i++) {
             $data[] = $this->readData();
         }
+
         return $data;
     }
 
@@ -211,6 +212,7 @@ class AMFReader
     {
         $timestamp = $this->stream->readDouble();
         $timezone = $this->stream->readInt();
+
         return $timestamp;
     }
 
@@ -239,6 +241,7 @@ class AMFReader
     public function readTypedObject()
     {
         $className = $this->stream->readUTF();
+
         return $this->readObject();
     }
 }

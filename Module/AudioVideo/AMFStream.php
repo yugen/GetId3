@@ -85,6 +85,7 @@ class AMFStream
     public function readUTF()
     {
         $length = $this->readInt();
+
         return $this->read($length);
     }
 
@@ -95,18 +96,20 @@ class AMFStream
     public function readLongUTF()
     {
         $length = $this->readLong();
+
         return $this->read($length);
     }
 
     /**
      *
-     * @param type $length
+     * @param  type $length
      * @return type
      */
     public function read($length)
     {
         $val = substr($this->bytes, $this->pos, $length);
         $this->pos += $length;
+
         return $val;
     }
 
@@ -119,6 +122,7 @@ class AMFStream
         $pos = $this->pos;
         $val = $this->readByte();
         $this->pos = $pos;
+
         return $val;
     }
 
@@ -131,6 +135,7 @@ class AMFStream
         $pos = $this->pos;
         $val = $this->readInt();
         $this->pos = $pos;
+
         return $val;
     }
 
@@ -143,6 +148,7 @@ class AMFStream
         $pos = $this->pos;
         $val = $this->readLong();
         $this->pos = $pos;
+
         return $val;
     }
 
@@ -155,6 +161,7 @@ class AMFStream
         $pos = $this->pos;
         $val = $this->readDouble();
         $this->pos = $pos;
+
         return $val;
     }
 
@@ -167,6 +174,7 @@ class AMFStream
         $pos = $this->pos;
         $val = $this->readUTF();
         $this->pos = $pos;
+
         return $val;
     }
 
@@ -179,6 +187,7 @@ class AMFStream
         $pos = $this->pos;
         $val = $this->readLongUTF();
         $this->pos = $pos;
+
         return $val;
     }
 }

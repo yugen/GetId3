@@ -33,21 +33,23 @@ class Msoffice extends BaseHandler
      *
      * @return boolean
      */
-	public function analyze() {
-		$info = &$this->getid3->info;
+    public function analyze()
+    {
+        $info = &$this->getid3->info;
 
-		fseek($this->getid3->fp, $info['avdataoffset'], SEEK_SET);
-		$DOCFILEheader = fread($this->getid3->fp, 8);
-		$magic = "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1";
-		if (substr($DOCFILEheader, 0, 8) != $magic) {
-			$info['error'][] = 'Expecting "'.Helper::PrintHexBytes($magic).'" at '.$info['avdataoffset'].', found '.Helper::PrintHexBytes(substr($DOCFILEheader, 0, 8)).' instead.';
-			return false;
-		}
-		$info['fileformat'] = 'msoffice';
+        fseek($this->getid3->fp, $info['avdataoffset'], SEEK_SET);
+        $DOCFILEheader = fread($this->getid3->fp, 8);
+        $magic = "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1";
+        if (substr($DOCFILEheader, 0, 8) != $magic) {
+            $info['error'][] = 'Expecting "'.Helper::PrintHexBytes($magic).'" at '.$info['avdataoffset'].', found '.Helper::PrintHexBytes(substr($DOCFILEheader, 0, 8)).' instead.';
+
+            return false;
+        }
+        $info['fileformat'] = 'msoffice';
 
 $info['error'][] = 'MS Office (.doc, .xls, etc) parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
 return false;
 
-	}
+    }
 
 }
