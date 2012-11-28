@@ -32,7 +32,7 @@ class Szip extends BaseHandler
      *
      * @return boolean
      */
-    public function Analyze()
+    public function analyze()
     {
         $info = &$this->getid3->info;
 

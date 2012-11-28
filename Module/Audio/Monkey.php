@@ -33,7 +33,7 @@ class Monkey extends BaseHandler
      *
      * @return boolean
      */
-	public function Analyze() {
+	public function analyze() {
 		$info = &$this->getid3->info;
 
 		// based loosely on code from TMonkey by Jurgen Faul <jfaulØgmx*de>

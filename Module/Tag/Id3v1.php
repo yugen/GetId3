@@ -32,7 +32,7 @@ class Id3v1 extends BaseHandler
      *
      * @return boolean
      */
-	public function Analyze() {
+	public function analyze() {
 		$info = &$this->getid3->info;
 
 		if (!Helper::intValueSupported($info['filesize'])) {

@@ -34,7 +34,7 @@ class Flac extends BaseHandler
      *
      * @return type
      */
-	public function Analyze() {
+	public function analyze() {
 		$info = &$this->getid3->info;
 
 		// http://flac.sourceforge.net/format.html

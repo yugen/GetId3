@@ -35,7 +35,7 @@ class Shorten extends BaseHandler
      * @staticvar type $shorten_present
      * @return boolean
      */
-	public function Analyze() {
+	public function analyze() {
 		$info = &$this->getid3->info;
 
 		fseek($this->getid3->fp, $info['avdataoffset'], SEEK_SET);

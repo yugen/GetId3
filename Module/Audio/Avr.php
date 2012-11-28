@@ -28,7 +28,7 @@ use GetId3\Lib\Helper;
  */
 class Avr extends BaseHandler
 {
-    public function Analyze()
+    public function analyze()
     {
         $info = &$this->getid3->info;
 

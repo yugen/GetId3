@@ -43,7 +43,7 @@ class Id3v2 extends BaseHandler
      *
      * @return boolean
      */
-	public function Analyze() {
+	public function analyze() {
 		$info = &$this->getid3->info;
 
 		//    Overall tag structure:

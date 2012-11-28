@@ -35,7 +35,7 @@ class Lyrics3 extends BaseHandler
      *
      * @return boolean
      */
-	public function Analyze() {
+	public function analyze() {
 		$info = &$this->getid3->info;
 
 		// http://www.volweb.cz/str/tags.htm

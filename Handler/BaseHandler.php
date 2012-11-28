@@ -77,7 +77,7 @@ abstract class BaseHandler
     /**
      * Analyze from file pointer
      */
-    abstract public function Analyze();
+    abstract public function analyze();
 
     /**
      * Analyze from string instead

@@ -43,7 +43,7 @@ class Riff extends BaseHandler
      *
      * @return boolean
      */
-	public function Analyze() {
+	public function analyze() {
 		$info = &$this->getid3->info;
 
 		// initialize these values to an empty array, otherwise they default to NULL
