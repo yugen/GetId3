@@ -5,6 +5,7 @@ namespace GetId3\Module\Audio;
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
+use GetId3\Module\Audio\Ogg;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -307,7 +308,7 @@ class Flac extends BaseHandler
     {
         $info = &$this->getid3->info;
 
-        $getid3_ogg = new GetId3\Module\Audio\Ogg($this->getid3);
+        $getid3_ogg = new Ogg($this->getid3);
         if ($this->isDependencyFor('matroska')) {
             $getid3_ogg->data_string_flag = true;
             $getid3_ogg->data_string = $this->data_string;
