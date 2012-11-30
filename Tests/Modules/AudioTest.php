@@ -11,6 +11,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
     protected static $vqfFile;
     protected static $flacFile;
     protected static $oggFile;
+    protected static $midiFile;
     protected static $class;
 
     protected function setUp()
@@ -20,6 +21,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
         self::$vqfFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'vqfsample.vqf';
         self::$flacFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'flacsample.flac';
         self::$oggFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'oggsample.ogg';
+        self::$midiFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'midisample.mid';
         self::$class = 'GetId3\\GetId3Core';
     }
 
@@ -168,7 +170,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('compression_ratio', $audio['flac']);
         $this->assertSame(0.13716326530612, $audio['flac']['compression_ratio']);
     }
-    
+
     public function testOggFile()
     {
         $this->assertFileExists(self::$oggFile);
@@ -206,5 +208,37 @@ class AudioTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('bitrate_average', $audio['ogg']);
         $this->assertArrayHasKey('playtime_seconds', $audio);
         $this->assertSame(28.656009070295, $audio['playtime_seconds']);
+    }
+
+    public function testMidiFile()
+    {
+        $this->assertFileExists(self::$midiFile);
+        $this->assertTrue(is_readable(self::$midiFile));
+    }
+
+    /**
+     * @depends testClass
+     * @depends testMidiFile
+     */
+    public function testReadMidi()
+    {
+        $getId3 = new GetId3Core();
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';
+        $audio = $getId3->analyze(self::$midiFile);
+        $this->assertArrayNotHasKey('error', $audio);
+        $this->assertArrayHasKey('fileformat', $audio);
+        $this->assertEquals('midi', $audio['fileformat']);
+        $this->assertArrayHasKey('audio', $audio);
+        $this->assertArrayHasKey('dataformat', $audio['audio']);
+        $this->assertEquals('midi', $audio['audio']['dataformat']);
+        $this->assertArrayHasKey('bitrate', $audio['audio']);
+        $this->assertSame(740.00982800983, $audio['audio']['bitrate']);
+        $this->assertArrayHasKey('mime_type', $audio);
+        $this->assertEquals('audio/midi', $audio['mime_type']);
+        $this->assertArrayHasKey('midi', $audio);
+        $this->assertArrayHasKey('playtime_seconds', $audio);
+        $this->assertSame(152.625, $audio['playtime_seconds']);
     }
 }
