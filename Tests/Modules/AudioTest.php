@@ -9,6 +9,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
     protected static $mp3File;
     protected static $wavFile;
     protected static $vqfFile;
+    protected static $flacFile;
     protected static $class;
 
     protected function setUp()
@@ -16,6 +17,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
         self::$mp3File = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'mp3demo.mp3';
         self::$wavFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'Yamaha-SY35-Buzzy-Synth-Lead-C4.wav';
         self::$vqfFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'vqfsample.vqf';
+        self::$flacFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'flacsample.flac';
         self::$class = 'GetId3\\GetId3Core';
     }
 
@@ -122,5 +124,46 @@ class AudioTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('raw', $audio['vqf']);
         $this->assertArrayHasKey('playtime_seconds', $audio);
         $this->assertSame(178.553, $audio['playtime_seconds']);
+    }
+
+    public function testFlacFile()
+    {
+        $this->assertFileExists(self::$flacFile);
+        $this->assertTrue(is_readable(self::$flacFile));
+    }
+
+    /**
+     * @depends testClass
+     * @depends testFlacFile
+     */
+    public function testReadFlac()
+    {
+        $getId3 = new GetId3Core();
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';
+        $audio = $getId3->analyze(self::$flacFile);
+        $this->assertArrayNotHasKey('error', $audio);
+        $this->assertArrayNotHasKey('warning', $audio);
+        $this->assertArrayHasKey('fileformat', $audio);
+        $this->assertEquals('flac', $audio['fileformat']);
+        $this->assertArrayHasKey('audio', $audio);
+        $this->assertArrayHasKey('dataformat', $audio['audio']);
+        $this->assertEquals('flac', $audio['audio']['dataformat']);
+        $this->assertArrayHasKey('bitrate_mode', $audio['audio']);
+        $this->assertArrayHasKey('encoder', $audio['audio']);
+        $this->assertEquals('libFLAC 1.1.4 20070213', $audio['audio']['encoder']);
+        $this->assertArrayHasKey('compression_ratio', $audio['audio']);
+        $this->assertSame(0.14657823129252, $audio['audio']['compression_ratio']);
+        $this->assertArrayHasKey('mime_type', $audio);
+        $this->assertEquals('audio/x-flac', $audio['mime_type']);
+        $this->assertArrayHasKey('flac', $audio);
+        $this->assertArrayHasKey('STREAMINFO', $audio['flac']);
+        $this->assertArrayHasKey('samples_stream', $audio['flac']['STREAMINFO']);
+        $this->assertSame(220500, $audio['flac']['STREAMINFO']['samples_stream']);
+        $this->assertArrayHasKey('playtime_seconds', $audio);
+        $this->assertSame(5, $audio['playtime_seconds']);
+        $this->assertArrayHasKey('compression_ratio', $audio['flac']);
+        $this->assertSame(0.13716326530612, $audio['flac']['compression_ratio']);
     }
 }
