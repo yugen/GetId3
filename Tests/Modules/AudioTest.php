@@ -10,6 +10,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
     protected static $wavFile;
     protected static $vqfFile;
     protected static $flacFile;
+    protected static $oggFile;
     protected static $class;
 
     protected function setUp()
@@ -18,6 +19,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
         self::$wavFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'Yamaha-SY35-Buzzy-Synth-Lead-C4.wav';
         self::$vqfFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'vqfsample.vqf';
         self::$flacFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'flacsample.flac';
+        self::$oggFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'oggsample.ogg';
         self::$class = 'GetId3\\GetId3Core';
     }
 
@@ -165,5 +167,44 @@ class AudioTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(5, $audio['playtime_seconds']);
         $this->assertArrayHasKey('compression_ratio', $audio['flac']);
         $this->assertSame(0.13716326530612, $audio['flac']['compression_ratio']);
+    }
+    
+    public function testOggFile()
+    {
+        $this->assertFileExists(self::$oggFile);
+        $this->assertTrue(is_readable(self::$oggFile));
+    }
+
+    /**
+     * @depends testClass
+     * @depends testOggFile
+     */
+    public function testReadOgg()
+    {
+        $getId3 = new GetId3Core();
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';
+        $audio = $getId3->analyze(self::$oggFile);
+        $this->assertArrayNotHasKey('error', $audio);
+        $this->assertArrayNotHasKey('warning', $audio);
+        $this->assertArrayHasKey('fileformat', $audio);
+        $this->assertEquals('ogg', $audio['fileformat']);
+        $this->assertArrayHasKey('audio', $audio);
+        $this->assertArrayHasKey('dataformat', $audio['audio']);
+        $this->assertEquals('vorbis', $audio['audio']['dataformat']);
+        $this->assertArrayHasKey('bitrate_mode', $audio['audio']);
+        $this->assertEquals('vbr', $audio['audio']['bitrate_mode']);
+        $this->assertArrayHasKey('encoder', $audio['audio']);
+        $this->assertEquals('Xiph.Org libVorbis I 20030909', $audio['audio']['encoder']);
+        $this->assertArrayHasKey('encoder_options', $audio['audio']);
+        $this->assertArrayHasKey('compression_ratio', $audio['audio']);
+        $this->assertSame(0.075160635578802, $audio['audio']['compression_ratio']);
+        $this->assertArrayHasKey('mime_type', $audio);
+        $this->assertEquals('application/ogg', $audio['mime_type']);
+        $this->assertArrayHasKey('ogg', $audio);
+        $this->assertArrayHasKey('bitrate_average', $audio['ogg']);
+        $this->assertArrayHasKey('playtime_seconds', $audio);
+        $this->assertSame(28.656009070295, $audio['playtime_seconds']);
     }
 }
