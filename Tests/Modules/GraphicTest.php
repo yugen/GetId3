@@ -8,12 +8,14 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
 {
     protected static $jpgFile;
     protected static $pngFile;
+    protected static $bmpFile;
     protected static $class;
 
     protected function setUp()
     {
         self::$jpgFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'jpgsample.jpg';
         self::$pngFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'pngsample.png';
+        self::$bmpFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'bmpsample.bmp';
         self::$class = 'GetId3\\GetId3Core';
     }
 
@@ -37,12 +39,6 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         $this->assertFileExists(self::$jpgFile);
         $this->assertTrue(is_readable(self::$jpgFile));
     }
-    
-    public function testPngFile()
-    {
-        $this->assertFileExists(self::$pngFile);
-        $this->assertTrue(is_readable(self::$pngFile));
-    }
 
     /**
      * @depends testClass
@@ -60,7 +56,7 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('image/jpeg', $image['mime_type']);
         $this->assertArrayHasKey('fileformat', $image);
         $this->assertEquals('jpg', $image['fileformat']);
-        $this->assertArrayHasKey('video', $image);        
+        $this->assertArrayHasKey('video', $image);
         $this->assertArrayHasKey('dataformat', $image['video']);
         $this->assertEquals('jpg', $image['video']['dataformat']);
         $this->assertArrayHasKey('lossless', $image['video']);
@@ -73,7 +69,13 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('compression_ratio', $image['video']);
         $this->assertSame(0.0069313599665037, $image['video']['compression_ratio']);
     }
-    
+
+    public function testPngFile()
+    {
+        $this->assertFileExists(self::$pngFile);
+        $this->assertTrue(is_readable(self::$pngFile));
+    }
+
     /**
      * @depends testClass
      * @depends testPngFile
@@ -90,7 +92,7 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('image/png', $image['mime_type']);
         $this->assertArrayHasKey('fileformat', $image);
         $this->assertEquals('png', $image['fileformat']);
-        $this->assertArrayHasKey('video', $image);        
+        $this->assertArrayHasKey('video', $image);
         $this->assertArrayHasKey('dataformat', $image['video']);
         $this->assertEquals('png', $image['video']['dataformat']);
         $this->assertArrayHasKey('lossless', $image['video']);
@@ -101,8 +103,8 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(225, $image['video']['resolution_y']);
         $this->assertArrayHasKey('compression_ratio', $image['video']);
         $this->assertSame(0.17746296296296, $image['video']['compression_ratio']);
-        $this->assertArrayHasKey('png', $image);  
-        $this->assertArrayHasKey('IHDR', $image['png']); 
+        $this->assertArrayHasKey('png', $image);
+        $this->assertArrayHasKey('IHDR', $image['png']);
         $this->assertArrayHasKey('width', $image['png']['IHDR']);
         $this->assertSame(300, $image['png']['IHDR']['width']);
         $this->assertArrayHasKey('height', $image['png']['IHDR']);
@@ -112,5 +114,44 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('bKGD', $image['png']);
         $this->assertArrayHasKey('background_red', $image['png']['bKGD']);
         $this->assertSame(1095233372415, $image['png']['bKGD']['background_red']);
+    }
+
+    public function testBmpFile()
+    {
+        $this->assertFileExists(self::$bmpFile);
+        $this->assertTrue(is_readable(self::$bmpFile));
+    }
+
+    /**
+     * @depends testClass
+     * @depends testBmpFile
+     */
+    public function testReadBmp()
+    {
+        $getId3 = new GetId3Core();
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';
+        $image = $getId3->analyze(self::$bmpFile);
+        $this->assertArrayNotHasKey('error', $image);
+        $this->assertArrayHasKey('mime_type', $image);
+        $this->assertEquals('image/bmp', $image['mime_type']);
+        $this->assertArrayHasKey('fileformat', $image);
+        $this->assertEquals('bmp', $image['fileformat']);
+        $this->assertArrayHasKey('video', $image);
+        $this->assertArrayHasKey('dataformat', $image['video']);
+        $this->assertEquals('bmp', $image['video']['dataformat']);
+        $this->assertArrayHasKey('lossless', $image['video']);
+        $this->assertArrayHasKey('bits_per_sample', $image['video']);
+        $this->assertArrayHasKey('resolution_x', $image['video']);
+        $this->assertSame(300, $image['video']['resolution_x']);
+        $this->assertArrayHasKey('resolution_y', $image['video']);
+        $this->assertSame(150, $image['video']['resolution_y']);
+        $this->assertArrayHasKey('compression_ratio', $image['video']);
+        $this->assertSame(1.0239555555556, $image['video']['compression_ratio']);
+        $this->assertArrayHasKey('bmp', $image);
+        $this->assertArrayHasKey('header', $image['bmp']);
+        $this->assertArrayHasKey('compression', $image['bmp']['header']);
+        $this->assertEquals('BI_RGB', $image['bmp']['header']['compression']);
     }
 }
