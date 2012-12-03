@@ -9,6 +9,7 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
     protected static $quicktimeFile;
     protected static $flvFile;
     protected static $realFile;
+    protected static $asfFile;
     protected static $class;
 
     protected function setUp()
@@ -16,6 +17,7 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
         self::$quicktimeFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'sample_iTunes.mov';
         self::$flvFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'flvsample.flv';
         self::$realFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'realsample.rm';
+        self::$asfFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'asfsample.asf';
         self::$class = 'GetId3\\GetId3Core';
     }
 
@@ -154,5 +156,59 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(528, $properties['video']['resolution_x']);
         $this->assertArrayHasKey('resolution_y', $properties['video']);
         $this->assertSame(352, $properties['video']['resolution_y']);
+    }
+
+    public function testAsfFile()
+    {
+        $this->assertFileExists(self::$asfFile);
+        $this->assertTrue(is_readable(self::$asfFile));
+    }
+
+    /**
+     * @depends testClass
+     * @depends testAsfFile
+     */
+    public function testReadAsf()
+    {
+        $getId3 = new GetId3Core();
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';
+
+        $properties = $getId3->analyze(self::$asfFile);
+
+        $this->assertArrayNotHasKey('error', $properties);
+        $this->assertArrayNotHasKey('warning', $properties);
+        $this->assertArrayHasKey('mime_type', $properties);
+        $this->assertEquals('video/x-ms-asf', $properties['mime_type']);
+        $this->assertArrayHasKey('encoding', $properties);
+        $this->assertEquals('UTF-8', $properties['encoding']);
+        $this->assertArrayHasKey('filesize', $properties);
+        $this->assertSame(269671, $properties['filesize']);
+        $this->assertArrayHasKey('fileformat', $properties);
+        $this->assertEquals('asf', $properties['fileformat']);
+        $this->assertArrayHasKey('audio', $properties);
+        $this->assertArrayHasKey('dataformat', $properties['audio']);
+        $this->assertEquals('wma', $properties['audio']['dataformat']);
+        $this->assertArrayHasKey('encoder', $properties['audio']);
+        $this->assertEquals('Windows Media Audio V2', $properties['audio']['encoder']);
+        $this->assertArrayHasKey('video', $properties);
+        $this->assertArrayHasKey('dataformat', $properties['video']);
+        $this->assertEquals('asf', $properties['video']['dataformat']);
+        $this->assertArrayHasKey('encoder', $properties['video']);
+        $this->assertEquals('Microsoft MPEG-4 Video Codec V3', $properties['video']['encoder']);
+        $this->assertArrayHasKey('encoder_options', $properties['audio']);
+        $this->assertEquals('32 kbps, 22 kHz, stereo', $properties['audio']['encoder_options']);
+        $this->assertArrayHasKey('compression_ratio', $properties['audio']);
+        $this->assertEquals(0.045408163265306, $properties['audio']['compression_ratio']);
+        $this->assertArrayHasKey('asf', $properties);
+        $this->assertArrayHasKey('bitrate', $properties['video']);
+        $this->assertEquals(237907, $properties['video']['bitrate']);
+        $this->assertArrayHasKey('bitrate', $properties);
+        $this->assertArrayHasKey('playtime_seconds', $properties);
+        $this->assertArrayHasKey('resolution_x', $properties['video']);
+        $this->assertSame(320, $properties['video']['resolution_x']);
+        $this->assertArrayHasKey('resolution_y', $properties['video']);
+        $this->assertSame(240, $properties['video']['resolution_y']);
     }
 }
