@@ -151,13 +151,13 @@ class Asf extends BaseHandler
     /**
      *
      */
-    public function __construct(GetId3 $getid3)
+    public function __construct(GetId3Core $getid3)
     {
         parent::__construct($getid3);  // extends GetId3_handler::__construct()
         // initialize all GUID statics
         $GUIDarray = self::KnownGUIDs();
         foreach ($GUIDarray as $GUIDname => $hexstringvalue) {
-            if (isset(self::$$GUIDname)) {
+            if (property_exists($this, $GUIDname)) {
                 self::$$GUIDname = self::GUIDtoBytestring($hexstringvalue);
             }
         }
