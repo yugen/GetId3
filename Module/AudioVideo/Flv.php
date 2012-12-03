@@ -203,7 +203,7 @@ class Flv extends BaseHandler
                                     //	read the first SequenceParameterSet
                                     $sps = fread($this->getid3->fp, $spsSize);
                                     if (strlen($sps) == $spsSize) { //	make sure that whole SequenceParameterSet was red
-                                        $spsReader = new GetId3\Module\AudioVideo\AVCSequenceParameterSetReader($sps);
+                                        $spsReader = new AVCSequenceParameterSetReader($sps);
                                         $spsReader->readData();
                                         $info['video']['resolution_x'] = $spsReader->getWidth();
                                         $info['video']['resolution_y'] = $spsReader->getHeight();
@@ -293,8 +293,8 @@ class Flv extends BaseHandler
                         $found_meta = true;
                         fseek($this->getid3->fp, -1, SEEK_CUR);
                         $datachunk = fread($this->getid3->fp, $DataLength);
-                        $AMFstream = new GetId3\Module\AudioVideo\AMFStream($datachunk);
-                        $reader = new GetId3\Module\AudioVideo\AMFReader($AMFstream);
+                        $AMFstream = new AMFStream($datachunk);
+                        $reader = new AMFReader($AMFstream);
                         $eventName = $reader->readData();
                         $info['flv']['meta'][$eventName] = $reader->readData();
                         unset($reader);

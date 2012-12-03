@@ -236,7 +236,7 @@ class Ogg extends BaseHandler
                 break;
 
             case 'flac':
-                $getid3_flac = new GetId3\Module\Audio\Flac($this->getid3);
+                $getid3_flac = new Flac($this->getid3);
                 if (!$getid3_flac->parseMETAdata()) {
                     $info['error'][] = 'Failed to parse FLAC headers';
 
@@ -573,7 +573,7 @@ class Ogg extends BaseHandler
                     // The unencoded format is that of the FLAC picture block. The fields are stored in big endian order as in FLAC, picture data is stored according to the relevant standard.
                     // http://flac.sourceforge.net/format.html#metadata_block_picture
                     $getid3_temp = new GetId3Core();
-                    $getid3_flac = new GetId3\Module\Audio\Flac($getid3_temp);
+                    $getid3_flac = new Flac($getid3_temp);
                     $getid3_flac->data_string      = $ThisFileInfo_ogg_comments_raw[$i]['data'];
                     $getid3_flac->data_string_flag = true;
                     if ($getid3_flac->parsePICTURE()) {

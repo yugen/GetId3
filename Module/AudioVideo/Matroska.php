@@ -5,6 +5,8 @@ namespace GetId3\Module\AudioVideo;
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
+use GetId3\Exception\DefaultException;
+use GetId3\Module\Audio\Ogg;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -270,7 +272,7 @@ class Matroska extends BaseHandler
         // parse container
         try {
             $this->parseEBML($info);
-        } catch (Exception $e) {
+        } catch (DefaultException $e) {
             $info['error'][] = 'EBML parser: '.$e->getMessage();
         }
 
@@ -453,7 +455,7 @@ class Matroska extends BaseHandler
                                 $getid3_temp = new GetId3Core();
 
                                 // analyze
-                                $getid3_ogg = new GetId3\Module\Audio\Ogg($getid3_temp);
+                                $getid3_ogg = new Ogg($getid3_temp);
                                 $oggpageinfo['page_seqno'] = 0;
                                 $getid3_ogg->ParseVorbisPageHeader($trackarray['CodecPrivate'], $vorbis_offset, $oggpageinfo);
                                 if (!empty($getid3_temp->info['ogg'])) {
@@ -1309,7 +1311,7 @@ class Matroska extends BaseHandler
         } elseif (0x01 & $first_byte_int) {
             $length = 8;
         } else {
-            throw new Exception('invalid EBML integer (leading 0x00) at '.$this->current_offset);
+            throw new DefaultException('invalid EBML integer (leading 0x00) at '.$this->current_offset);
         }
 
         // read

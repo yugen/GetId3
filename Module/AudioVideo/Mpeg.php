@@ -4,6 +4,7 @@ namespace GetId3\Module\AudioVideo;
 
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
+use GetId3\Module\Audio\Mp3;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -212,7 +213,7 @@ class Mpeg extends BaseHandler
             $getid3_temp = new GetId3Core();
             $getid3_temp->openfile($this->getid3->filename);
             $getid3_temp->info = $info;
-            $getid3_mp3 = new GetId3\Module\Audio\Mp3($getid3_temp);
+            $getid3_mp3 = new Mp3($getid3_temp);
             for ($i = 0; $i <= 7; $i++) {
                 // some files have the MPEG-audio header 8 bytes after the end of the $00 $00 $01 $C0 signature, some have it up to 13 bytes (or more?) after
                 // I have no idea why or what the difference is, so this is a stupid hack.

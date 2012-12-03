@@ -3,6 +3,7 @@
 namespace GetId3\Lib;
 
 use GetId3\GetId3Core;
+use GetId3\Exception\DefaultException;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -396,7 +397,7 @@ class Helper
                     $intvalue = 0 - ($intvalue & ($signMaskBit - 1));
                 }
             } else {
-                throw new Exception('ERROR: Cannot have signed integers larger than ' . (8 * PHP_INT_SIZE) . '-bits (' . strlen($byteword) . ') in self::BigEndian2Int()');
+                throw new DefaultException('ERROR: Cannot have signed integers larger than ' . (8 * PHP_INT_SIZE) . '-bits (' . strlen($byteword) . ') in self::BigEndian2Int()');
             }
         }
 
@@ -444,13 +445,13 @@ class Helper
                                             $synchsafe = false, $signed = false)
     {
         if ($number < 0) {
-            throw new Exception('ERROR: self::BigEndian2String() does not support negative numbers');
+            throw new DefaultException('ERROR: self::BigEndian2String() does not support negative numbers');
         }
         $maskbyte = (($synchsafe || $signed) ? 0x7F : 0xFF);
         $intstring = '';
         if ($signed) {
             if ($minbytes > PHP_INT_SIZE) {
-                throw new Exception('ERROR: Cannot have signed integers larger than ' . (8 * PHP_INT_SIZE) . '-bits in self::BigEndian2String()');
+                throw new DefaultException('ERROR: Cannot have signed integers larger than ' . (8 * PHP_INT_SIZE) . '-bits in self::BigEndian2String()');
             }
             $number = $number & (0x80 << (8 * ($minbytes - 1)));
         }
@@ -859,7 +860,7 @@ class Helper
                 break;
 
             default:
-                throw new Exception('Invalid algorithm (' . $algorithm . ') in self::hash_data()');
+                throw new DefaultException('Invalid algorithm (' . $algorithm . ') in self::hash_data()');
                 break;
         }
         $size = $end - $offset;
@@ -891,7 +892,7 @@ class Helper
                 $commandline .= $unix_call;
             }
             if (preg_match('#(1|ON)#i', ini_get('safe_mode'))) {
-                //throw new Exception('PHP running in Safe Mode - backtick operator not available, using slower non-system-call '.$algorithm.' algorithm');
+                //throw new DefaultException('PHP running in Safe Mode - backtick operator not available, using slower non-system-call '.$algorithm.' algorithm');
                 break;
             }
 
@@ -917,8 +918,8 @@ class Helper
         try {
             self::CopyFileParts($file, $data_filename, $offset, $end - $offset);
             $result = $hash_function($data_filename);
-        } catch (Exception $e) {
-            throw new Exception('self::CopyFileParts() failed in getid_lib::hash_data(): ' . $e->getMessage());
+        } catch (DefaultException $e) {
+            throw new DefaultException('self::CopyFileParts() failed in getid_lib::hash_data(): ' . $e->getMessage());
         }
         unlink($data_filename);
 
@@ -938,7 +939,7 @@ class Helper
                                          $offset, $length)
     {
         if (!self::intValueSupported($offset + $length)) {
-            throw new Exception('cannot copy file portion, it extends beyond the ' . round(PHP_INT_MAX / 1073741824) . 'GB limit');
+            throw new DefaultException('cannot copy file portion, it extends beyond the ' . round(PHP_INT_MAX / 1073741824) . 'GB limit');
         }
         if (is_readable($filename_source) && is_file($filename_source) && ($fp_src = fopen($filename_source,
                                                                                            'rb'))) {
@@ -955,15 +956,15 @@ class Helper
 
                     return true;
                 } else {
-                    throw new Exception('failed to seek to offset ' . $offset . ' in ' . $filename_source);
+                    throw new DefaultException('failed to seek to offset ' . $offset . ' in ' . $filename_source);
                 }
                 fclose($fp_dest);
             } else {
-                throw new Exception('failed to create file for writing ' . $filename_dest);
+                throw new DefaultException('failed to create file for writing ' . $filename_dest);
             }
             fclose($fp_src);
         } else {
-            throw new Exception('failed to open file for reading ' . $filename_source);
+            throw new DefaultException('failed to open file for reading ' . $filename_source);
         }
 
         return false;
@@ -1420,7 +1421,7 @@ class Helper
 
             return self::$ConversionFunction($string);
         }
-        throw new Exception('PHP does not have iconv() support - cannot convert from ' . $in_charset . ' to ' . $out_charset);
+        throw new DefaultException('PHP does not have iconv() support - cannot convert from ' . $in_charset . ' to ' . $out_charset);
     }
 
     /**

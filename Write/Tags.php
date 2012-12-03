@@ -5,6 +5,7 @@ namespace GetId3\Write;
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
 use GetId3\Module\Tag;
+use GetId3\Exception\DefaultException;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -130,10 +131,10 @@ class Tags
     public function __construct()
     {
         if (!class_exists('GetId3\\GetId3Core')) {
-            throw new Exception('GetId3.php MUST be included before calling GetId3\Write\Tags()');
+            throw new DefaultException('GetId3.php MUST be included before calling GetId3\Write\Tags()');
         }
         if (!class_exists('GetId3\\Lib\\Helper')) {
-            throw new Exception(__FILE__ . ' depends on ' . str_replace('_', DIRECTORY_SEPARATOR, 'GetId3_Lib_Helper') . '.php, which is missing.');
+            throw new DefaultException(__FILE__ . ' depends on ' . str_replace('_', DIRECTORY_SEPARATOR, 'GetId3_Lib_Helper') . '.php, which is missing.');
         }
 
         return true;
@@ -521,7 +522,7 @@ class Tags
         if ($this->overwrite_tags) {
             // do nothing - ignore previous data
         } else {
-            throw new Exception('$this->overwrite_tags=false is known to be buggy in this version of GetId3. Will be fixed in the near future, check www.getid3.org for a newer version.');
+            throw new DefaultException('$this->overwrite_tags=false is known to be buggy in this version of GetId3. Will be fixed in the near future, check www.getid3.org for a newer version.');
             if (!isset($this->ThisFileInfo['tags'][$TagFormat])) {
                 return false;
             }

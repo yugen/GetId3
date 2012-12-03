@@ -332,7 +332,7 @@ class GetId3Core
             $this->info['encoding'] = $this->encoding;   // required by id3v2 and iso modules - can be unset at the end if desired
 
             return true;
-        } catch (Exception $e) {
+        } catch (DefaultException $e) {
             $this->error($e->getMessage());
         }
 

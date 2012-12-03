@@ -4,6 +4,7 @@ namespace GetId3\Handler;
 
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
+use GetId3\Exception\DefaultException;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -226,7 +227,7 @@ abstract class BaseHandler
     {
         try {
             if (!Helper::intValueSupported($offset + $length)) {
-                throw new Exception('it extends beyond the ' . round(PHP_INT_MAX / 1073741824) . 'GB limit');
+                throw new DefaultException('it extends beyond the ' . round(PHP_INT_MAX / 1073741824) . 'GB limit');
             }
 
             // do not extract at all
@@ -241,7 +242,7 @@ abstract class BaseHandler
                 $this->fseek($offset);
                 $ThisFileInfoIndex = $this->fread($length);
                 if ($ThisFileInfoIndex === false || strlen($ThisFileInfoIndex) != $length) { // verify
-                    throw new Exception('failed to read attachment data');
+                    throw new DefaultException('failed to read attachment data');
                 }
             }
 
@@ -253,13 +254,13 @@ abstract class BaseHandler
                                          $this->getid3->option_save_attachments),
                                          DIRECTORY_SEPARATOR);
                 if (!is_dir($dir) || !is_writable($dir)) { // check supplied directory
-                    throw new Exception('supplied path (' . $dir . ') does not exist, or is not writable');
+                    throw new DefaultException('supplied path (' . $dir . ') does not exist, or is not writable');
                 }
                 $dest = $dir . DIRECTORY_SEPARATOR . $filename;
 
                 // create dest file
                 if (($fp_dest = fopen($dest, 'wb')) == false) {
-                    throw new Exception('failed to create file ' . $dest);
+                    throw new DefaultException('failed to create file ' . $dest);
                 }
 
                 // copy data
@@ -271,7 +272,7 @@ abstract class BaseHandler
                                                                                                                     $buffer)) === false) {
                         fclose($fp_dest);
                         unlink($dest);
-                        throw new Exception($buffer === false ? 'not enough data to read' : 'failed to write to destination file, may be not enough disk space');
+                        throw new DefaultException($buffer === false ? 'not enough data to read' : 'failed to write to destination file, may be not enough disk space');
                     }
                     $bytesleft -= $byteswritten;
                 }
@@ -279,7 +280,7 @@ abstract class BaseHandler
                 fclose($fp_dest);
                 $ThisFileInfoIndex = $dest;
             }
-        } catch (Exception $e) {
+        } catch (DefaultException $e) {
 
             unset($ThisFileInfoIndex); // do not set any is case of error
             $this->warning('Failed to extract attachment ' . $filename . ': ' . $e->getMessage());

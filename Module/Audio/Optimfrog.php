@@ -5,6 +5,7 @@ namespace GetId3\Module\Audio;
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
+use GetId3\Module\AudioVideo\Riff;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -95,7 +96,7 @@ class Optimfrog extends BaseHandler
         $getid3_temp->openfile($this->getid3->filename);
         $getid3_temp->info['avdataoffset'] = $info['avdataoffset'];
         $getid3_temp->info['avdataend']    = $info['avdataend'];
-        $getid3_riff = new GetId3\Module\AudioVideo\Riff($getid3_temp);
+        $getid3_riff = new Riff($getid3_temp);
         $getid3_riff->ParseRIFFdata($RIFFdata);
         $info['riff'] = $getid3_temp->info['riff'];
 
@@ -328,7 +329,7 @@ class Optimfrog extends BaseHandler
         $getid3_temp->openfile($this->getid3->filename);
         $getid3_temp->info['avdataoffset'] = $info['avdataoffset'];
         $getid3_temp->info['avdataend']    = $info['avdataend'];
-        $getid3_riff = new GetId3\Module\AudioVideo\Riff($getid3_temp);
+        $getid3_riff = new Riff($getid3_temp);
         $getid3_riff->ParseRIFFdata($RIFFdata);
         $info['riff'] = $getid3_temp->info['riff'];
 

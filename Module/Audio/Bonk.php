@@ -5,6 +5,7 @@ namespace GetId3\Module\Audio;
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
+use GetId3\Module\Tag\Id3v2;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -221,7 +222,7 @@ class Bonk extends BaseHandler
                 if (class_exists('GetId3\\Module\\Tag\\Id3v2')) {
                     $getid3_temp = new GetId3Core();
                     $getid3_temp->openfile($this->getid3->filename);
-                    $getid3_id3v2 = new GetId3\Module\Tag\Id3v2($getid3_temp);
+                    $getid3_id3v2 = new Id3v2($getid3_temp);
                     $getid3_id3v2->StartingOffset = $info['bonk'][' ID3']['offset'] + 2;
                     $info['bonk'][' ID3']['valid'] = $getid3_id3v2->analyze();
                     if ($info['bonk'][' ID3']['valid']) {

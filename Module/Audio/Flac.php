@@ -5,7 +5,6 @@ namespace GetId3\Module\Audio;
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
-use GetId3\Module\Audio\Ogg;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //

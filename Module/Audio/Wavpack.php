@@ -5,6 +5,7 @@ namespace GetId3\Module\Audio;
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
+use GetId3\Module\AudioVideo\Riff;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -238,7 +239,7 @@ class Wavpack extends BaseHandler
 
                             $getid3_temp = new GetId3Core();
                             $getid3_temp->openfile($this->getid3->filename);
-                            $getid3_riff = new GetId3\Module\AudioVideo\Riff($getid3_temp);
+                            $getid3_riff = new Riff($getid3_temp);
                             $getid3_riff->ParseRIFFdata($metablock['data']);
                             $metablock['riff']            = $getid3_temp->info['riff'];
                             $info['audio']['sample_rate'] = $getid3_temp->info['riff']['raw']['fmt ']['nSamplesPerSec'];
@@ -261,7 +262,7 @@ class Wavpack extends BaseHandler
                             $getid3_temp->openfile($this->getid3->filename);
                             $getid3_temp->info['avdataend']  = $info['avdataend'];
                             $getid3_temp->info['fileformat'] = 'riff';
-                            $getid3_riff = new GetId3\Module\AudioVideo\Riff($getid3_temp);
+                            $getid3_riff = new Riff($getid3_temp);
                             $metablock['riff'] = $getid3_riff->ParseRIFF($startoffset, $startoffset + $metablock['size']);
 
                             if (!empty($metablock['riff']['INFO'])) {

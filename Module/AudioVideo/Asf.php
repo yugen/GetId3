@@ -5,6 +5,7 @@ namespace GetId3\Module\AudioVideo;
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
+use GetId3\Module\Tag\Id3v2;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -1156,7 +1157,7 @@ class Asf extends BaseHandler
 
                                     $getid3_temp = new GetId3Core();
                                     $getid3_temp->openfile($tempfile);
-                                    $getid3_id3v2 = new GetId3\Module\Tag\Id3v2($getid3_temp);
+                                    $getid3_id3v2 = new Id3v2($getid3_temp);
                                     $getid3_id3v2->analyze();
                                     $info['id3v2'] = $getid3_temp->info['id3v2'];
                                     unset($getid3_temp, $getid3_id3v2);

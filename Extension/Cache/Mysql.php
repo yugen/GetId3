@@ -3,6 +3,7 @@
 namespace GetId3\Extension\Cache;
 
 use GetId3\GetId3Core;
+use GetId3\Exception\DefaultException;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -109,18 +110,18 @@ class Mysql extends GetId3
     {
         // Check for mysql support
         if (!function_exists('mysql_pconnect')) {
-            throw new Exception('PHP not compiled with mysql support.');
+            throw new DefaultException('PHP not compiled with mysql support.');
         }
 
         // Connect to database
         $this->connection = mysql_pconnect($host, $username, $password);
         if (!$this->connection) {
-            throw new Exception('mysql_pconnect() failed - check permissions and spelling.');
+            throw new DefaultException('mysql_pconnect() failed - check permissions and spelling.');
         }
 
         // Select database
         if (!mysql_select_db($database, $this->connection)) {
-            throw new Exception('Cannot use database '.$database);
+            throw new DefaultException('Cannot use database '.$database);
         }
 
         // Set table
