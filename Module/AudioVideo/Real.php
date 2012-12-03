@@ -221,7 +221,7 @@ class Real extends BaseHandler
                                 //$thisfile_real_chunks_currentchunk_videoinfo['unknown8']          = GetId3_lib::BigEndian2Int(substr($thisfile_real_chunks_currentchunk_typespecificdata, 34, 2));
                                 //$thisfile_real_chunks_currentchunk_videoinfo['unknown9']          = GetId3_lib::BigEndian2Int(substr($thisfile_real_chunks_currentchunk_typespecificdata, 36, 2));
 
-                                $thisfile_real_chunks_currentchunk_videoinfo['codec'] = GetId3\Module\AudioVideo\Riff::RIFFfourccLookup($thisfile_real_chunks_currentchunk_videoinfo['fourcc2']);
+                                $thisfile_real_chunks_currentchunk_videoinfo['codec'] = Riff::RIFFfourccLookup($thisfile_real_chunks_currentchunk_videoinfo['fourcc2']);
 
                                 $info['video']['resolution_x']    =         $thisfile_real_chunks_currentchunk_videoinfo['width'];
                                 $info['video']['resolution_y']    =         $thisfile_real_chunks_currentchunk_videoinfo['height'];

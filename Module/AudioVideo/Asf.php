@@ -410,7 +410,7 @@ class Asf extends BaseHandler
                             $thisfile_audio['dataformat'] = (!empty($thisfile_audio['dataformat']) ? $thisfile_audio['dataformat'] : 'asf');
                             $thisfile_audio['bitrate_mode'] = (!empty($thisfile_audio['bitrate_mode']) ? $thisfile_audio['bitrate_mode'] : 'cbr');
 
-                            $audiodata = GetId3\Module\AudioVideo\Riff::RIFFparseWAVEFORMATex(substr($StreamPropertiesObjectData['type_specific_data'],
+                            $audiodata = Riff::RIFFparseWAVEFORMATex(substr($StreamPropertiesObjectData['type_specific_data'],
                                                                                    0,
                                                                                    16));
                             unset($audiodata['raw']);
@@ -1365,7 +1365,7 @@ class Asf extends BaseHandler
 
                         $audiomediaoffset = 0;
 
-                        $thisfile_asf_audiomedia_currentstream = GetId3\Module\AudioVideo\Riff::RIFFparseWAVEFORMATex(substr($streamdata['type_specific_data'],
+                        $thisfile_asf_audiomedia_currentstream = Riff::RIFFparseWAVEFORMATex(substr($streamdata['type_specific_data'],
                                                                                                            $audiomediaoffset,
                                                                                                            16));
                         $audiomediaoffset += 16;
@@ -1509,7 +1509,7 @@ class Asf extends BaseHandler
                             }
                         }
 
-                        $thisfile_asf_videomedia_currentstream['format_data']['codec'] = GetId3\Module\AudioVideo\Riff::RIFFfourccLookup($thisfile_asf_videomedia_currentstream['format_data']['codec_fourcc']);
+                        $thisfile_asf_videomedia_currentstream['format_data']['codec'] = Riff::RIFFfourccLookup($thisfile_asf_videomedia_currentstream['format_data']['codec_fourcc']);
 
                         $thisfile_video['streams'][$streamnumber]['fourcc'] = $thisfile_asf_videomedia_currentstream['format_data']['codec_fourcc'];
                         $thisfile_video['streams'][$streamnumber]['codec'] = $thisfile_asf_videomedia_currentstream['format_data']['codec'];

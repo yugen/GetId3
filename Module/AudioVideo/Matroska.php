@@ -319,8 +319,8 @@ class Matroska extends BaseHandler
                                     $this->getid3->warning('Unable to parse codec private data ['.basename(__FILE__).':'.__LINE__.'] because cannot include "' . str_replace('_', DIRECTORY_SEPARATOR, 'GetId3\Module\AudioVideo\Riff') . '.php"');
                                     break;
                                 }
-                                $parsed = GetId3\Module\AudioVideo\Riff::ParseBITMAPINFOHEADER($trackarray['CodecPrivate']);
-                                $track_info['codec'] = GetId3\Module\AudioVideo\Riff::RIFFfourccLookup($parsed['fourcc']);
+                                $parsed = Riff::ParseBITMAPINFOHEADER($trackarray['CodecPrivate']);
+                                $track_info['codec'] = Riff::RIFFfourccLookup($parsed['fourcc']);
                                 $info['matroska']['track_codec_parsed'][$trackarray['TrackNumber']] = $parsed;
                                 break;
 
@@ -491,7 +491,7 @@ class Matroska extends BaseHandler
                                     break;
                                 }
 
-                                $parsed = GetId3\Module\AudioVideo\Riff::RIFFparseWAVEFORMATex($trackarray['CodecPrivate']);
+                                $parsed = Riff::RIFFparseWAVEFORMATex($trackarray['CodecPrivate']);
                                 foreach ($parsed as $key => $value) {
                                     if ($key != 'raw') {
                                         $track_info[$key] = $value;

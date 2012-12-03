@@ -131,7 +131,7 @@ class Tags
     public function __construct()
     {
         if (!class_exists('GetId3\\GetId3Core')) {
-            throw new DefaultException('GetId3.php MUST be included before calling GetId3\Write\Tags()');
+            throw new DefaultException('GetId3\\GetId3Core not available while calling GetId3\\Write\\Tags()');
         }
         if (!class_exists('GetId3\\Lib\\Helper')) {
             throw new DefaultException(__FILE__ . ' depends on ' . str_replace('_', DIRECTORY_SEPARATOR, 'GetId3_Lib_Helper') . '.php, which is missing.');

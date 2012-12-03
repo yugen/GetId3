@@ -175,7 +175,7 @@ class Flv extends BaseHandler
                             $AVCPacketType = Helper::BigEndian2Int(substr($FLVvideoHeader,
                                                                                      0,
                                                                                      1));
-                            if ($AVCPacketType == GetId3\Module\AudioVideo\AVCSequenceParameterSetReader::H264_AVC_SEQUENCE_HEADER) {
+                            if ($AVCPacketType == AVCSequenceParameterSetReader::H264_AVC_SEQUENCE_HEADER) {
                                 //	read AVCDecoderConfigurationRecord
                                 $configurationVersion = Helper::BigEndian2Int(substr($FLVvideoHeader,
                                                                                                 4,

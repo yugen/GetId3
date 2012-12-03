@@ -5,6 +5,7 @@ namespace GetId3\Module\Audio;
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 use GetId3\GetId3Core;
+use GetId3\Module\AudioVideo\Riff;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
@@ -172,7 +173,7 @@ class Shorten extends BaseHandler
         if (!empty($output) && (substr($output, 12, 4) == 'fmt ')) {
 
             $fmt_size = Helper::LittleEndian2Int(substr($output, 16, 4));
-            $DecodedWAVFORMATEX = GetId3\Module\AudioVideo\Riff::RIFFparseWAVEFORMATex(substr($output, 20, $fmt_size));
+            $DecodedWAVFORMATEX = Riff::RIFFparseWAVEFORMATex(substr($output, 20, $fmt_size));
             $info['audio']['channels']        = $DecodedWAVFORMATEX['channels'];
             $info['audio']['bits_per_sample'] = $DecodedWAVFORMATEX['bits_per_sample'];
             $info['audio']['sample_rate']     = $DecodedWAVFORMATEX['sample_rate'];
