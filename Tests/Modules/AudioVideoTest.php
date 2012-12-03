@@ -8,12 +8,14 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
 {
     protected static $quicktimeFile;
     protected static $flvFile;
+    protected static $realFile;
     protected static $class;
 
     protected function setUp()
     {
         self::$quicktimeFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'sample_iTunes.mov';
         self::$flvFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'flvsample.flv';
+        self::$realFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'realsample.rm';
         self::$class = 'GetId3\\GetId3Core';
     }
 
@@ -109,5 +111,48 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(236, $properties['flv']['framecount']['total']);
         $this->assertArrayHasKey('bitrate', $properties);
         $this->assertArrayHasKey('playtime_seconds', $properties);
+    }
+
+    public function testRealFile()
+    {
+        $this->assertFileExists(self::$realFile);
+        $this->assertTrue(is_readable(self::$realFile));
+    }
+
+    /**
+     * @depends testClass
+     * @depends testRealFile
+     */
+    public function testReadReal()
+    {
+        $getId3 = new GetId3Core();
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';
+
+        $properties = $getId3->analyze(self::$realFile);
+
+        $this->assertArrayNotHasKey('error', $properties);
+        $this->assertArrayNotHasKey('warning', $properties);
+        $this->assertArrayHasKey('mime_type', $properties);
+        $this->assertEquals('audio/x-realaudio', $properties['mime_type']);
+        $this->assertArrayHasKey('encoding', $properties);
+        $this->assertEquals('UTF-8', $properties['encoding']);
+        $this->assertArrayHasKey('filesize', $properties);
+        $this->assertSame(236939, $properties['filesize']);
+        $this->assertArrayHasKey('fileformat', $properties);
+        $this->assertEquals('real', $properties['fileformat']);
+        $this->assertArrayHasKey('video', $properties);
+        $this->assertArrayHasKey('dataformat', $properties['video']);
+        $this->assertEquals('real', $properties['video']['dataformat']);
+        $this->assertArrayHasKey('real', $properties);
+        $this->assertArrayHasKey('frame_rate', $properties['video']);
+        $this->assertEquals(15, $properties['video']['frame_rate']);
+        $this->assertArrayHasKey('bitrate', $properties);
+        $this->assertArrayHasKey('playtime_seconds', $properties);
+        $this->assertArrayHasKey('resolution_x', $properties['video']);
+        $this->assertSame(528, $properties['video']['resolution_x']);
+        $this->assertArrayHasKey('resolution_y', $properties['video']);
+        $this->assertSame(352, $properties['video']['resolution_y']);
     }
 }
