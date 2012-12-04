@@ -2,6 +2,7 @@
 
 namespace GetId3\Module\Graphic;
 
+use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 
 /////////////////////////////////////////////////////////////////
@@ -25,7 +26,7 @@ use GetId3\Lib\Helper;
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
-class Tiff extends GetId3\Handler\BaseHandler
+class Tiff extends BaseHandler
 {
 
     /**
