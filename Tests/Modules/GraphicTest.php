@@ -10,6 +10,7 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
     protected static $pngFile;
     protected static $bmpFile;
     protected static $svgFile;
+    protected static $tiffFile;
     protected static $class;
 
     protected function setUp()
@@ -18,6 +19,7 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         self::$pngFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'pngsample.png';
         self::$bmpFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'bmpsample.bmp';
         self::$svgFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'svgsample.svg';
+        self::$tiffFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'tiffsample.tif';
         self::$class = 'GetId3\\GetId3Core';
     }
 
@@ -194,5 +196,43 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('svg', $image['svg']);
         $this->assertArrayHasKey('version', $image['svg']);
         $this->assertEquals('1.0', $image['svg']['version']);
+    }
+    
+    public function testTiffFile()
+    {
+        $this->assertFileExists(self::$tiffFile);
+        $this->assertTrue(is_readable(self::$tiffFile));
+    }
+
+    /**
+     * @depends testClass
+     * @depends testTiffFile
+     */
+    public function testReadTiff()
+    {
+        $getId3 = new GetId3Core();
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';
+        $image = $getId3->analyze(self::$tiffFile);
+        $this->assertArrayNotHasKey('error', $image);
+        $this->assertArrayNotHasKey('warning', $image);
+        $this->assertArrayHasKey('mime_type', $image);
+        $this->assertEquals('image/tiff', $image['mime_type']);
+        $this->assertArrayHasKey('fileformat', $image);
+        $this->assertEquals('tiff', $image['fileformat']);
+        $this->assertArrayHasKey('video', $image);
+        $this->assertArrayHasKey('dataformat', $image['video']);
+        $this->assertEquals('tiff', $image['video']['dataformat']);
+        $this->assertArrayHasKey('lossless', $image['video']);
+        $this->assertArrayHasKey('resolution_x', $image['video']);
+        $this->assertSame(1728, $image['video']['resolution_x']);
+        $this->assertArrayHasKey('resolution_y', $image['video']);
+        $this->assertSame(2376, $image['video']['resolution_y']);
+        $this->assertArrayHasKey('tiff', $image);
+        $this->assertArrayHasKey('byte_order', $image['tiff']);
+        $this->assertEquals('Intel', $image['tiff']['byte_order']);
+        $this->assertArrayHasKey('encoding', $image['tiff']);
+        $this->assertArrayHasKey('comments', $image['tiff']);        
     }
 }
