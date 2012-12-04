@@ -9,6 +9,7 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
     protected static $jpgFile;
     protected static $pngFile;
     protected static $bmpFile;
+    protected static $svgFile;
     protected static $class;
 
     protected function setUp()
@@ -16,6 +17,7 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         self::$jpgFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'jpgsample.jpg';
         self::$pngFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'pngsample.png';
         self::$bmpFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'bmpsample.bmp';
+        self::$svgFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'svgsample.svg';
         self::$class = 'GetId3\\GetId3Core';
     }
 
@@ -153,5 +155,44 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('header', $image['bmp']);
         $this->assertArrayHasKey('compression', $image['bmp']['header']);
         $this->assertEquals('BI_RGB', $image['bmp']['header']['compression']);
+    }
+
+    public function testSvgFile()
+    {
+        $this->assertFileExists(self::$svgFile);
+        $this->assertTrue(is_readable(self::$svgFile));
+    }
+
+    /**
+     * @depends testClass
+     * @depends testSvgFile
+     */
+    public function testReadSvg()
+    {
+        $getId3 = new GetId3Core();
+        $getId3->option_md5_data        = true;
+        $getId3->option_md5_data_source = true;
+        $getId3->encoding               = 'UTF-8';
+        $image = $getId3->analyze(self::$svgFile);
+        $this->assertArrayNotHasKey('error', $image);
+        $this->assertArrayNotHasKey('warning', $image);
+        $this->assertArrayHasKey('mime_type', $image);
+        $this->assertEquals('image/svg+xml', $image['mime_type']);
+        $this->assertArrayHasKey('fileformat', $image);
+        $this->assertEquals('svg', $image['fileformat']);
+        $this->assertArrayHasKey('video', $image);
+        $this->assertArrayHasKey('dataformat', $image['video']);
+        $this->assertEquals('svg', $image['video']['dataformat']);
+        $this->assertArrayHasKey('lossless', $image['video']);
+        $this->assertArrayHasKey('pixel_aspect_ratio', $image['video']);
+        $this->assertArrayHasKey('resolution_x', $image['video']);
+        $this->assertSame(1062, $image['video']['resolution_x']);
+        $this->assertArrayHasKey('resolution_y', $image['video']);
+        $this->assertSame(637, $image['video']['resolution_y']);
+        $this->assertArrayHasKey('svg', $image);
+        $this->assertArrayHasKey('xml', $image['svg']);
+        $this->assertArrayHasKey('svg', $image['svg']);
+        $this->assertArrayHasKey('version', $image['svg']);
+        $this->assertEquals('1.0', $image['svg']['version']);
     }
 }
