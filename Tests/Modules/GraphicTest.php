@@ -197,7 +197,7 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('version', $image['svg']);
         $this->assertEquals('1.0', $image['svg']['version']);
     }
-    
+
     public function testTiffFile()
     {
         $this->assertFileExists(self::$tiffFile);
@@ -233,6 +233,6 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('byte_order', $image['tiff']);
         $this->assertEquals('Intel', $image['tiff']['byte_order']);
         $this->assertArrayHasKey('encoding', $image['tiff']);
-        $this->assertArrayHasKey('comments', $image['tiff']);        
+        $this->assertArrayHasKey('comments', $image['tiff']);
     }
 }
