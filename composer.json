@@ -19,10 +19,5 @@
     "autoload": {
         "psr-0": {"GetId3": ""}
     },
-    "target-dir": "GetId3",
-    "extra": {
-        "branch-alias": {
-            "2.0.x-dev": "v2.0.0-BETA2"
-        }
-    }
+    "target-dir": "GetId3"
 }
