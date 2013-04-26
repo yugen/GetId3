@@ -7,17 +7,22 @@
     "homepage": "http://www.getid3.org",
     "authors": [
         {
-            "name":     "James Heinrich",
+            "name": "James Heinrich",
             "homepage": "http://www.getid3.org",
-            "email":    "info@getid3.org"
-        }     
+            "email": "info@getid3.org"
+        }
     ],
     "suggest": {
         "ext-rar": "RAR extension is required for RAR archive module.",
         "ext-exif": "EXIF extension is required for graphic modules."
     },
     "autoload": {
-        "psr-0": { "GetId3": "" }
+        "psr-0": {"GetId3": ""}
     },
-    "target-dir": "GetId3"
+    "target-dir": "GetId3",
+    "extra": {
+        "branch-alias": {
+            "2.0.x-dev": "v2.0.0-BETA2"
+        }
+    }
 }
