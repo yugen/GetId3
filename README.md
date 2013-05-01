@@ -60,7 +60,7 @@ Add following lines to your `composer.json` `"require"` definitions:
 ``` json
 "phansys/getid3": "2.1.*@dev"
 ```
-It requires set minimum-stability of composer.json to "beta":
+It requires set minimum-stability of composer.json to "dev":
 
 ``` json
 "minimum-stability": "dev"
