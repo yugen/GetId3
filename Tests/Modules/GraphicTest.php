@@ -51,10 +51,13 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
     public function testReadJpg()
     {
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
-        $image = $getId3->analyze(self::$jpgFile);
+        $image = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze(self::$jpgFile)
+            ;
+
         $this->assertArrayNotHasKey('error', $image);
         $this->assertArrayHasKey('mime_type', $image);
         $this->assertEquals('image/jpeg', $image['mime_type']);
@@ -87,10 +90,13 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
     public function testReadPng()
     {
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
-        $image = $getId3->analyze(self::$pngFile);
+        $image = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze(self::$pngFile)
+            ;
+
         $this->assertArrayNotHasKey('error', $image);
         $this->assertArrayHasKey('mime_type', $image);
         $this->assertEquals('image/png', $image['mime_type']);
@@ -133,10 +139,13 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
     public function testReadBmp()
     {
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
-        $image = $getId3->analyze(self::$bmpFile);
+        $image = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze(self::$bmpFile)
+            ;
+
         $this->assertArrayNotHasKey('error', $image);
         $this->assertArrayHasKey('mime_type', $image);
         $this->assertEquals('image/bmp', $image['mime_type']);
@@ -172,10 +181,13 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
     public function testReadSvg()
     {
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
-        $image = $getId3->analyze(self::$svgFile);
+        $image = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze(self::$svgFile)
+            ;
+
         $this->assertArrayNotHasKey('error', $image);
         $this->assertArrayNotHasKey('warning', $image);
         $this->assertArrayHasKey('mime_type', $image);
@@ -211,10 +223,13 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
     public function testReadTiff()
     {
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
-        $image = $getId3->analyze(self::$tiffFile);
+        $image = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze(self::$tiffFile)
+            ;
+
         $this->assertArrayNotHasKey('error', $image);
         $this->assertArrayNotHasKey('warning', $image);
         $this->assertArrayHasKey('mime_type', $image);

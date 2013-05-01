@@ -27,6 +27,7 @@ Add following lines to your `deps` file:
 [GetId3]
     git=https://github.com/phansys/GetId3.git
     target=/phansys/getid3/GetId3
+    version=v2.0.0-BETA1
 
 ```
 Now, run the vendors script to download the library:
@@ -86,20 +87,24 @@ use \GetId3\GetId3Core as GetId3;
 class MyClass
 {
     // ...
-    private function MyMethod()
+    private function myMethod()
     {
+        $mp3File = '/path/to/my/mp3file.mp3';
         $getId3 = new GetId3();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';		
-        $mp3File = '/path/to/my/mp3file.mp3';	
-        $audio = $getId3->analyze($mp3File);	
-        if (isset($audio['error'])) 
-        {
-            throw new \RuntimeException('Error at reading audio properties with GetId3 : ' . $mp3File);
+        $audio = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze($mp3File)
+        ;
+	
+        if (isset($audio['error'])) {
+            throw new \RuntimeException(sprintf('Error at reading audio properties from "%s" with GetId3: %s.', $mp3File, $audio['error']));
         }			
         $this->setLength(isset($audio['playtime_seconds']) ? $audio['playtime_seconds'] : '');
+
         // var_dump($audio);
     }
 }
+
 ```

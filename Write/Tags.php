@@ -173,7 +173,7 @@ class Tags
         } else {
 
             $getID3 = new GetId3Core();
-            $getID3->encoding = $this->tag_encoding;
+            $getID3->setEncoding($this->tag_encoding);
             $this->ThisFileInfo = $getID3->analyze($this->filename);
 
             // check for what file types are allowed on this fileformat

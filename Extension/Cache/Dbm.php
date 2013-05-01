@@ -30,7 +30,7 @@ use GetId3\Exception\DefaultException;
 *
 *       require_once 'getid3/getid3.php';
 *       $getID3 = new GetId3;
-*       $getID3->encoding = 'UTF-8';
+*       $getID3->setEncoding('UTF-8');
 *       $info1 = $getID3->analyze('file1.flac');
 *       $info2 = $getID3->analyze('file2.wv');
 *
@@ -40,7 +40,7 @@ use GetId3\Exception\DefaultException;
 *       require_once 'getid3/getid3/extension.cache.dbm.php';
 *       $getID3 = new GetId3_cached('db3', '/tmp/getid3_cache.dbm',
 *                                          '/tmp/getid3_cache.lock');
-*       $getID3->encoding = 'UTF-8';
+*       $getID3->setEncoding('UTF-8');
 *       $info1 = $getID3->analyze('file1.flac');
 *       $info2 = $getID3->analyze('file2.wv');
 *

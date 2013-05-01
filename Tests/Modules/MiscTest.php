@@ -43,11 +43,12 @@ class MiscTest extends \PHPUnit_Framework_TestCase
     public function testReadCue()
     {
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
-
-        $properties = $getId3->analyze(self::$cueFile);
+        $properties = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze(self::$cueFile)
+            ;
 
         $this->assertArrayNotHasKey('error', $properties);
         $this->assertArrayNotHasKey('warning', $properties);

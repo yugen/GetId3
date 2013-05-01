@@ -1,19 +1,15 @@
 <?php
-
+/**
+ * GetId3() by James Heinrich <info@getid3.org>
+ * available at http://getid3.sourceforge.net
+ * or http://www.getid3.org
+ *
+ * Please see readme.txt for more information
+ */
 namespace GetId3;
 
 use GetId3\Lib\Helper;
 use GetId3\Exception\DefaultException;
-
-/////////////////////////////////////////////////////////////////
-/// GetId3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-/////////////////////////////////////////////////////////////////
-//                                                             //
-// Please see readme.txt for more information                  //
-//                                                            ///
-/////////////////////////////////////////////////////////////////
 
 /**
  *
@@ -25,43 +21,206 @@ use GetId3\Exception\DefaultException;
 class GetId3Core
 {
     // public: Settings
-    public $encoding = 'UTF-8';        // CASE SENSITIVE! - i.e. (must be supported by iconv()). Examples:  ISO-8859-1  UTF-8  UTF-16  UTF-16BE
-    public $encoding_id3v1 = 'ISO-8859-1';   // Should always be 'ISO-8859-1', but some tags may be written in other encodings such as 'EUC-CN' or 'CP1252'
+
+    /**
+     * CASE SENSITIVE! - i.e. (must be supported by iconv()).
+     * Examples:  ISO-8859-1  UTF-8  UTF-16  UTF-16BE
+     *
+     * @var string
+     */
+    public $encoding = 'UTF-8';
+
+    /**
+     * Should always be 'ISO-8859-1', but some tags may be written in other encodings such as 'EUC-CN' or 'CP1252'
+     *
+     * @var string
+     */
+    public $encoding_id3v1 = 'ISO-8859-1';
+
     // public: Optional tag checks - disable for speed.
-    public $option_tag_id3v1 = true;  // Read and process ID3v1 tags
-    public $option_tag_id3v2 = true;  // Read and process ID3v2 tags
-    public $option_tag_lyrics3 = true;  // Read and process Lyrics3 tags
-    public $option_tag_apetag = true;  // Read and process APE tags
-    public $option_tags_process = true;  // Copy tags to root key 'tags' and encode to $this->encoding
-    public $option_tags_html = true;  // Copy tags to root key 'tags_html' properly translated from various encodings to HTML entities
+
+    /**
+     * Read and process ID3v1 tags
+     *
+     * @var boolean
+     */
+    public $option_tag_id3v1 = true;
+
+    /**
+     * Read and process ID3v2 tags
+     *
+     * @var boolean
+     */
+    public $option_tag_id3v2 = true;
+
+    /**
+     * Read and process Lyrics3 tags
+     *
+     * @var boolean
+     */
+    public $option_tag_lyrics3 = true;
+
+    /**
+     * Read and process APE tags
+     *
+     * @var boolean
+     */
+    public $option_tag_apetag = true;
+
+    /**
+     * Copy tags to root key 'tags' and encode to $this->encoding
+     *
+     * @var boolean
+     */
+    public $option_tags_process = true;
+
+    /**
+     * Copy tags to root key 'tags_html' properly translated from various encodings to HTML entities
+     *
+     * @var boolean
+     */
+    public $option_tags_html = true;
+
     // public: Optional tag/comment calucations
-    public $option_extra_info = true;  // Calculate additional info such as bitrate, channelmode etc
+
+    /**
+     * Calculate additional info such as bitrate, channelmode etc
+     *
+     * @var boolean
+     */
+    public $option_extra_info = true;
+
     // public: Optional handling of embedded attachments (e.g. images)
-    public $option_save_attachments = true; // defaults to true (ATTACHMENTS_INLINE) for backward compatibility
+
+    /**
+     * defaults to true (ATTACHMENTS_INLINE) for backward compatibility
+     *
+     * @var boolean
+     */
+    public $option_save_attachments = true;
+
     // public: Optional calculations
-    public $option_md5_data = false; // Get MD5 sum of data part - slow
-    public $option_md5_data_source = false; // Use MD5 of source file if availble - only FLAC and OptimFROG
-    public $option_sha1_data = false; // Get SHA1 sum of data part - slow
-    public $option_max_2gb_check = null;  // Check whether file is larger than 2GB and thus not supported by 32-bit PHP (null: auto-detect based on PHP_INT_MAX)
+
+    /**
+     * Get MD5 sum of data part - slow
+     *
+     * @var boolean
+     */
+    public $option_md5_data = false;
+
+    /**
+     * Use MD5 of source file if availble - only FLAC and OptimFROG
+     *
+     * @var boolean
+     */
+    public $option_md5_data_source = false;
+
+    /**
+     * Get SHA1 sum of data part - slow
+     *
+     * @var boolean
+     */
+    public $option_sha1_data = false;
+
+    /**
+     * Check whether file is larger than 2GB and thus not supported by 32-bit PHP (null: auto-detect based on PHP_INT_MAX)
+     *
+     * @var type
+     */
+    public $option_max_2gb_check = null;
+
     // public: Read buffer size in bytes
+
+    /**
+     * @var int
+     */
     public $option_fread_buffer_size = 32768;
+
     // Public variables
-    public $filename;                         // Filename of file being analysed.
-    public $fp;                               // Filepointer to file being analysed.
-    public $info;                             // Result array.
+
+    /**
+     * Filename of file being analysed.
+     *
+     * @var string
+     */
+    public $filename;
+
+    /**
+     * Filepointer to file being analysed.
+     *
+     * @var type
+     */
+    public $fp;
+
+    /**
+     * Result array.
+     *
+     * @var array
+     */
+    public $info = array();
+
     // Protected variables
+
+    /**
+     * @var string
+     */
     protected $startup_error = '';
+
+    /**
+     * @var string
+     */
     protected $startup_warning = '';
+
+    /**
+     * @var int
+     */
     protected $memory_limit = 0;
+
+    /**
+     * @var type
+     */
     public $tempdir;
-    protected static $TempDir; // $TempDir = '/something/else/';  // feel free to override temp dir here if it works better for your system
+
+    /**
+     * $TempDir = '/something/else/';  // feel free to override temp dir here if it works better for your system
+     *
+     * @var type
+     */
+    protected static $TempDir;
+
+    /**
+     * @var type
+     */
     protected static $IncludePath;
+
+    /**
+     * @var type
+     */
     protected static $EnvironmentIsWindows;
+
+    /**
+     * @var type
+     */
     protected static $HelperAppsDir;
 
+    /**
+     *
+     */
     const VERSION = '1.9.4-20120530';
+
+    /**
+     *
+     */
     const FREAD_BUFFER_SIZE = 32768;
+
+    /**
+     *
+     */
     const ATTACHMENTS_NONE = false;
+
+    /**
+     *
+     */
     const ATTACHMENTS_INLINE = true;
 
     /**
@@ -74,26 +233,24 @@ class GetId3Core
         // Check for PHP version
         $required_php_version = '5.0.5';
         if (version_compare(PHP_VERSION, $required_php_version, '<')) {
-            $this->startup_error .= 'getID3() requires PHP v' . $required_php_version . ' or higher - you are running v' . PHP_VERSION;
-
-            return false;
+            $this->addStartupError('getID3() requires PHP v' . $required_php_version . ' or higher - you are running v' . PHP_VERSION);
         }
 
         // Check memory
-        $this->memory_limit = ini_get('memory_limit');
-        if (preg_match('#([0-9]+)M#i', $this->memory_limit, $matches)) {
+        $this->setMemoryLimit(ini_get('memory_limit'));
+        if (preg_match('#([0-9]+)M#i', $this->getMemoryLimit(), $matches)) {
             // could be stored as "16M" rather than 16777216 for example
-            $this->memory_limit = $matches[1] * 1048576;
-        } elseif (preg_match('#([0-9]+)G#i', $this->memory_limit, $matches)) { // The 'G' modifier is available since PHP 5.1.0
+            $this->setMemoryLimit($matches[1] * 1048576);
+        } elseif (preg_match('#([0-9]+)G#i', $this->getMemoryLimit(), $matches)) { // The 'G' modifier is available since PHP 5.1.0
             // could be stored as "2G" rather than 2147483648 for example
-            $this->memory_limit = $matches[1] * 1073741824;
+            $this->setMemoryLimit($matches[1] * 1073741824);
         }
-        if ($this->memory_limit <= 0) {
+        if ($this->getMemoryLimit() <= 0) {
             // memory limits probably disabled
-        } elseif ($this->memory_limit <= 4194304) {
-            $this->startup_error .= 'PHP has less than 4MB available memory and will very likely run out. Increase memory_limit in php.ini';
-        } elseif ($this->memory_limit <= 12582912) {
-            $this->startup_warning .= 'PHP has less than 12MB available memory and might run out if all modules are loaded. Increase memory_limit in php.ini';
+        } elseif ($this->getMemoryLimit() <= 4194304) {
+            $this->addStartupError('PHP has less than 4MB available memory and will very likely run out. Increase memory_limit in php.ini');
+        } elseif ($this->getMemoryLimit() <= 12582912) {
+            $this->addStartupWarning('PHP has less than 12MB available memory and might run out if all modules are loaded. Increase memory_limit in php.ini');
         }
 
         // Check safe_mode off
@@ -108,48 +265,50 @@ class GetId3Core
         // Check for magic_quotes_runtime
         if (function_exists('get_magic_quotes_runtime')) {
             if (get_magic_quotes_runtime()) {
-                return $this->startup_error('magic_quotes_runtime must be disabled before running GetId3Core(). Surround GetId3 block by set_magic_quotes_runtime(0) and set_magic_quotes_runtime(1).');
+                $this->addStartupError('magic_quotes_runtime must be disabled before running GetId3Core(). Surround GetId3 block by set_magic_quotes_runtime(0) and set_magic_quotes_runtime(1).');
             }
         }
 
         // Check for magic_quotes_gpc
         if (function_exists('magic_quotes_gpc')) {
             if (get_magic_quotes_gpc()) {
-                return $this->startup_error('magic_quotes_gpc must be disabled before running GetId3Core(). Surround GetId3 block by set_magic_quotes_gpc(0) and set_magic_quotes_gpc(1).');
+                $this->addStartupError('magic_quotes_gpc must be disabled before running GetId3Core(). Surround GetId3 block by set_magic_quotes_gpc(0) and set_magic_quotes_gpc(1).');
             }
         }
 
         // Check support library
         if (!class_exists('GetId3\\Lib\\Helper')) {
-            $this->startup_error .= str_replace('\\', DIRECTORY_SEPARATOR, 'GetId3\\Lib\\Helper') . '.php is missing or corrupt';
+            $this->addStartupError(str_replace('\\', DIRECTORY_SEPARATOR, 'GetId3\\Lib\\Helper') . '.php is missing or corrupt');
         }
 
-        if ($this->option_max_2gb_check === null) {
-            $this->option_max_2gb_check = (PHP_INT_MAX <= 2147483647);
+        if (null === $this->getOptionMax2gbCheck()) {
+            $this->setOptionMax2gbCheck(PHP_INT_MAX <= 2147483647);
         }
 
         $this->setHelperAppsDir();
 
-        return true;
+        // check for critical errors
+        if ($this->hasStartupError()) {
+            throw new DefaultException($this->getStartupError());
+        }
     }
 
     /**
-     *
+     * Needed for Windows only:
+     * Define locations of helper applications for Shorten, VorbisComment,
+     * MetaFLAC as well as other helper functions such as head, tail, md5sum, etc
+     * This path cannot contain spaces, but the below code will attempt to get
+     * the 8.3-equivalent path automatically
+     * IMPORTANT: This path must include the trailing slash
      */
     protected function setHelperAppsDir()
     {
-        // Needed for Windows only:
-        // Define locations of helper applications for Shorten, VorbisComment, MetaFLAC
-        //   as well as other helper functions such as head, tail, md5sum, etc
-        // This path cannot contain spaces, but the below code will attempt to get the
-        //   8.3-equivalent path automatically
-        // IMPORTANT: This path must include the trailing slash
         if (self::$EnvironmentIsWindows && null === self::$HelperAppsDir) {
 
             $helperappsdir = self::$IncludePath . 'Resources' . DIRECTORY_SEPARATOR . 'helperapps'; // must not have any space in this path
 
             if (!is_dir($helperappsdir)) {
-                $this->startup_warning .= '"' . $helperappsdir . '" cannot be defined as self::getHelperAppsDir() because it does not exist';
+                $this->addStartupWarning('"' . $helperappsdir . '" cannot be defined as self::getHelperAppsDir() because it does not exist');
             } elseif (strpos(realpath($helperappsdir), ' ') !== false) {
                 $DirPieces = explode(DIRECTORY_SEPARATOR,
                                      realpath($helperappsdir));
@@ -172,7 +331,7 @@ class GetId3Core
                                 }
                             }
                         } else {
-                            $this->startup_warning .= 'self::getHelperAppsDir() must not have any spaces in it - use 8dot3 naming convention if neccesary. You can run "dir /x" from the commandline to see the correct 8.3-style names.';
+                            $this->addStartupWarning('self::getHelperAppsDir() must not have any spaces in it - use 8dot3 naming convention if neccesary. You can run "dir /x" from the commandline to see the correct 8.3-style names.');
                         }
                     }
                     $path_so_far[] = $value;
@@ -203,7 +362,7 @@ class GetId3Core
      */
     public function fread_buffer_size()
     {
-        return $this->option_fread_buffer_size;
+        return $this->getOptionFreadBufferSize();
     }
 
     /**
@@ -217,7 +376,7 @@ class GetId3Core
             return false;
         }
         foreach ($optArray as $opt => $val) {
-            if (isset($this->$opt) === false) {
+            if (false === isset($this->$opt)) {
                 continue;
             }
             $this->$opt = $val;
@@ -235,18 +394,18 @@ class GetId3Core
     public function openfile($filename)
     {
         try {
-            if (!empty($this->startup_error)) {
-                throw new DefaultException($this->startup_error);
+            if ($this->hasStartupError()) {
+                throw new DefaultException($this->getStartupError());
             }
-            if (!empty($this->startup_warning)) {
-                $this->warning($this->startup_warning);
+            if ($this->hasStartupWarning()) {
+                $this->warning($this->getStartupWarning());
             }
 
             // init result array and set parameters
-            $this->filename = $filename;
+            $this->setFilename($filename);
             $this->info = array();
             $this->info['GETID3_VERSION'] = $this->version();
-            $this->info['php_memory_limit'] = $this->memory_limit;
+            $this->info['php_memory_limit'] = $this->getMemoryLimit();
 
             // remote files not supported
             if (preg_match('/^(ht|f)tp:\/\//', $filename)) {
@@ -259,8 +418,8 @@ class GetId3Core
                                                           $filename);
 
             // open local file
-            if (is_readable($filename) && is_file($filename) && ($this->fp = fopen($filename,
-                                                                                   'rb'))) {
+            if (is_readable($filename) && is_file($filename) && ($this->setFp(fopen($filename,
+                                                                                   'rb')))) {
                 // great
             } else {
                 throw new DefaultException('Could not open "' . $filename . '" (does not exist, or is not a file)');
@@ -274,14 +433,14 @@ class GetId3Core
             $this->info['filenamepath'] = $this->info['filepath'] . '/' . $this->info['filename'];
 
             // option_max_2gb_check
-            if ($this->option_max_2gb_check) {
+            if ($this->getOptionMax2gbCheck()) {
                 // PHP (32-bit all, and 64-bit Windows) doesn't support integers larger than 2^31 (~2GB)
                 // filesize() simply returns (filesize % (pow(2, 32)), no matter the actual filesize
                 // ftell() returns 0 if seeking to the end is beyond the range of unsigned integer
-                $fseek = fseek($this->fp, 0, SEEK_END);
-                if (($fseek < 0) || (($this->info['filesize'] != 0) && (ftell($this->fp) == 0)) ||
+                $fseek = fseek($this->getFp(), 0, SEEK_END);
+                if (($fseek < 0) || (($this->info['filesize'] != 0) && (ftell($this->getFp()) == 0)) ||
                     ($this->info['filesize'] < 0) ||
-                    (ftell($this->fp) < 0)) {
+                    (ftell($this->getFp()) < 0)) {
                     $real_filesize = false;
                     if (self::$EnvironmentIsWindows) {
                         $commandline = 'dir /-C "' . str_replace('/',
@@ -303,13 +462,13 @@ class GetId3Core
                             $real_filesize = (float) $matches[1];
                         }
                     }
-                    if ($real_filesize === false) {
+                    if (false === $real_filesize) {
                         unset($this->info['filesize']);
-                        fclose($this->fp);
+                        fclose($this->getFp());
                         throw new DefaultException('Unable to determine actual filesize. File is most likely larger than ' . round(PHP_INT_MAX / 1073741824) . 'GB and is not supported by PHP.');
                     } elseif (Helper::intValueSupported($real_filesize)) {
                         unset($this->info['filesize']);
-                        fclose($this->fp);
+                        fclose($this->getFp());
                         throw new DefaultException('PHP seems to think the file is larger than ' . round(PHP_INT_MAX / 1073741824) . 'GB, but filesystem reports it as ' . number_format($real_filesize,
                                                                                                                                                                                         3) . 'GB, please report to info@getid3.org');
                     }
@@ -329,7 +488,7 @@ class GetId3Core
             $this->info['error'] = array();           // filled in later, unset if not used
             $this->info['warning'] = array();           // filled in later, unset if not used
             $this->info['comments'] = array();           // filled in later, unset if not used
-            $this->info['encoding'] = $this->encoding;   // required by id3v2 and iso modules - can be unset at the end if desired
+            $this->info['encoding'] = $this->getEncoding();   // required by id3v2 and iso modules - can be unset at the end if desired
 
             return true;
         } catch (DefaultException $e) {
@@ -377,9 +536,9 @@ class GetId3Core
             }
 
             // ID3v2 detection (NOT parsing), even if ($this->option_tag_id3v2 == false) done to make fileformat easier
-            if (!$this->option_tag_id3v2) {
-                fseek($this->fp, 0, SEEK_SET);
-                $header = fread($this->fp, 10);
+            if (!$this->getOptionTagId3v2()) {
+                fseek($this->getFp(), 0, SEEK_SET);
+                $header = fread($this->getFp(), 10);
                 if ((substr($header, 0, 3) == 'ID3') && (strlen($header) == 10)) {
                     $this->info['id3v2']['header'] = true;
                     $this->info['id3v2']['majorversion'] = ord($header{3});
@@ -392,15 +551,15 @@ class GetId3Core
             }
 
             // read 32 kb file data
-            fseek($this->fp, $this->info['avdataoffset'], SEEK_SET);
-            $formattest = fread($this->fp, 32774);
+            fseek($this->getFp(), $this->info['avdataoffset'], SEEK_SET);
+            $formattest = fread($this->getFp(), 32774);
 
             // determine format
             $determined_format = $this->GetFileFormat($formattest, $filename);
 
             // unable to determine file format
             if (!$determined_format) {
-                fclose($this->fp);
+                fclose($this->getFp());
 
                 return $this->error('unable to determine file format');
             }
@@ -410,7 +569,7 @@ class GetId3Core
                                                                    $this->info['tags']) || in_array('id3v2',
                                                                                                     $this->info['tags']))) {
                 if ($determined_format['fail_id3'] === 'ERROR') {
-                    fclose($this->fp);
+                    fclose($this->getFp());
 
                     return $this->error('ID3 tags not allowed on this file type.');
                 } elseif ($determined_format['fail_id3'] === 'WARNING') {
@@ -422,7 +581,7 @@ class GetId3Core
             if (isset($determined_format['fail_ape']) && in_array('ape',
                                                                   $this->info['tags'])) {
                 if ($determined_format['fail_ape'] === 'ERROR') {
-                    fclose($this->fp);
+                    fclose($this->getFp());
 
                     return $this->error('APE tags not allowed on this file type.');
                 } elseif ($determined_format['fail_ape'] === 'WARNING') {
@@ -435,14 +594,14 @@ class GetId3Core
 
             // supported format signature pattern detected, but module deleted
             if (!class_exists($determined_format['class'])) {
-                fclose($this->fp);
+                fclose($this->getFp());
 
                 return $this->error('Format not supported, module "' . $determined_format['include'] . '" was removed.');
             }
 
             // module requires iconv support
             // Check encoding/iconv support
-            if (!empty($determined_format['iconv_req']) && !function_exists('iconv') && !in_array($this->encoding,
+            if (!empty($determined_format['iconv_req']) && !function_exists('iconv') && !in_array($this->getEncoding(),
                                                                                                   array('ISO-8859-1', 'UTF-8', 'UTF-16LE', 'UTF-16BE', 'UTF-16'))) {
                 $errormessage = 'iconv() support is required for this module (' . $determined_format['include'] . ') for encodings other than ISO-8859-1, UTF-8, UTF-16LE, UTF16-BE, UTF-16. ';
                 if (self::$EnvironmentIsWindows) {
@@ -474,15 +633,15 @@ class GetId3Core
             unset($class);
 
             // close file
-            fclose($this->fp);
+            fclose($this->getFp());
 
             // process all tags - copy to 'tags' and convert charsets
-            if ($this->option_tags_process) {
+            if ($this->getOptionTagsProcess()) {
                 $this->HandleAllTags();
             }
 
             // perform more calculations
-            if ($this->option_extra_info) {
+            if ($this->getOptionExtraInfo()) {
                 $this->ChannelsBitratePlaytimeCalculations();
                 $this->CalculateCompressionRatioVideo();
                 $this->CalculateCompressionRatioAudio();
@@ -491,15 +650,15 @@ class GetId3Core
             }
 
             // get the MD5 sum of the audio/video portion of the file - without ID3/APE/Lyrics3/etc header/footer tags
-            if ($this->option_md5_data) {
+            if ($this->getOptionMD5Data()) {
                 // do not cald md5_data if md5_data_source is present - set by flac only - future MPC/SV8 too
-                if (!$this->option_md5_data_source || empty($this->info['md5_data_source'])) {
+                if (!$this->getOptionMD5DataDource() || empty($this->info['md5_data_source'])) {
                     $this->getHashdata('md5');
                 }
             }
 
             // get the SHA1 sum of the audio/video portion of the file - without ID3/APE/Lyrics3/etc header/footer tags
-            if ($this->option_sha1_data) {
+            if ($this->getOptionSha1Data()) {
                 $this->getHashdata('sha1');
             }
 
@@ -531,7 +690,7 @@ class GetId3Core
 
     /**
      * private: warning handling
-     * @param  type    $message
+     * @param  string  $message
      * @return boolean
      */
     private function warning($message)
@@ -1123,7 +1282,7 @@ class GetId3Core
     {
 
         // identical encoding - end here
-        if ($encoding == $this->encoding) {
+        if ($encoding == $this->getEncoding()) {
             return;
         }
 
@@ -1138,7 +1297,7 @@ class GetId3Core
             // convert string
             elseif (is_string($value)) {
                 $array[$key] = trim(Helper::iconv_fallback($encoding,
-                                                              $this->encoding,
+                                                              $this->getEncoding(),
                                                               $value));
             }
         }
@@ -1207,7 +1366,7 @@ class GetId3Core
                     continue;
                 }
 
-                if ($this->option_tags_html) {
+                if ($this->getOptionTagsHtml()) {
                     foreach ($this->info['tags'][$tag_name] as $tag_key => $valuearray) {
                         foreach ($valuearray as $key => $value) {
                             if (is_string($value)) {
@@ -1678,5 +1837,288 @@ class GetId3Core
         }
 
         return self::$IncludePath;
+    }
+
+    public function getEncoding()
+    {
+        return $this->encoding;
+    }
+
+    public function setEncoding($encoding)
+    {
+        $this->encoding = $encoding;
+
+        return $this;
+    }
+
+    public function getEncodingId3v1()
+    {
+        return $this->encoding_id3v1;
+    }
+
+    public function setEncodingId3v1($encoding_id3v1)
+    {
+        $this->encoding_id3v1 = $encoding_id3v1;
+
+        return $this;
+    }
+
+    public function getOptionTagId3v1()
+    {
+        return $this->option_tag_id3v1;
+    }
+
+    public function setOptionTagId3v1($option_tag_id3v1)
+    {
+        $this->option_tag_id3v1 = $option_tag_id3v1;
+
+        return $this;
+    }
+
+    public function getOptionTagId3v2()
+    {
+        return $this->option_tag_id3v2;
+    }
+
+    public function setOptionTagId3v2($option_tag_id3v2)
+    {
+        $this->option_tag_id3v2 = $option_tag_id3v2;
+
+        return $this;
+    }
+
+    public function getOptionTagLyrics3()
+    {
+        return $this->option_tag_lyrics3;
+    }
+
+    public function setOptionTagLyrics3($option_tag_lyrics3)
+    {
+        $this->option_tag_lyrics3 = $option_tag_lyrics3;
+
+        return $this;
+    }
+
+    public function getOptionTagApetag()
+    {
+        return $this->option_tag_apetag;
+    }
+
+    public function setOptionTagApetag($option_tag_apetag)
+    {
+        $this->option_tag_apetag = $option_tag_apetag;
+
+        return $this;
+    }
+
+    public function getOptionTagsProcess()
+    {
+        return $this->option_tags_process;
+    }
+
+    public function setOptionTagsProcess($option_tags_process)
+    {
+        $this->option_tags_process = $option_tags_process;
+
+        return $this;
+    }
+
+    public function getOptionTagsHtml()
+    {
+        return $this->option_tags_html;
+    }
+
+    public function setOptionTagsHtml($option_tags_html)
+    {
+        $this->option_tags_html = $option_tags_html;
+
+        return $this;
+    }
+
+    public function getOptionExtraInfo()
+    {
+        return $this->option_extra_info;
+    }
+
+    public function setOptionExtraInfo($option_extra_info)
+    {
+        $this->option_extra_info = $option_extra_info;
+
+        return $this;
+    }
+
+    public function getOptionSaveAttachments()
+    {
+        return $this->option_save_attachments;
+    }
+
+    public function setOptionSaveAttachments($option_save_attachments)
+    {
+        $this->option_save_attachments = $option_save_attachments;
+
+        return $this;
+    }
+
+    public function getOptionMD5Data()
+    {
+        return $this->option_md5_data;
+    }
+
+    public function setOptionMD5Data($option_md5_data)
+    {
+        $this->option_md5_data = $option_md5_data;
+
+        return $this;
+    }
+
+    public function getOptionMD5DataDource()
+    {
+        return $this->option_md5_data_source;
+    }
+
+    public function setOptionMD5DataSource($option_md5_data_source)
+    {
+        $this->option_md5_data_source = $option_md5_data_source;
+
+        return $this;
+    }
+
+    public function getOptionSha1Data()
+    {
+        return $this->option_sha1_data;
+    }
+
+    public function setOptionSha1Data($option_sha1_data)
+    {
+        $this->option_sha1_data = $option_sha1_data;
+
+        return $this;
+    }
+
+    public function getOptionMax2gbCheck()
+    {
+        return $this->option_max_2gb_check;
+    }
+
+    public function setOptionMax2gbCheck($option_max_2gb_check)
+    {
+        $this->option_max_2gb_check = $option_max_2gb_check;
+
+        return $this;
+    }
+
+    public function getOptionFreadBufferSize()
+    {
+        return $this->option_fread_buffer_size;
+    }
+
+    public function setOptionFreadBufferSize($option_fread_buffer_size)
+    {
+        $this->option_fread_buffer_size = $option_fread_buffer_size;
+
+        return $this;
+    }
+
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+
+        return $this;
+    }
+
+    public function getFp()
+    {
+        return $this->fp;
+    }
+
+    public function setFp($fp)
+    {
+        $this->fp = $fp;
+
+        return $this;
+    }
+
+    public function getInfo()
+    {
+        return $this->info;
+    }
+
+    public function setInfo(array $info = array())
+    {
+        $this->info = $info;
+
+        return $this;
+    }
+
+    public function addInfo($key, $info)
+    {
+        $this->info[$key] = $info;
+
+        return $this;
+    }
+
+    public function getStartupError()
+    {
+        return $this->startup_error;
+    }
+
+    public function hasStartupError()
+    {
+        return !empty($this->startup_error);
+    }
+
+    public function setStartupError($startup_error)
+    {
+        $this->startup_error = $startup_error;
+
+        return $this;
+    }
+
+    public function addStartupError($startup_error)
+    {
+        $this->startup_error .= $startup_error . PHP_EOL;
+
+        return $this;
+    }
+
+    public function getStartupWarning()
+    {
+        return $this->startup_warning;
+    }
+
+    public function hasStartupWarning()
+    {
+        return !empty($this->startup_warning);
+    }
+
+    public function setStartupWarning($startup_warning)
+    {
+        $this->startup_warning = $startup_warning;
+
+        return $this;
+    }
+
+    public function addStartupWarning($startup_warning)
+    {
+        $this->startup_warning .= $startup_warning . PHP_EOL;
+
+        return $this;
+    }
+
+    public function getMemoryLimit()
+    {
+        return $this->memory_limit;
+    }
+
+    public function setMemoryLimit($memory_limit)
+    {
+        $this->memory_limit = $memory_limit;
+
+        return $this;
     }
 }

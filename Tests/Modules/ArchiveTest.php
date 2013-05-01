@@ -43,10 +43,13 @@ class ArchiveTest extends \PHPUnit_Framework_TestCase
     public function testReadZip()
     {
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
-        $archive = $getId3->analyze(self::$zipFile);
+        $archive = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze(self::$zipFile)
+            ;
+
         $this->assertArrayNotHasKey('error', $archive);
         $this->assertArrayHasKey('mime_type', $archive);
         $this->assertEquals('application/zip', $archive['mime_type']);

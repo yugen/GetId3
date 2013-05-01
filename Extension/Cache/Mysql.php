@@ -31,7 +31,7 @@ use GetId3\Exception\DefaultException;
 *
 *       require_once 'getid3/getid3.php';
 *       $getID3 = new GetId3;
-*       $getID3->encoding = 'UTF-8';
+*       $getID3->setEncoding('UTF-8');
 *       $info1 = $getID3->analyze('file1.flac');
 *       $info2 = $getID3->analyze('file2.wv');
 *
@@ -41,7 +41,7 @@ use GetId3\Exception\DefaultException;
 *       require_once 'getid3/getid3/extension.cache.mysql.php';
 *       // 5th parameter (tablename) is optional, default is 'getid3_cache'
 *       $getID3 = new GetId3_cached_mysql('localhost', 'database', 'username', 'password', 'tablename');
-*       $getID3->encoding = 'UTF-8';
+*       $getID3->setEncoding('UTF-8');
 *       $info1 = $getID3->analyze('file1.flac');
 *       $info2 = $getID3->analyze('file2.wv');
 *

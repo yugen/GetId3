@@ -28,7 +28,7 @@ use GetId3\GetId3Core;
  *
  *       require_once 'getid3/getid3.php';
  *       $getID3 = new GetId3;
- *       $getID3->encoding = 'UTF-8';
+ *       $getID3->setEncoding('UTF-8');
  *       $info1 = $getID3->analyze('file1.flac');
  *       $info2 = $getID3->analyze('file2.wv');
  *
@@ -38,7 +38,7 @@ use GetId3\GetId3Core;
  *       require_once 'getid3/extension.cache.sqlite3.php';
  *       // all parameters are optional, defaults are:
  *       $getID3 = new GetId3_cached_sqlite3($table='getid3_cache', $hide=FALSE);
- *       $getID3->encoding = 'UTF-8';
+ *       $getID3->setEncoding('UTF-8');
  *       $info1 = $getID3->analyze('file1.flac');
  *       $info2 = $getID3->analyze('file2.wv');
  *

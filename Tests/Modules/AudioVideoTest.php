@@ -49,11 +49,12 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
     public function testReadQuicktime()
     {
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
-
-        $properties = $getId3->analyze(self::$quicktimeFile);
+        $properties = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze(self::$quicktimeFile)
+            ;
 
         $this->assertArrayNotHasKey('error', $properties);
         $this->assertArrayHasKey('mime_type', $properties);
@@ -85,11 +86,12 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
     public function testReadFlv()
     {
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
-
-        $properties = $getId3->analyze(self::$flvFile);
+        $properties = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze(self::$flvFile)
+            ;
 
         $this->assertArrayNotHasKey('error', $properties);
         $this->assertArrayNotHasKey('warning', $properties);
@@ -128,11 +130,12 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
     public function testReadReal()
     {
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
-
-        $properties = $getId3->analyze(self::$realFile);
+        $properties = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze(self::$realFile)
+            ;
 
         $this->assertArrayNotHasKey('error', $properties);
         $this->assertArrayNotHasKey('warning', $properties);
@@ -171,11 +174,12 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
     public function testReadAsf()
     {
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
-
-        $properties = $getId3->analyze(self::$asfFile);
+        $properties = $getId3
+            ->setOptionMD5Data(true)
+            ->setOptionMD5DataSource(true)
+            ->setEncoding('UTF-8')
+            ->analyze(self::$asfFile)
+            ;
 
         $this->assertArrayNotHasKey('error', $properties);
         $this->assertArrayNotHasKey('warning', $properties);

@@ -88,9 +88,9 @@ class AudioTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEmpty('warnings', $tagwriter);
 
         $getId3 = new GetId3Core();
-        $getId3->option_md5_data        = true;
-        $getId3->option_md5_data_source = true;
-        $getId3->encoding               = 'UTF-8';
+        $getId3->setOptionMD5Data(true);
+        $getId3->setOptionMD5DataSource(true);
+        $getId3->setEncoding('UTF-8');
         $audio = $getId3->analyze(self::$mp3File);
         $this->assertArrayNotHasKey('error', $audio);
         $this->assertArrayHasKey('audio', $audio);
