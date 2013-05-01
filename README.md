@@ -27,7 +27,7 @@ Add following lines to your `deps` file:
 [GetId3]
     git=https://github.com/phansys/GetId3.git
     target=/phansys/getid3/GetId3
-    version=v2.0.0-BETA1
+    version=origin/2.1
 
 ```
 Now, run the vendors script to download the library:
@@ -58,12 +58,12 @@ ___
 Add following lines to your `composer.json` `"require"` definitions:
 
 ``` json
-"phansys/getid3": "v2.0.0-BETA1"
+"phansys/getid3": "2.1.*@dev"
 ```
 It requires set minimum-stability of composer.json to "beta":
 
 ``` json
-"minimum-stability": "beta"
+"minimum-stability": "dev"
 ```
 
 ##### Step 2: Run composer

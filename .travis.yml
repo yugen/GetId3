@@ -17,4 +17,5 @@ notifications:
 branches:
   only:
     - master
-    - v2.0.0
+    - v2.0.0-BETA1
+    - 2.1
