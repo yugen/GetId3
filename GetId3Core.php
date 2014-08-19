@@ -693,7 +693,7 @@ class GetId3Core
      * @param  string  $message
      * @return boolean
      */
-    private function warning($message)
+    public function warning($message)
     {
         $this->info['warning'][] = $message;
 
