@@ -5,6 +5,7 @@ namespace GetId3\Module\AudioVideo;
 use GetId3\Handler\BaseHandler;
 use GetId3\Lib\Helper;
 use GetId3\Module\Audio\Mp3;
+use GetId3\GetId3Core;
 
 /////////////////////////////////////////////////////////////////
 /// GetId3() by James Heinrich <info@getid3.org>               //
