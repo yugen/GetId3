@@ -1,6 +1,6 @@
 {
     "name": "phansys/getid3",
-    "description": "This release of GetId3 library updates to PSR-0 CS, add namespaces and makes it Symfony 2.x installable by deps or composer mechanisms.",
+    "description": "This fork of GetId3 library updates to PSR-2 / PSR-4 CS, adds namespaces and makes it installable by composer.",
     "keywords": ["getid3", "tags", "metadata"],
     "type": "library",
     "license": "GPL",
@@ -17,7 +17,6 @@
         "ext-exif": "EXIF extension is required for graphic modules."
     },
     "autoload": {
-        "psr-0": {"GetId3": ""}
-    },
-    "target-dir": "GetId3"
+        "psr-4": { "GetId3\\": "" }
+    }
 }
