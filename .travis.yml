@@ -1,27 +1,37 @@
 language: php
 
-php:
-  - 5.3
-  - 5.4
-  - 5.5
-  - 5.6
-  - hhvm
+sudo: false
+
+matrix:
+    include:
+        - php: 5.3
+        - php: 5.4
+        - php: 5.5
+        - php: 5.6
+        - php: 5.3
+        - php: 5.6
+        - php: nightly
+        - php: hhvm
+    allow_failures:
+        - php: nightly
+        - php: hhvm
+    fast_finish: true
 
 before_install:
-  - composer self-update
+    - composer self-update
 
 install:
-  - composer install
-   
-script: 
-  - phpunit --configuration phpunit.xml.dist
+    - composer --prefer-dist -o install
+
+script:
+    - phpunit --configuration phpunit.xml.dist
 
 notifications:
-  email:
-    - phansys@gmail.com
-    
+    email:
+        - phansys@gmail.com
+
 branches:
-  only:
-    - master
-    - v2.0.0-BETA1
-    - 2.1
+    only:
+        - master
+        - v2.0.0-BETA1
+        - 2.1
