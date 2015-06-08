@@ -18,13 +18,9 @@ echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www
 echo '<html><head><title>getID3 demos - MIME type only</title><style type="text/css">BODY, TD, TH { font-family: sans-serif; font-size: 10pt; }</style></head><body>';
 
 if (!empty($_REQUEST['filename'])) {
-
     echo 'The file "'.htmlentities($_REQUEST['filename']).'" has a MIME type of "'.htmlentities(GetMIMEtype($_REQUEST['filename'])).'"';
-
 } else {
-
     echo 'Usage: <span style="font-family: monospace;">'.htmlentities($_SERVER['PHP_SELF']).'?filename=<i>filename.ext</i></span>';
-
 }
 
 function GetMIMEtype($filename)
@@ -43,7 +39,7 @@ function GetMIMEtype($filename)
     // include getID3() library (can be in a different directory if full path is specified)
     require_once '../getid3/getid3.php';
     // Initialize getID3 engine
-    $getID3 = new getID3;
+    $getID3 = new getID3();
 
     $DeterminedMIMEtype = '';
     if ($fp = fopen($filename, 'rb')) {
@@ -61,7 +57,6 @@ function GetMIMEtype($filename)
 
             $DeterminedFormatInfo = $getID3->GetFileFormat($formattest);
             $DeterminedMIMEtype = $DeterminedFormatInfo['mime_type'];
-
         } else {
             echo 'Failed to getID3->openfile "'.htmlentities($filename).'"<br>';
         }

@@ -23,14 +23,14 @@ use GetId3\Lib\Helper;
  * module for analyzing AAC Audio files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Aac extends BaseHandler
 {
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -46,19 +46,18 @@ class Aac extends BaseHandler
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function getAACADIFheaderFilepointer()
     {
         $info = &$this->getid3->info;
-        $info['fileformat']          = 'aac';
+        $info['fileformat'] = 'aac';
         $info['audio']['dataformat'] = 'aac';
-        $info['audio']['lossless']   = false;
+        $info['audio']['lossless'] = false;
 
         fseek($this->getid3->fp, $info['avdataoffset'], SEEK_SET);
         $AACheader = fread($this->getid3->fp, 1024);
-        $offset    = 0;
+        $offset = 0;
 
         if (substr($AACheader, 0, 4) == 'ADIF') {
 
@@ -83,33 +82,33 @@ class Aac extends BaseHandler
             // }
 
             $AACheaderBitstream = Helper::BigEndian2Bin($AACheader);
-            $bitoffset          = 0;
+            $bitoffset = 0;
 
-            $info['aac']['header_type']                   = 'ADIF';
+            $info['aac']['header_type'] = 'ADIF';
             $bitoffset += 32;
-            $info['aac']['header']['mpeg_version']        = 4;
+            $info['aac']['header']['mpeg_version'] = 4;
 
-            $info['aac']['header']['copyright']           = (bool) (substr($AACheaderBitstream, $bitoffset, 1) == '1');
+            $info['aac']['header']['copyright'] = (bool) (substr($AACheaderBitstream, $bitoffset, 1) == '1');
             $bitoffset += 1;
             if ($info['aac']['header']['copyright']) {
-                $info['aac']['header']['copyright_id']    = Helper::Bin2String(substr($AACheaderBitstream, $bitoffset, 72));
+                $info['aac']['header']['copyright_id'] = Helper::Bin2String(substr($AACheaderBitstream, $bitoffset, 72));
                 $bitoffset += 72;
             }
-            $info['aac']['header']['original_copy']       = (bool) (substr($AACheaderBitstream, $bitoffset, 1) == '1');
+            $info['aac']['header']['original_copy'] = (bool) (substr($AACheaderBitstream, $bitoffset, 1) == '1');
             $bitoffset += 1;
-            $info['aac']['header']['home']                = (bool) (substr($AACheaderBitstream, $bitoffset, 1) == '1');
+            $info['aac']['header']['home'] = (bool) (substr($AACheaderBitstream, $bitoffset, 1) == '1');
             $bitoffset += 1;
-            $info['aac']['header']['is_vbr']              = (bool) (substr($AACheaderBitstream, $bitoffset, 1) == '1');
+            $info['aac']['header']['is_vbr'] = (bool) (substr($AACheaderBitstream, $bitoffset, 1) == '1');
             $bitoffset += 1;
             if ($info['aac']['header']['is_vbr']) {
-                $info['audio']['bitrate_mode']            = 'vbr';
-                $info['aac']['header']['bitrate_max']     = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 23));
+                $info['audio']['bitrate_mode'] = 'vbr';
+                $info['aac']['header']['bitrate_max'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 23));
                 $bitoffset += 23;
             } else {
-                $info['audio']['bitrate_mode']            = 'cbr';
-                $info['aac']['header']['bitrate']         = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 23));
+                $info['audio']['bitrate_mode'] = 'cbr';
+                $info['aac']['header']['bitrate'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 23));
                 $bitoffset += 23;
-                $info['audio']['bitrate']                 = $info['aac']['header']['bitrate'];
+                $info['audio']['bitrate'] = $info['aac']['header']['bitrate'];
             }
             if ($info['audio']['bitrate'] == 0) {
                 $info['error'][] = 'Corrupt AAC file: bitrate_audio == zero';
@@ -119,7 +118,7 @@ class Aac extends BaseHandler
             $info['aac']['header']['num_program_configs'] = 1 + Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
             $bitoffset += 4;
 
-            for ($i = 0; $i < $info['aac']['header']['num_program_configs']; $i++) {
+            for ($i = 0; $i < $info['aac']['header']['num_program_configs']; ++$i) {
                 // http://www.audiocoding.com/wiki/index.php?page=program_config_element
 
                 // buffer_fullness                       20
@@ -169,77 +168,77 @@ class Aac extends BaseHandler
                 // }
 
                 if (!$info['aac']['header']['is_vbr']) {
-                    $info['aac']['program_configs'][$i]['buffer_fullness']        = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 20));
+                    $info['aac']['program_configs'][$i]['buffer_fullness'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 20));
                     $bitoffset += 20;
                 }
-                $info['aac']['program_configs'][$i]['element_instance_tag']       = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
+                $info['aac']['program_configs'][$i]['element_instance_tag'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                 $bitoffset += 4;
-                $info['aac']['program_configs'][$i]['object_type']                = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 2));
+                $info['aac']['program_configs'][$i]['object_type'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 2));
                 $bitoffset += 2;
-                $info['aac']['program_configs'][$i]['sampling_frequency_index']   = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
+                $info['aac']['program_configs'][$i]['sampling_frequency_index'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                 $bitoffset += 4;
                 $info['aac']['program_configs'][$i]['num_front_channel_elements'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                 $bitoffset += 4;
-                $info['aac']['program_configs'][$i]['num_side_channel_elements']  = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
+                $info['aac']['program_configs'][$i]['num_side_channel_elements'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                 $bitoffset += 4;
-                $info['aac']['program_configs'][$i]['num_back_channel_elements']  = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
+                $info['aac']['program_configs'][$i]['num_back_channel_elements'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                 $bitoffset += 4;
-                $info['aac']['program_configs'][$i]['num_lfe_channel_elements']   = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 2));
+                $info['aac']['program_configs'][$i]['num_lfe_channel_elements'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 2));
                 $bitoffset += 2;
-                $info['aac']['program_configs'][$i]['num_assoc_data_elements']    = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 3));
+                $info['aac']['program_configs'][$i]['num_assoc_data_elements'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 3));
                 $bitoffset += 3;
-                $info['aac']['program_configs'][$i]['num_valid_cc_elements']      = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
+                $info['aac']['program_configs'][$i]['num_valid_cc_elements'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                 $bitoffset += 4;
-                $info['aac']['program_configs'][$i]['mono_mixdown_present']       = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
+                $info['aac']['program_configs'][$i]['mono_mixdown_present'] = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
                 $bitoffset += 1;
                 if ($info['aac']['program_configs'][$i]['mono_mixdown_present']) {
-                    $info['aac']['program_configs'][$i]['mono_mixdown_element_number']    = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
+                    $info['aac']['program_configs'][$i]['mono_mixdown_element_number'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                     $bitoffset += 4;
                 }
-                $info['aac']['program_configs'][$i]['stereo_mixdown_present']             = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
+                $info['aac']['program_configs'][$i]['stereo_mixdown_present'] = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
                 $bitoffset += 1;
                 if ($info['aac']['program_configs'][$i]['stereo_mixdown_present']) {
-                    $info['aac']['program_configs'][$i]['stereo_mixdown_element_number']  = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
+                    $info['aac']['program_configs'][$i]['stereo_mixdown_element_number'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                     $bitoffset += 4;
                 }
-                $info['aac']['program_configs'][$i]['matrix_mixdown_idx_present']         = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
+                $info['aac']['program_configs'][$i]['matrix_mixdown_idx_present'] = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
                 $bitoffset += 1;
                 if ($info['aac']['program_configs'][$i]['matrix_mixdown_idx_present']) {
-                    $info['aac']['program_configs'][$i]['matrix_mixdown_idx']             = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 2));
+                    $info['aac']['program_configs'][$i]['matrix_mixdown_idx'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 2));
                     $bitoffset += 2;
-                    $info['aac']['program_configs'][$i]['pseudo_surround_enable']         = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
+                    $info['aac']['program_configs'][$i]['pseudo_surround_enable'] = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
                     $bitoffset += 1;
                 }
-                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_front_channel_elements']; $j++) {
-                    $info['aac']['program_configs'][$i]['front_element_is_cpe'][$j]     = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
+                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_front_channel_elements']; ++$j) {
+                    $info['aac']['program_configs'][$i]['front_element_is_cpe'][$j] = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
                     $bitoffset += 1;
                     $info['aac']['program_configs'][$i]['front_element_tag_select'][$j] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                     $bitoffset += 4;
                 }
-                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_side_channel_elements']; $j++) {
-                    $info['aac']['program_configs'][$i]['side_element_is_cpe'][$j]     = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
+                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_side_channel_elements']; ++$j) {
+                    $info['aac']['program_configs'][$i]['side_element_is_cpe'][$j] = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
                     $bitoffset += 1;
                     $info['aac']['program_configs'][$i]['side_element_tag_select'][$j] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                     $bitoffset += 4;
                 }
-                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_back_channel_elements']; $j++) {
-                    $info['aac']['program_configs'][$i]['back_element_is_cpe'][$j]     = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
+                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_back_channel_elements']; ++$j) {
+                    $info['aac']['program_configs'][$i]['back_element_is_cpe'][$j] = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
                     $bitoffset += 1;
                     $info['aac']['program_configs'][$i]['back_element_tag_select'][$j] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                     $bitoffset += 4;
                 }
-                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_lfe_channel_elements']; $j++) {
+                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_lfe_channel_elements']; ++$j) {
                     $info['aac']['program_configs'][$i]['lfe_element_tag_select'][$j] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                     $bitoffset += 4;
                 }
-                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_assoc_data_elements']; $j++) {
+                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_assoc_data_elements']; ++$j) {
                     $info['aac']['program_configs'][$i]['assoc_data_element_tag_select'][$j] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                     $bitoffset += 4;
                 }
-                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_valid_cc_elements']; $j++) {
-                    $info['aac']['program_configs'][$i]['cc_element_is_ind_sw'][$j]          = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
+                for ($j = 0; $j < $info['aac']['program_configs'][$i]['num_valid_cc_elements']; ++$j) {
+                    $info['aac']['program_configs'][$i]['cc_element_is_ind_sw'][$j] = (bool) Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 1));
                     $bitoffset += 1;
-                    $info['aac']['program_configs'][$i]['valid_cc_element_tag_select'][$j]   = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
+                    $info['aac']['program_configs'][$i]['valid_cc_element_tag_select'][$j] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 4));
                     $bitoffset += 4;
                 }
 
@@ -247,15 +246,15 @@ class Aac extends BaseHandler
 
                 $info['aac']['program_configs'][$i]['comment_field_bytes'] = Helper::Bin2Dec(substr($AACheaderBitstream, $bitoffset, 8));
                 $bitoffset += 8;
-                $info['aac']['program_configs'][$i]['comment_field']       = Helper::Bin2String(substr($AACheaderBitstream, $bitoffset, 8 * $info['aac']['program_configs'][$i]['comment_field_bytes']));
+                $info['aac']['program_configs'][$i]['comment_field'] = Helper::Bin2String(substr($AACheaderBitstream, $bitoffset, 8 * $info['aac']['program_configs'][$i]['comment_field_bytes']));
                 $bitoffset += 8 * $info['aac']['program_configs'][$i]['comment_field_bytes'];
 
-                $info['aac']['header']['profile']                           = self::AACprofileLookup($info['aac']['program_configs'][$i]['object_type'], $info['aac']['header']['mpeg_version']);
-                $info['aac']['program_configs'][$i]['sampling_frequency']   = self::AACsampleRateLookup($info['aac']['program_configs'][$i]['sampling_frequency_index']);
-                $info['audio']['sample_rate']                               = $info['aac']['program_configs'][$i]['sampling_frequency'];
-                $info['audio']['channels']                                  = self::AACchannelCountCalculate($info['aac']['program_configs'][$i]);
+                $info['aac']['header']['profile'] = self::AACprofileLookup($info['aac']['program_configs'][$i]['object_type'], $info['aac']['header']['mpeg_version']);
+                $info['aac']['program_configs'][$i]['sampling_frequency'] = self::AACsampleRateLookup($info['aac']['program_configs'][$i]['sampling_frequency_index']);
+                $info['audio']['sample_rate'] = $info['aac']['program_configs'][$i]['sampling_frequency'];
+                $info['audio']['channels'] = self::AACchannelCountCalculate($info['aac']['program_configs'][$i]);
                 if ($info['aac']['program_configs'][$i]['comment_field']) {
-                    $info['aac']['comments'][]                          = $info['aac']['program_configs'][$i]['comment_field'];
+                    $info['aac']['comments'][] = $info['aac']['program_configs'][$i]['comment_field'];
                 }
             }
             $info['playtime_seconds'] = (($info['avdataend'] - $info['avdataoffset']) * 8) / $info['audio']['bitrate'];
@@ -263,27 +262,24 @@ class Aac extends BaseHandler
             $info['audio']['encoder_options'] = $info['aac']['header_type'].' '.$info['aac']['header']['profile'];
 
             return true;
-
         } else {
-
             unset($info['fileformat']);
             unset($info['aac']);
             $info['error'][] = 'AAC-ADIF synch not found at offset '.$info['avdataoffset'].' (expected "ADIF", found "'.substr($AACheader, 0, 4).'" instead)';
 
             return false;
-
         }
-
     }
 
     /**
-     *
      * @staticvar array $decbin
+     *
      * @param  type    $MaxFramesToScan
      * @param  type    $ReturnExtendedInfo
-     * @return boolean
+     *
+     * @return bool
      */
-    public function getAACADTSheaderFilepointer($MaxFramesToScan=1000000, $ReturnExtendedInfo=false)
+    public function getAACADTSheaderFilepointer($MaxFramesToScan = 1000000, $ReturnExtendedInfo = false)
     {
         $info = &$this->getid3->info;
 
@@ -316,20 +312,19 @@ class Aac extends BaseHandler
         // * ADTS Error check
         // crc_check                                      16    only if protection_absent == 0
 
-        $byteoffset  = $info['avdataoffset'];
+        $byteoffset = $info['avdataoffset'];
         $framenumber = 0;
 
         // Init bit pattern array
         static $decbin = array();
 
         // Populate $bindec
-        for ($i = 0; $i < 256; $i++) {
+        for ($i = 0; $i < 256; ++$i) {
             $decbin[chr($i)] = str_pad(decbin($i), 8, '0', STR_PAD_LEFT);
         }
 
         // used to calculate bitrate below
         $BitrateCache = array();
-
 
         while (true) {
             // breaks out when end-of-file encountered, or invalid data found,
@@ -355,7 +350,7 @@ class Aac extends BaseHandler
             $header2 = Helper::BigEndian2Int(substr($substring, 2, 4));
             $header3 = Helper::BigEndian2Int(substr($substring, 6, 1));
 
-            $info['aac']['header']['raw']['syncword']          = ($header1 & 0xFFF0) >> 4;
+            $info['aac']['header']['raw']['syncword'] = ($header1 & 0xFFF0) >> 4;
             if ($info['aac']['header']['raw']['syncword'] != 0x0FFF) {
                 $info['error'][] = 'Synch pattern (0x0FFF) not found at offset '.(ftell($this->getid3->fp) - $substringlength).' (found 0x0'.strtoupper(dechex($info['aac']['header']['raw']['syncword'])).' instead)';
                 //if ($info['fileformat'] == 'aac') {
@@ -368,34 +363,34 @@ class Aac extends BaseHandler
 
             // Gather info for first frame only - this takes time to do 1000 times!
             if ($framenumber == 0) {
-                $info['aac']['header_type']                      = 'ADTS';
-                $info['fileformat']                              = 'aac';
-                $info['audio']['dataformat']                     = 'aac';
+                $info['aac']['header_type'] = 'ADTS';
+                $info['fileformat'] = 'aac';
+                $info['audio']['dataformat'] = 'aac';
 
-                $info['aac']['header']['raw']['mpeg_version']      = ($header1 & 0x0008) >> 3;
-                $info['aac']['header']['raw']['mpeg_layer']        = ($header1 & 0x0006) >> 1;
+                $info['aac']['header']['raw']['mpeg_version'] = ($header1 & 0x0008) >> 3;
+                $info['aac']['header']['raw']['mpeg_layer'] = ($header1 & 0x0006) >> 1;
                 $info['aac']['header']['raw']['protection_absent'] = ($header1 & 0x0001) >> 0;
 
-                $info['aac']['header']['raw']['profile_code']      = ($header2 & 0xC0000000) >> 30;
-                $info['aac']['header']['raw']['sample_rate_code']  = ($header2 & 0x3C000000) >> 26;
-                $info['aac']['header']['raw']['private_stream']    = ($header2 & 0x02000000) >> 25;
-                $info['aac']['header']['raw']['channels_code']     = ($header2 & 0x01C00000) >> 22;
-                $info['aac']['header']['raw']['original']          = ($header2 & 0x00200000) >> 21;
-                $info['aac']['header']['raw']['home']              = ($header2 & 0x00100000) >> 20;
-                $info['aac']['header']['raw']['copyright_stream']  = ($header2 & 0x00080000) >> 19;
-                $info['aac']['header']['raw']['copyright_start']   = ($header2 & 0x00040000) >> 18;
-                $info['aac']['header']['raw']['frame_length']      = ($header2 & 0x0003FFE0) >>  5;
+                $info['aac']['header']['raw']['profile_code'] = ($header2 & 0xC0000000) >> 30;
+                $info['aac']['header']['raw']['sample_rate_code'] = ($header2 & 0x3C000000) >> 26;
+                $info['aac']['header']['raw']['private_stream'] = ($header2 & 0x02000000) >> 25;
+                $info['aac']['header']['raw']['channels_code'] = ($header2 & 0x01C00000) >> 22;
+                $info['aac']['header']['raw']['original'] = ($header2 & 0x00200000) >> 21;
+                $info['aac']['header']['raw']['home'] = ($header2 & 0x00100000) >> 20;
+                $info['aac']['header']['raw']['copyright_stream'] = ($header2 & 0x00080000) >> 19;
+                $info['aac']['header']['raw']['copyright_start'] = ($header2 & 0x00040000) >> 18;
+                $info['aac']['header']['raw']['frame_length'] = ($header2 & 0x0003FFE0) >>  5;
 
-                $info['aac']['header']['mpeg_version']     = ($info['aac']['header']['raw']['mpeg_version']      ? 2    : 4);
-                $info['aac']['header']['crc_present']      = ($info['aac']['header']['raw']['protection_absent'] ? false: true);
-                $info['aac']['header']['profile']          = self::AACprofileLookup($info['aac']['header']['raw']['profile_code'], $info['aac']['header']['mpeg_version']);
+                $info['aac']['header']['mpeg_version'] = ($info['aac']['header']['raw']['mpeg_version']      ? 2    : 4);
+                $info['aac']['header']['crc_present'] = ($info['aac']['header']['raw']['protection_absent'] ? false : true);
+                $info['aac']['header']['profile'] = self::AACprofileLookup($info['aac']['header']['raw']['profile_code'], $info['aac']['header']['mpeg_version']);
                 $info['aac']['header']['sample_frequency'] = self::AACsampleRateLookup($info['aac']['header']['raw']['sample_rate_code']);
-                $info['aac']['header']['private']          = (bool) $info['aac']['header']['raw']['private_stream'];
-                $info['aac']['header']['original']         = (bool) $info['aac']['header']['raw']['original'];
-                $info['aac']['header']['home']             = (bool) $info['aac']['header']['raw']['home'];
-                $info['aac']['header']['channels']         = (($info['aac']['header']['raw']['channels_code'] == 7) ? 8 : $info['aac']['header']['raw']['channels_code']);
+                $info['aac']['header']['private'] = (bool) $info['aac']['header']['raw']['private_stream'];
+                $info['aac']['header']['original'] = (bool) $info['aac']['header']['raw']['original'];
+                $info['aac']['header']['home'] = (bool) $info['aac']['header']['raw']['home'];
+                $info['aac']['header']['channels'] = (($info['aac']['header']['raw']['channels_code'] == 7) ? 8 : $info['aac']['header']['raw']['channels_code']);
                 if ($ReturnExtendedInfo) {
-                    $info['aac'][$framenumber]['copyright_id_bit']   = (bool) $info['aac']['header']['raw']['copyright_stream'];
+                    $info['aac'][$framenumber]['copyright_id_bit'] = (bool) $info['aac']['header']['raw']['copyright_stream'];
                     $info['aac'][$framenumber]['copyright_id_start'] = (bool) $info['aac']['header']['raw']['copyright_start'];
                 }
 
@@ -409,7 +404,7 @@ class Aac extends BaseHandler
                 }
 
                 $info['audio']['sample_rate'] = $info['aac']['header']['sample_frequency'];
-                $info['audio']['channels']    = $info['aac']['header']['channels'];
+                $info['audio']['channels'] = $info['aac']['header']['channels'];
             }
 
             $FrameLength = ($header2 & 0x0003FFE0) >>  5;
@@ -419,7 +414,7 @@ class Aac extends BaseHandler
             }
             Helper::safe_inc($info['aac']['bitrate_distribution'][$BitrateCache[$FrameLength]], 1);
 
-            $info['aac'][$framenumber]['aac_frame_length']     = $FrameLength;
+            $info['aac'][$framenumber]['aac_frame_length'] = $FrameLength;
 
             $info['aac'][$framenumber]['adts_buffer_fullness'] = (($header2 & 0x0000001F) << 6) & (($header3 & 0xFC) >> 2);
             if ($info['aac'][$framenumber]['adts_buffer_fullness'] == 0x07FF) {
@@ -427,7 +422,7 @@ class Aac extends BaseHandler
             } else {
                 $info['audio']['bitrate_mode'] = 'cbr';
             }
-            $info['aac'][$framenumber]['num_raw_data_blocks']  = (($header3 & 0x03) >> 0);
+            $info['aac'][$framenumber]['num_raw_data_blocks'] = (($header3 & 0x03) >> 0);
 
             if ($info['aac']['header']['crc_present']) {
                 //$info['aac'][$framenumber]['crc'] = GetId3_lib::BigEndian2Int(substr($substring, 7, 2);
@@ -451,48 +446,46 @@ class Aac extends BaseHandler
             if ((++$framenumber < $MaxFramesToScan) && (($byteoffset + 10) < $info['avdataend'])) {
 
                 // keep scanning
-
             } else {
-
-                $info['aac']['frames']    = $framenumber;
+                $info['aac']['frames'] = $framenumber;
                 $info['playtime_seconds'] = ($info['avdataend'] / $byteoffset) * (($framenumber * 1024) / $info['aac']['header']['sample_frequency']);  // (1 / % of file scanned) * (samples / (samples/sec)) = seconds
                 if ($info['playtime_seconds'] == 0) {
                     $info['error'][] = 'Corrupt AAC file: playtime_seconds == zero';
 
                     return false;
                 }
-                $info['audio']['bitrate']    = (($info['avdataend'] - $info['avdataoffset']) * 8) / $info['playtime_seconds'];
+                $info['audio']['bitrate'] = (($info['avdataend'] - $info['avdataoffset']) * 8) / $info['playtime_seconds'];
                 ksort($info['aac']['bitrate_distribution']);
 
                 $info['audio']['encoder_options'] = $info['aac']['header_type'].' '.$info['aac']['header']['profile'];
 
                 return true;
-
             }
         }
         // should never get here.
     }
 
     /**
-     *
      * @staticvar array $AACsampleRateLookup
+     *
      * @param  type $samplerateid
+     *
      * @return type
      */
     public static function AACsampleRateLookup($samplerateid)
     {
         static $AACsampleRateLookup = array();
         if (empty($AACsampleRateLookup)) {
-            $AACsampleRateLookup[0]  = 96000;
-            $AACsampleRateLookup[1]  = 88200;
-            $AACsampleRateLookup[2]  = 64000;
-            $AACsampleRateLookup[3]  = 48000;
-            $AACsampleRateLookup[4]  = 44100;
-            $AACsampleRateLookup[5]  = 32000;
-            $AACsampleRateLookup[6]  = 24000;
-            $AACsampleRateLookup[7]  = 22050;
-            $AACsampleRateLookup[8]  = 16000;
-            $AACsampleRateLookup[9]  = 12000;
+            $AACsampleRateLookup[0] = 96000;
+            $AACsampleRateLookup[1] = 88200;
+            $AACsampleRateLookup[2] = 64000;
+            $AACsampleRateLookup[3] = 48000;
+            $AACsampleRateLookup[4] = 44100;
+            $AACsampleRateLookup[5] = 32000;
+            $AACsampleRateLookup[6] = 24000;
+            $AACsampleRateLookup[7] = 22050;
+            $AACsampleRateLookup[8] = 16000;
+            $AACsampleRateLookup[9] = 12000;
             $AACsampleRateLookup[10] = 11025;
             $AACsampleRateLookup[11] = 8000;
             $AACsampleRateLookup[12] = 0;
@@ -505,60 +498,61 @@ class Aac extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $AACprofileLookup
+     *
      * @param  type $profileid
      * @param  type $mpegversion
+     *
      * @return type
      */
     public static function AACprofileLookup($profileid, $mpegversion)
     {
         static $AACprofileLookup = array();
         if (empty($AACprofileLookup)) {
-            $AACprofileLookup[2][0]  = 'Main profile';
-            $AACprofileLookup[2][1]  = 'Low Complexity profile (LC)';
-            $AACprofileLookup[2][2]  = 'Scalable Sample Rate profile (SSR)';
-            $AACprofileLookup[2][3]  = '(reserved)';
-            $AACprofileLookup[4][0]  = 'AAC_MAIN';
-            $AACprofileLookup[4][1]  = 'AAC_LC';
-            $AACprofileLookup[4][2]  = 'AAC_SSR';
-            $AACprofileLookup[4][3]  = 'AAC_LTP';
+            $AACprofileLookup[2][0] = 'Main profile';
+            $AACprofileLookup[2][1] = 'Low Complexity profile (LC)';
+            $AACprofileLookup[2][2] = 'Scalable Sample Rate profile (SSR)';
+            $AACprofileLookup[2][3] = '(reserved)';
+            $AACprofileLookup[4][0] = 'AAC_MAIN';
+            $AACprofileLookup[4][1] = 'AAC_LC';
+            $AACprofileLookup[4][2] = 'AAC_SSR';
+            $AACprofileLookup[4][3] = 'AAC_LTP';
         }
 
         return (isset($AACprofileLookup[$mpegversion][$profileid]) ? $AACprofileLookup[$mpegversion][$profileid] : 'invalid');
     }
 
     /**
-     *
      * @param  type $program_configs
+     *
      * @return int
      */
     public static function AACchannelCountCalculate($program_configs)
     {
         $channels = 0;
-        for ($i = 0; $i < $program_configs['num_front_channel_elements']; $i++) {
-            $channels++;
+        for ($i = 0; $i < $program_configs['num_front_channel_elements']; ++$i) {
+            ++$channels;
             if ($program_configs['front_element_is_cpe'][$i]) {
                 // each front element is channel pair (CPE = Channel Pair Element)
-                $channels++;
+                ++$channels;
             }
         }
-        for ($i = 0; $i < $program_configs['num_side_channel_elements']; $i++) {
-            $channels++;
+        for ($i = 0; $i < $program_configs['num_side_channel_elements']; ++$i) {
+            ++$channels;
             if ($program_configs['side_element_is_cpe'][$i]) {
                 // each side element is channel pair (CPE = Channel Pair Element)
-                $channels++;
+                ++$channels;
             }
         }
-        for ($i = 0; $i < $program_configs['num_back_channel_elements']; $i++) {
-            $channels++;
+        for ($i = 0; $i < $program_configs['num_back_channel_elements']; ++$i) {
+            ++$channels;
             if ($program_configs['back_element_is_cpe'][$i]) {
                 // each back element is channel pair (CPE = Channel Pair Element)
-                $channels++;
+                ++$channels;
             }
         }
-        for ($i = 0; $i < $program_configs['num_lfe_channel_elements']; $i++) {
-            $channels++;
+        for ($i = 0; $i < $program_configs['num_lfe_channel_elements']; ++$i) {
+            ++$channels;
         }
 
         return $channels;

@@ -22,8 +22,10 @@ use GetId3\GetId3Core;
  * module for writing Lyrics3 tags
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
+ *
  * @uses GetId3\Module\Tag\Lyrics3
  */
 class Lyrics3
@@ -32,19 +34,16 @@ class Lyrics3
     public $tag_data;
     //var $lyrics3_version = 2;       // 1 or 2
     /**
-     *
      * @var array
      */
-    public $warnings        = array(); // any non-critical errors will be stored here
+    public $warnings = array(); // any non-critical errors will be stored here
     /**
-     *
      * @var array
      */
-    public $errors          = array(); // any critical errors will be stored here
+    public $errors = array(); // any critical errors will be stored here
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function __construct()
     {
@@ -52,8 +51,7 @@ class Lyrics3
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function WriteLyrics3()
     {
@@ -68,7 +66,6 @@ class Lyrics3
         $ThisFileInfo = $getID3->analyze($this->filename);
         if (isset($ThisFileInfo['lyrics3']['tag_offset_start']) && isset($ThisFileInfo['lyrics3']['tag_offset_end'])) {
             if (is_readable($this->filename) && is_writable($this->filename) && is_file($this->filename) && ($fp = fopen($this->filename, 'a+b'))) {
-
                 flock($fp, LOCK_EX);
                 $oldignoreuserabort = ignore_user_abort(true);
 
@@ -90,7 +87,6 @@ class Lyrics3
                 ignore_user_abort($oldignoreuserabort);
 
                 return true;
-
             } else {
                 $this->errors[] = 'Cannot fopen('.$this->filename.', "a+b")';
 
@@ -100,5 +96,4 @@ class Lyrics3
         // no Lyrics3 present
         return true;
     }
-
 }

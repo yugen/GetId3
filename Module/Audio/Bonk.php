@@ -25,14 +25,14 @@ use GetId3\Module\Tag\Id3v2;
  * module for analyzing BONK audio files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Bonk extends BaseHandler
 {
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -40,15 +40,13 @@ class Bonk extends BaseHandler
 
         // shortcut
         $info['bonk'] = array();
-        $thisfile_bonk        = &$info['bonk'];
+        $thisfile_bonk = &$info['bonk'];
 
         $thisfile_bonk['dataoffset'] = $info['avdataoffset'];
-        $thisfile_bonk['dataend']    = $info['avdataend'];
+        $thisfile_bonk['dataend'] = $info['avdataend'];
 
         if (!Helper::intValueSupported($thisfile_bonk['dataend'])) {
-
             $info['warning'][] = 'Unable to parse BONK file from end (v0.6+ preferred method) because PHP filesystem functions only support up to '.round(PHP_INT_MAX / 1073741824).'GB';
-
         } else {
 
             // scan-from-end method, for v0.6 and higher
@@ -66,7 +64,7 @@ class Bonk extends BaseHandler
                 }
                 $BonkTagName = substr($TagHeaderTest, 1, 4);
 
-                $thisfile_bonk[$BonkTagName]['size']   = $BonkTagSize;
+                $thisfile_bonk[$BonkTagName]['size'] = $BonkTagSize;
                 $thisfile_bonk[$BonkTagName]['offset'] = $BonkTagOffset;
                 $this->HandleBonkTags($BonkTagName);
                 $NextTagEndOffset = $BonkTagOffset - 8;
@@ -80,7 +78,6 @@ class Bonk extends BaseHandler
                 fseek($this->getid3->fp, $NextTagEndOffset, SEEK_SET);
                 $PossibleBonkTag = fread($this->getid3->fp, 8);
             }
-
         }
 
         // seek-from-beginning method for v0.4 and v0.5
@@ -103,10 +100,9 @@ class Bonk extends BaseHandler
                         break 2;
                 }
                 $BonkTagName = substr($TagHeaderTest, 1, 4);
-                $thisfile_bonk[$BonkTagName]['size']   = $thisfile_bonk['dataend'] - $thisfile_bonk['dataoffset'];
+                $thisfile_bonk[$BonkTagName]['size'] = $thisfile_bonk['dataend'] - $thisfile_bonk['dataoffset'];
                 $thisfile_bonk[$BonkTagName]['offset'] = $thisfile_bonk['dataoffset'];
                 $this->HandleBonkTags($BonkTagName);
-
             } while (true);
         }
 
@@ -118,7 +114,7 @@ class Bonk extends BaseHandler
                 $info['audio']['encoder'] = 'Extended BONK v0.6 - v0.8';
 
                 $BonkTagName = substr($TagHeaderTest, 1, 4);
-                $thisfile_bonk[$BonkTagName]['size']   = $thisfile_bonk['dataend'] - $thisfile_bonk['dataoffset'];
+                $thisfile_bonk[$BonkTagName]['size'] = $thisfile_bonk['dataend'] - $thisfile_bonk['dataoffset'];
                 $thisfile_bonk[$BonkTagName]['offset'] = $thisfile_bonk['dataoffset'];
                 $this->HandleBonkTags($BonkTagName);
             }
@@ -132,11 +128,9 @@ class Bonk extends BaseHandler
         }
 
         return true;
-
     }
 
     /**
-     *
      * @param type $BonkTagName
      */
     public function HandleBonkTags($BonkTagName)
@@ -148,28 +142,28 @@ class Bonk extends BaseHandler
                 $thisfile_bonk_BONK = &$info['bonk']['BONK'];
 
                 $BonkData = "\x00".'BONK'.fread($this->getid3->fp, 17);
-                $thisfile_bonk_BONK['version']            =        Helper::LittleEndian2Int(substr($BonkData,  5, 1));
-                $thisfile_bonk_BONK['number_samples']     =        Helper::LittleEndian2Int(substr($BonkData,  6, 4));
-                $thisfile_bonk_BONK['sample_rate']        =        Helper::LittleEndian2Int(substr($BonkData, 10, 4));
+                $thisfile_bonk_BONK['version'] = Helper::LittleEndian2Int(substr($BonkData, 5, 1));
+                $thisfile_bonk_BONK['number_samples'] = Helper::LittleEndian2Int(substr($BonkData, 6, 4));
+                $thisfile_bonk_BONK['sample_rate'] = Helper::LittleEndian2Int(substr($BonkData, 10, 4));
 
-                $thisfile_bonk_BONK['channels']           =        Helper::LittleEndian2Int(substr($BonkData, 14, 1));
-                $thisfile_bonk_BONK['lossless']           = (bool) Helper::LittleEndian2Int(substr($BonkData, 15, 1));
-                $thisfile_bonk_BONK['joint_stereo']       = (bool) Helper::LittleEndian2Int(substr($BonkData, 16, 1));
-                $thisfile_bonk_BONK['number_taps']        =        Helper::LittleEndian2Int(substr($BonkData, 17, 2));
-                $thisfile_bonk_BONK['downsampling_ratio'] =        Helper::LittleEndian2Int(substr($BonkData, 19, 1));
-                $thisfile_bonk_BONK['samples_per_packet'] =        Helper::LittleEndian2Int(substr($BonkData, 20, 2));
+                $thisfile_bonk_BONK['channels'] = Helper::LittleEndian2Int(substr($BonkData, 14, 1));
+                $thisfile_bonk_BONK['lossless'] = (bool) Helper::LittleEndian2Int(substr($BonkData, 15, 1));
+                $thisfile_bonk_BONK['joint_stereo'] = (bool) Helper::LittleEndian2Int(substr($BonkData, 16, 1));
+                $thisfile_bonk_BONK['number_taps'] = Helper::LittleEndian2Int(substr($BonkData, 17, 2));
+                $thisfile_bonk_BONK['downsampling_ratio'] = Helper::LittleEndian2Int(substr($BonkData, 19, 1));
+                $thisfile_bonk_BONK['samples_per_packet'] = Helper::LittleEndian2Int(substr($BonkData, 20, 2));
 
                 $info['avdataoffset'] = $thisfile_bonk_BONK['offset'] + 5 + 17;
-                $info['avdataend']    = $thisfile_bonk_BONK['offset'] + $thisfile_bonk_BONK['size'];
+                $info['avdataend'] = $thisfile_bonk_BONK['offset'] + $thisfile_bonk_BONK['size'];
 
-                $info['fileformat']               = 'bonk';
-                $info['audio']['dataformat']      = 'bonk';
-                $info['audio']['bitrate_mode']    = 'vbr'; // assumed
-                $info['audio']['channels']        = $thisfile_bonk_BONK['channels'];
-                $info['audio']['sample_rate']     = $thisfile_bonk_BONK['sample_rate'];
-                $info['audio']['channelmode']     = ($thisfile_bonk_BONK['joint_stereo'] ? 'joint stereo' : 'stereo');
-                $info['audio']['lossless']        = $thisfile_bonk_BONK['lossless'];
-                $info['audio']['codec']           = 'bonk';
+                $info['fileformat'] = 'bonk';
+                $info['audio']['dataformat'] = 'bonk';
+                $info['audio']['bitrate_mode'] = 'vbr'; // assumed
+                $info['audio']['channels'] = $thisfile_bonk_BONK['channels'];
+                $info['audio']['sample_rate'] = $thisfile_bonk_BONK['sample_rate'];
+                $info['audio']['channelmode'] = ($thisfile_bonk_BONK['joint_stereo'] ? 'joint stereo' : 'stereo');
+                $info['audio']['lossless'] = $thisfile_bonk_BONK['lossless'];
+                $info['audio']['codec'] = 'bonk';
 
                 $info['playtime_seconds'] = $thisfile_bonk_BONK['number_samples'] / ($thisfile_bonk_BONK['sample_rate'] * $thisfile_bonk_BONK['channels']);
                 if ($info['playtime_seconds'] > 0) {
@@ -195,19 +189,19 @@ class Bonk extends BaseHandler
                             fseek($this->getid3->fp, -5, SEEK_CUR);
                             break;
                         }
-                        $thisfile_bonk_INFO['entries_count']++;
+                        ++$thisfile_bonk_INFO['entries_count'];
                     }
                 }
                 break;
 
             case 'META':
                 $BonkData = "\x00".'META'.fread($this->getid3->fp, $info['bonk']['META']['size'] - 5);
-                $info['bonk']['META']['version'] = Helper::LittleEndian2Int(substr($BonkData,  5, 1));
+                $info['bonk']['META']['version'] = Helper::LittleEndian2Int(substr($BonkData, 5, 1));
 
                 $MetaTagEntries = floor(((strlen($BonkData) - 8) - 6) / 8); // BonkData - xxxxmeta - ØMETA
                 $offset = 6;
-                for ($i = 0; $i < $MetaTagEntries; $i++) {
-                    $MetaEntryTagName   =                              substr($BonkData, $offset, 4);
+                for ($i = 0; $i < $MetaTagEntries; ++$i) {
+                    $MetaEntryTagName = substr($BonkData, $offset, 4);
                     $offset += 4;
                     $MetaEntryTagOffset = Helper::LittleEndian2Int(substr($BonkData, $offset, 4));
                     $offset += 4;
@@ -240,13 +234,14 @@ class Bonk extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $BonkIsValidTagName
+     *
      * @param  type    $PossibleBonkTag
      * @param  type    $ignorecase
-     * @return boolean
+     *
+     * @return bool
      */
-    public static function BonkIsValidTagName($PossibleBonkTag, $ignorecase=false)
+    public static function BonkIsValidTagName($PossibleBonkTag, $ignorecase = false)
     {
         static $BonkIsValidTagName = array('BONK', 'INFO', ' ID3', 'META');
         foreach ($BonkIsValidTagName as $validtagname) {
@@ -259,5 +254,4 @@ class Bonk extends BaseHandler
 
         return false;
     }
-
 }

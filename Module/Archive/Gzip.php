@@ -29,6 +29,7 @@ use GetId3\GetId3Core;
  *
  * @author James Heinrich <info@getid3.org>
  * @author Mike Mozolin <teddybearØmail*ru>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
@@ -38,13 +39,12 @@ class Gzip
      * Optional file list - disable for speed.
      * decode gzipped files, if possible, and parse recursively (.tar.gz for example)
      *
-     * @var boolean
+     * @var bool
      */
     public $option_gzip_parse_contents = false;
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -59,7 +59,7 @@ class Gzip
         //+---+---+---+---+---+---+---+---+---+---+
 
         if ($info['filesize'] > $info['php_memory_limit']) {
-            $info['error'][] = 'File is too large (' . number_format($info['filesize']) . ' bytes) to read into memory (limit: ' . number_format($info['php_memory_limit'] / 1048576) . 'MB)';
+            $info['error'][] = 'File is too large ('.number_format($info['filesize']).' bytes) to read into memory (limit: '.number_format($info['php_memory_limit'] / 1048576).'MB)';
 
             return false;
         }
@@ -70,11 +70,11 @@ class Gzip
         while (true) {
             $is_wrong_members = false;
             $num_members = intval(count($arr_members));
-            for ($i = 0; $i < $num_members; $i++) {
+            for ($i = 0; $i < $num_members; ++$i) {
                 if (strlen($arr_members[$i]) == 0) {
                     continue;
                 }
-                $buf = "\x1F\x8B\x08" . $arr_members[$i];
+                $buf = "\x1F\x8B\x08".$arr_members[$i];
 
                 $attr = unpack($unpack_header, substr($buf, 0, $start_length));
                 if (!$this->get_os_type(ord($attr['os']))) {
@@ -94,13 +94,13 @@ class Gzip
 
         $fpointer = 0;
         $idx = 0;
-        for ($i = 0; $i < $num_members; $i++) {
+        for ($i = 0; $i < $num_members; ++$i) {
             if (strlen($arr_members[$i]) == 0) {
                 continue;
             }
             $thisInfo = &$info['gzip']['member_header'][++$idx];
 
-            $buff = "\x1F\x8B\x08" . $arr_members[$i];
+            $buff = "\x1F\x8B\x08".$arr_members[$i];
 
             $attr = unpack($unpack_header, substr($buff, 0, $start_length));
             $thisInfo['filemtime'] = Helper::LittleEndian2Int($attr['mtime']);
@@ -171,11 +171,11 @@ class Gzip
             if ($thisInfo['flags']['filename']) {
                 while (true) {
                     if (ord($buff[$fpointer]) == 0) {
-                        $fpointer++;
+                        ++$fpointer;
                         break;
                     }
                     $thisInfo['filename'] .= $buff[$fpointer];
-                    $fpointer++;
+                    ++$fpointer;
                 }
             }
             // bit 4 - FLG.FCOMMENT
@@ -185,11 +185,11 @@ class Gzip
             if ($thisInfo['flags']['comment']) {
                 while (true) {
                     if (ord($buff[$fpointer]) == 0) {
-                        $fpointer++;
+                        ++$fpointer;
                         break;
                     }
                     $thisInfo['comment'] .= $buff[$fpointer];
-                    $fpointer++;
+                    ++$fpointer;
                 }
             }
             // bit 1 - FLG.FHCRC
@@ -285,7 +285,9 @@ class Gzip
      * Converts the OS type
      *
      * @staticvar array $os_type
+     *
      * @param  type $key
+     *
      * @return type
      */
     public function get_os_type($key)
@@ -305,7 +307,7 @@ class Gzip
             '11' => 'NTFS filesystem (NT)',
             '12' => 'QDOS',
             '13' => 'Acorn RISCOS',
-            '255' => 'unknown'
+            '255' => 'unknown',
         );
 
         return (isset($os_type[$key]) ? $os_type[$key] : '');
@@ -315,7 +317,9 @@ class Gzip
      * Converts the eXtra FLags
      *
      * @staticvar array $xflag_type
+     *
      * @param  type $key
+     *
      * @return type
      */
     public function get_xflag_type($key)
@@ -323,7 +327,7 @@ class Gzip
         static $xflag_type = array(
             '0' => 'unknown',
             '2' => 'maximum compression',
-            '4' => 'fastest algorithm'
+            '4' => 'fastest algorithm',
         );
 
         return (isset($xflag_type[$key]) ? $xflag_type[$key] : '');

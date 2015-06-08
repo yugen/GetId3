@@ -23,15 +23,14 @@ use GetId3\Lib\Helper;
  * module for analyzing eFax files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Efax extends BaseHandler
 {
-
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -52,17 +51,17 @@ class Efax extends BaseHandler
         if ($info['efax']['header']['filesize'] != $info['filesize']) {
             $info['error'][] = 'Probable '.(($info['efax']['header']['filesize'] > $info['filesize']) ? 'truncated' : 'corrupt').' file, expecting '.$info['efax']['header']['filesize'].' bytes, found '.$info['filesize'].' bytes';
         }
-        $info['efax']['header']['software1'] =                        rtrim(substr($efaxheader,  26, 32), "\x00");
-        $info['efax']['header']['software2'] =                        rtrim(substr($efaxheader,  58, 32), "\x00");
-        $info['efax']['header']['software3'] =                        rtrim(substr($efaxheader,  90, 32), "\x00");
+        $info['efax']['header']['software1'] = rtrim(substr($efaxheader, 26, 32), "\x00");
+        $info['efax']['header']['software2'] = rtrim(substr($efaxheader, 58, 32), "\x00");
+        $info['efax']['header']['software3'] = rtrim(substr($efaxheader, 90, 32), "\x00");
 
-        $info['efax']['header']['pages']      = Helper::LittleEndian2Int(substr($efaxheader, 198, 2));
+        $info['efax']['header']['pages'] = Helper::LittleEndian2Int(substr($efaxheader, 198, 2));
         $info['efax']['header']['data_bytes'] = Helper::LittleEndian2Int(substr($efaxheader, 202, 4));
 
-$info['error'][] = 'eFax parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
-return false;
+        $info['error'][] = 'eFax parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
+
+        return false;
 
         return true;
     }
-
 }

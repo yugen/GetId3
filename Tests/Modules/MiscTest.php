@@ -11,14 +11,14 @@ class MiscTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        self::$cueFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'cuesample.cue';
+        self::$cueFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'cuesample.cue';
         self::$class = 'GetId3\\GetId3Core';
     }
 
     public function testClass()
     {
         if (!class_exists(self::$class)) {
-            $this->markTestSkipped(self::$class . ' is not available.');
+            $this->markTestSkipped(self::$class.' is not available.');
         }
         $this->assertTrue(class_exists(self::$class));
         $this->assertClassHasAttribute('option_md5_data', self::$class);

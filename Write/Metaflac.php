@@ -22,29 +22,27 @@ use GetId3\GetId3Core;
  * module for writing metaflac tags
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
+ *
  * @uses helperapps/metaflac.exe
  */
 class Metaflac
 {
-
     public $filename;
     public $tag_data;
     /**
-     *
      * @var array
      */
     public $warnings = array(); // any non-critical errors will be stored here
     /**
-     *
      * @var array
      */
-    public $errors   = array(); // any critical errors will be stored here
+    public $errors = array(); // any critical errors will be stored here
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function __construct()
     {
@@ -52,8 +50,7 @@ class Metaflac
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function WriteMetaFLAC()
     {
@@ -72,7 +69,6 @@ class Metaflac
                 }
             }
             fclose($fpcomments);
-
         } else {
             $this->errors[] = 'failed to open temporary tags file, tags not written - fopen("'.$tempcommentsfilename.'", "wb")';
 
@@ -81,7 +77,6 @@ class Metaflac
 
         $oldignoreuserabort = ignore_user_abort(true);
         if (GetId3Core::environmentIsWindows()) {
-
             if (file_exists(GetId3Core::getHelperAppsDir().'metaflac.exe')) {
                 //$commandline = '"'.GetId3Core::getHelperAppsDir().'metaflac.exe" --no-utf8-convert --remove-all-tags --import-tags-from="'.$tempcommentsfilename.'" "'.str_replace('/', '\\', $this->filename).'"';
                 //  metaflac works fine if you copy-paste the above commandline into a command prompt,
@@ -107,13 +102,11 @@ class Metaflac
             } else {
                 $metaflacError = 'metaflac.exe not found in '.GetId3Core::getHelperAppsDir();
             }
-
         } else {
 
             // It's simpler on *nix
             $commandline = 'metaflac --no-utf8-convert --remove-all-tags --import-tags-from='.escapeshellarg($tempcommentsfilename).' '.escapeshellarg($this->filename).' 2>&1';
             $metaflacError = `$commandline`;
-
         }
 
         // Remove temporary comments file
@@ -121,19 +114,16 @@ class Metaflac
         ignore_user_abort($oldignoreuserabort);
 
         if (!empty($metaflacError)) {
-
             $this->errors[] = 'System call to metaflac failed with this message returned: '."\n\n".$metaflacError;
 
             return false;
-
         }
 
         return true;
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function DeleteMetaFLAC()
     {
@@ -145,7 +135,6 @@ class Metaflac
 
         $oldignoreuserabort = ignore_user_abort(true);
         if (GetId3Core::environmentIsWindows()) {
-
             if (file_exists(GetId3Core::getHelperAppsDir().'metaflac.exe')) {
                 // To at least see if there was a problem, compare file modification timestamps before and after writing
                 clearstatcache();
@@ -163,13 +152,11 @@ class Metaflac
             } else {
                 $metaflacError = 'metaflac.exe not found in '.GetId3Core::getHelperAppsDir();
             }
-
         } else {
 
             // It's simpler on *nix
             $commandline = 'metaflac --remove-all-tags "'.$this->filename.'" 2>&1';
             $metaflacError = `$commandline`;
-
         }
 
         ignore_user_abort($oldignoreuserabort);
@@ -184,8 +171,8 @@ class Metaflac
     }
 
     /**
-     *
      * @param  type $originalcommentname
+     *
      * @return type
      */
     public function CleanmetaflacName($originalcommentname)
@@ -198,7 +185,5 @@ class Metaflac
         // Thanks Chris Bolt <chris-getid3Øbolt*cx> for improving this function
         // note: *reg_replace() replaces nulls with empty string (not space)
         return strtoupper(preg_replace('#[^ -<>-}]#', ' ', str_replace("\x00", ' ', $originalcommentname)));
-
     }
-
 }

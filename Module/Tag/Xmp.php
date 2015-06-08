@@ -55,35 +55,40 @@ namespace GetId3\Module\Tag;
  *
  * @author James Heinrich <info@getid3.org>
  * @author Nigel Barnes <ngbarnesØhotmail*com>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Xmp
 {
     /**
-    * @var string
-    * The name of the image file that contains the XMP fields to extract and modify.
-    * @see Image_XMP()
-    */
+     * @var string
+     * The name of the image file that contains the XMP fields to extract and modify.
+     *
+     * @see Image_XMP()
+     */
     public $_sFilename = null;
 
     /**
-    * @var array
-    * The XMP fields that were extracted from the image or updated by this class.
-    * @see getAllTags()
-    */
+     * @var array
+     * The XMP fields that were extracted from the image or updated by this class.
+     *
+     * @see getAllTags()
+     */
     public $_aXMP = array();
 
     /**
-    * @var boolean
-    * True if an APP1 segment was found to contain XMP metadata.
-    * @see isValid()
-    */
+     * @var bool
+     * True if an APP1 segment was found to contain XMP metadata.
+     *
+     * @see isValid()
+     */
     public $_bXMPParse = false;
 
     /**
      * The Property names of all known XMP fields.
      * Note: this is a full list with unrequired properties commented out.
+     *
      * @var array
      */
     protected static $XMP_tag_captions = array(
@@ -429,35 +434,36 @@ class Xmp
     );
 
     /**
-    * Returns the status of XMP parsing during instantiation
-    *
-    * You'll normally want to call this method before trying to get XMP fields.
-    *
-    * @return boolean
-    * Returns true if an APP1 segment was found to contain XMP metadata.
-    */
+     * Returns the status of XMP parsing during instantiation
+     *
+     * You'll normally want to call this method before trying to get XMP fields.
+     *
+     * @return bool
+     * Returns true if an APP1 segment was found to contain XMP metadata.
+     */
     public function isValid()
     {
         return $this->_bXMPParse;
     }
 
     /**
-    * Get a copy of all XMP tags extracted from the image
-    *
-    * @return array - An array of XMP fields as it extracted by the XMPparse() function
-    */
+     * Get a copy of all XMP tags extracted from the image
+     *
+     * @return array - An array of XMP fields as it extracted by the XMPparse() function
+     */
     public function getAllTags()
     {
         return $this->_aXMP;
     }
 
     /**
-    * Reads all the JPEG header segments from an JPEG image file into an array
-    *
-    * @param string $filename - the filename of the JPEG file to read
-    * @return array $headerdata - Array of JPEG header segments
-    * @return boolean FALSE - if headers could not be read
-    */
+     * Reads all the JPEG header segments from an JPEG image file into an array
+     *
+     * @param string $filename - the filename of the JPEG file to read
+     *
+     * @return array $headerdata - Array of JPEG header segments
+     * @return bool FALSE - if headers could not be read
+     */
     public function _get_jpeg_header_data($filename)
     {
         // prevent refresh from aborting file operations and hosing file
@@ -521,10 +527,10 @@ class Xmp
 
                 // Store the segment information in the output array
                 $headerdata[] = array(
-                    'SegType'      => ord($data{1}),
-                    'SegName'      => self::$JPEG_Segment_Names[ord($data{1})],
+                    'SegType' => ord($data{1}),
+                    'SegName' => self::$JPEG_Segment_Names[ord($data{1})],
                     'SegDataStart' => $segdatastart,
-                    'SegData'      => $segdata,
+                    'SegData' => $segdata,
                 );
             }
 
@@ -556,19 +562,20 @@ class Xmp
     }
 
     /**
-    * Retrieves XMP information from an APP1 JPEG segment and returns the raw XML text as a string.
-    *
-    * @param string $filename - the filename of the JPEG file to read
-    * @return string $xmp_data - the string of raw XML text
-    * @return boolean FALSE - if an APP 1 XMP segment could not be found, or if an error occured
-    */
+     * Retrieves XMP information from an APP1 JPEG segment and returns the raw XML text as a string.
+     *
+     * @param string $filename - the filename of the JPEG file to read
+     *
+     * @return string $xmp_data - the string of raw XML text
+     * @return bool FALSE - if an APP 1 XMP segment could not be found, or if an error occured
+     */
     public function _get_XMP_text($filename)
     {
         //Get JPEG header data
         $jpeg_header_data = $this->_get_jpeg_header_data($filename);
 
         //Cycle through the header segments
-        for ($i = 0; $i < count($jpeg_header_data); $i++) {
+        for ($i = 0; $i < count($jpeg_header_data); ++$i) {
             // If we find an APP1 header,
             if (strcmp($jpeg_header_data[$i]['SegName'], 'APP1') == 0) {
                 // And if it has the Adobe XMP/RDF label (http://ns.adobe.com/xap/1.0/\x00) ,
@@ -586,13 +593,14 @@ class Xmp
     }
 
     /**
-    * Parses a string containing XMP data (XML), and returns an array
-    * which contains all the XMP (XML) information.
-    *
-    * @param string $xml_text - a string containing the XMP data (XML) to be parsed
-    * @return array $xmp_array - an array containing all xmp details retrieved.
-    * @return boolean FALSE - couldn't parse the XMP data
-    */
+     * Parses a string containing XMP data (XML), and returns an array
+     * which contains all the XMP (XML) information.
+     *
+     * @param string $xml_text - a string containing the XMP data (XML) to be parsed
+     *
+     * @return array $xmp_array - an array containing all xmp details retrieved.
+     * @return bool FALSE - couldn't parse the XMP data
+     */
     public function read_XMP_array_from_text($xmltext)
     {
         // Check if there actually is any text to parse
@@ -738,17 +746,16 @@ class Xmp
                     }
                     break;
             }
-
         }
 
         return $xmp_array;
     }
 
     /**
-    * Constructor
-    *
-    * @param string - Name of the image file to access and extract XMP information from.
-    */
+     * Constructor
+     *
+     * @param string - Name of the image file to access and extract XMP information from.
+     */
     public function Image_XMP($sFilename)
     {
         $this->_sFilename = $sFilename;

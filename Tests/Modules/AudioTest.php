@@ -16,19 +16,19 @@ class AudioTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        self::$mp3File = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'mp3demo.mp3';
-        self::$wavFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'Yamaha-SY35-Buzzy-Synth-Lead-C4.wav';
-        self::$vqfFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'vqfsample.vqf';
-        self::$flacFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'flacsample.flac';
-        self::$oggFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'oggsample.ogg';
-        self::$midiFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'midisample.mid';
+        self::$mp3File = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'mp3demo.mp3';
+        self::$wavFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'Yamaha-SY35-Buzzy-Synth-Lead-C4.wav';
+        self::$vqfFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'vqfsample.vqf';
+        self::$flacFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'flacsample.flac';
+        self::$oggFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'oggsample.ogg';
+        self::$midiFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'midisample.mid';
         self::$class = 'GetId3\\GetId3Core';
     }
 
     public function testClass()
     {
         if (!class_exists(self::$class)) {
-            $this->markTestSkipped(self::$class . ' is not available.');
+            $this->markTestSkipped(self::$class.' is not available.');
         }
         $this->assertTrue(class_exists(self::$class));
         $this->assertClassHasAttribute('option_md5_data', self::$class);

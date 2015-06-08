@@ -23,6 +23,7 @@ use GetId3\Lib\Helper;
  * module for analyzing AVR Audio files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
@@ -79,7 +80,7 @@ class Avr extends BaseHandler
         $info['avr']['raw']['magic'] = substr($AVRheader, 0, 4);
         $magic = '2BIT';
         if ($info['avr']['raw']['magic'] != $magic) {
-            $info['error'][] = 'Expecting "' . Helper::PrintHexBytes($magic) . '" at offset ' . $info['avdataoffset'] . ', found "' . Helper::PrintHexBytes($info['avr']['raw']['magic']) . '"';
+            $info['error'][] = 'Expecting "'.Helper::PrintHexBytes($magic).'" at offset '.$info['avdataoffset'].', found "'.Helper::PrintHexBytes($info['avr']['raw']['magic']).'"';
             unset($info['fileformat']);
             unset($info['avr']);
 
@@ -141,7 +142,7 @@ class Avr extends BaseHandler
         }
 
         if (($info['avdataend'] - $info['avdataoffset']) != ($info['avr']['sample_length'] * (($info['avr']['bits_per_sample'] == 8) ? 1 : 2))) {
-            $info['warning'][] = 'Probable truncated file: expecting ' . ($info['avr']['sample_length'] * (($info['avr']['bits_per_sample'] == 8) ? 1 : 2)) . ' bytes of audio data, found ' . ($info['avdataend'] - $info['avdataoffset']);
+            $info['warning'][] = 'Probable truncated file: expecting '.($info['avr']['sample_length'] * (($info['avr']['bits_per_sample'] == 8) ? 1 : 2)).' bytes of audio data, found '.($info['avdataend'] - $info['avdataoffset']);
         }
 
         $info['audio']['dataformat'] = 'avr';

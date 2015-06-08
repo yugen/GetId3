@@ -23,45 +23,39 @@ use GetId3\GetId3Core;
  * module for writing RealAudio/RealVideo tags
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Real
 {
     /**
-     *
      * @var string
      */
     public $filename;
     /**
-     *
      * @var array
      */
-    public $tag_data          = array();
+    public $tag_data = array();
     /**
-     *
-     * @var integer
+     * @var int
      */
     public $fread_buffer_size = 32768;   // read buffer size in bytes
     /**
-     *
      * @var array
      */
-    public $warnings          = array(); // any non-critical errors will be stored here
+    public $warnings = array(); // any non-critical errors will be stored here
     /**
-     *
      * @var array
      */
-    public $errors            = array(); // any critical errors will be stored here
+    public $errors = array(); // any critical errors will be stored here
     /**
-     *
-     * @var integer
+     * @var int
      */
-    public $paddedlength      = 512;     // minimum length of CONT tag in bytes
+    public $paddedlength = 512;     // minimum length of CONT tag in bytes
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function __construct()
     {
@@ -69,13 +63,12 @@ class Real
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function WriteReal()
     {
         // File MUST be writeable - CHMOD(646) at least
-        if (is_writeable($this->filename) && is_file($this->filename) && ($fp_source = fopen($this->filename, 'r+b'))) {
+        if (is_writable($this->filename) && is_file($this->filename) && ($fp_source = fopen($this->filename, 'r+b'))) {
 
             // Initialize GetId3 engine
             $getID3 = new GetId3Core();
@@ -132,21 +125,18 @@ class Real
                 fclose($fp_source);
 
                 return true;
-
             } else {
-
                 if (empty($oldChunkInfo['CONT'])) {
                     // no existing CONT chunk
                     $BeforeOffset = $oldChunkInfo['DATA']['offset'];
-                    $AfterOffset  = $oldChunkInfo['DATA']['offset'];
+                    $AfterOffset = $oldChunkInfo['DATA']['offset'];
                 } else {
                     // new data is longer than old data
                     $BeforeOffset = $oldChunkInfo['CONT']['offset'];
-                    $AfterOffset  = $oldChunkInfo['CONT']['offset'] + $oldChunkInfo['CONT']['length'];
+                    $AfterOffset = $oldChunkInfo['CONT']['offset'] + $oldChunkInfo['CONT']['length'];
                 }
                 if ($tempfilename = tempnam(GetId3Core::getTempDir(), 'getID3')) {
                     if (is_writable($tempfilename) && is_file($tempfilename) && ($fp_temp = fopen($tempfilename, 'wb'))) {
-
                         rewind($fp_source);
                         fwrite($fp_temp, fread($fp_source, $BeforeOffset));
                         fwrite($fp_temp, $new_CONT_tag_data);
@@ -164,7 +154,6 @@ class Real
                         }
                         unlink($tempfilename);
                         $this->errors[] = 'FAILED: copy('.$tempfilename.', '.$this->filename.')';
-
                     } else {
                         $this->errors[] = 'Could not fopen("'.$tempfilename.'", "wb")';
                     }
@@ -172,9 +161,7 @@ class Real
                 fclose($fp_source);
 
                 return false;
-
             }
-
         }
         $this->errors[] = 'Could not fopen("'.$this->filename.'", "r+b")';
 
@@ -182,8 +169,8 @@ class Real
     }
 
     /**
-     *
      * @param  type   $chunks
+     *
      * @return string
      */
     public function GenerateRMFchunk(&$chunks)
@@ -197,19 +184,19 @@ class Real
         }
         $newHeadersCount = $chunks[$chunkNameKeys['.RMF']]['headers_count'] + ($oldCONTexists ? 0 : 1);
 
-        $RMFchunk  = "\x00\x00"; // object version
+        $RMFchunk = "\x00\x00"; // object version
         $RMFchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['.RMF']]['file_version'], 4);
-        $RMFchunk .= Helper::BigEndian2String($newHeadersCount,                                4);
+        $RMFchunk .= Helper::BigEndian2String($newHeadersCount, 4);
 
-        $RMFchunk  = '.RMF'.Helper::BigEndian2String(strlen($RMFchunk) + 8, 4).$RMFchunk; // .RMF chunk identifier + chunk length
+        $RMFchunk = '.RMF'.Helper::BigEndian2String(strlen($RMFchunk) + 8, 4).$RMFchunk; // .RMF chunk identifier + chunk length
 
         return $RMFchunk;
     }
 
     /**
-     *
      * @param  type   $chunks
      * @param  type   $new_CONT_tag_data
+     *
      * @return string
      */
     public function GeneratePROPchunk(&$chunks, &$new_CONT_tag_data)
@@ -233,26 +220,25 @@ class Real
         }
         $CONTdelta = strlen($new_CONT_tag_data) - $old_CONT_length;
 
-        $PROPchunk  = "\x00\x00"; // object version
-        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['max_bit_rate'],    4);
-        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['avg_bit_rate'],    4);
+        $PROPchunk = "\x00\x00"; // object version
+        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['max_bit_rate'], 4);
+        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['avg_bit_rate'], 4);
         $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['max_packet_size'], 4);
         $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['avg_packet_size'], 4);
-        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['num_packets'],     4);
-        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['duration'],        4);
-        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['preroll'],         4);
-        $PROPchunk .= Helper::BigEndian2String(max(0, $old_INDX_offset + $CONTdelta),              4);
-        $PROPchunk .= Helper::BigEndian2String(max(0, $old_DATA_offset + $CONTdelta),              4);
-        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['num_streams'],     2);
-        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['flags_raw'],       2);
+        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['num_packets'], 4);
+        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['duration'], 4);
+        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['preroll'], 4);
+        $PROPchunk .= Helper::BigEndian2String(max(0, $old_INDX_offset + $CONTdelta), 4);
+        $PROPchunk .= Helper::BigEndian2String(max(0, $old_DATA_offset + $CONTdelta), 4);
+        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['num_streams'], 2);
+        $PROPchunk .= Helper::BigEndian2String($chunks[$chunkNameKeys['PROP']]['flags_raw'], 2);
 
-        $PROPchunk  = 'PROP'.Helper::BigEndian2String(strlen($PROPchunk) + 8, 4).$PROPchunk; // PROP chunk identifier + chunk length
+        $PROPchunk = 'PROP'.Helper::BigEndian2String(strlen($PROPchunk) + 8, 4).$PROPchunk; // PROP chunk identifier + chunk length
 
         return $PROPchunk;
     }
 
     /**
-     *
      * @return string
      */
     public function GenerateCONTchunk()
@@ -262,7 +248,7 @@ class Real
             $this->tag_data[$key] = substr($value, 0, 65535);
         }
 
-        $CONTchunk  = "\x00\x00"; // object version
+        $CONTchunk = "\x00\x00"; // object version
 
         $CONTchunk .= Helper::BigEndian2String((!empty($this->tag_data['title'])     ? strlen($this->tag_data['title'])     : 0), 2);
         $CONTchunk .= (!empty($this->tag_data['title'])     ? strlen($this->tag_data['title'])     : '');
@@ -280,19 +266,18 @@ class Real
             $CONTchunk .= str_repeat("\x00", $this->paddedlength - strlen($CONTchunk) - 8);
         }
 
-        $CONTchunk  = 'CONT'.Helper::BigEndian2String(strlen($CONTchunk) + 8, 4).$CONTchunk; // CONT chunk identifier + chunk length
+        $CONTchunk = 'CONT'.Helper::BigEndian2String(strlen($CONTchunk) + 8, 4).$CONTchunk; // CONT chunk identifier + chunk length
 
         return $CONTchunk;
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function RemoveReal()
     {
         // File MUST be writeable - CHMOD(646) at least
-        if (is_writeable($this->filename) && is_file($this->filename) && ($fp_source = fopen($this->filename, 'r+b'))) {
+        if (is_writable($this->filename) && is_file($this->filename) && ($fp_source = fopen($this->filename, 'r+b'))) {
 
             // Initialize GetId3 engine
             $getID3 = new GetId3Core();
@@ -322,10 +307,9 @@ class Real
             }
 
             $BeforeOffset = $oldChunkInfo['CONT']['offset'];
-            $AfterOffset  = $oldChunkInfo['CONT']['offset'] + $oldChunkInfo['CONT']['length'];
+            $AfterOffset = $oldChunkInfo['CONT']['offset'] + $oldChunkInfo['CONT']['length'];
             if ($tempfilename = tempnam(GetId3Core::getTempDir(), 'getID3')) {
                 if (is_writable($tempfilename) && is_file($tempfilename) && ($fp_temp = fopen($tempfilename, 'wb'))) {
-
                     rewind($fp_source);
                     fwrite($fp_temp, fread($fp_source, $BeforeOffset));
                     fseek($fp_source, $AfterOffset, SEEK_SET);
@@ -342,7 +326,6 @@ class Real
                     }
                     unlink($tempfilename);
                     $this->errors[] = 'FAILED: copy('.$tempfilename.', '.$this->filename.')';
-
                 } else {
                     $this->errors[] = 'Could not fopen("'.$tempfilename.'", "wb")';
                 }
@@ -355,5 +338,4 @@ class Real
 
         return false;
     }
-
 }

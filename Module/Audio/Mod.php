@@ -22,15 +22,14 @@ use GetId3\Handler\BaseHandler;
  * module for analyzing MOD Audio files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Mod extends BaseHandler
 {
-
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -52,8 +51,7 @@ class Mod extends BaseHandler
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function getMODheaderFilepointer()
     {
@@ -74,8 +72,7 @@ class Mod extends BaseHandler
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function getXMheaderFilepointer()
     {
@@ -96,8 +93,7 @@ class Mod extends BaseHandler
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function getS3MheaderFilepointer()
     {
@@ -118,8 +114,7 @@ class Mod extends BaseHandler
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function getITheaderFilepointer()
     {

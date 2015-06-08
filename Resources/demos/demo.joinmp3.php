@@ -1,4 +1,5 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
 //  available at http://getid3.sourceforge.net                 //
@@ -33,7 +34,7 @@ function CombineMultipleMP3sTo($FilenameOut, $FilenamesIn)
             return false;
         }
     }
-    if (!is_writeable($FilenameOut)) {
+    if (!is_writable($FilenameOut)) {
         echo 'Cannot write "'.$FilenameOut.'"<BR>';
 
         return false;
@@ -42,18 +43,14 @@ function CombineMultipleMP3sTo($FilenameOut, $FilenamesIn)
     require_once '../getid3/getid3.php';
     ob_start();
     if ($fp_output = fopen($FilenameOut, 'wb')) {
-
         ob_end_clean();
         // Initialize getID3 engine
-        $getID3 = new getID3;
+        $getID3 = new getID3();
         foreach ($FilenamesIn as $nextinputfilename) {
-
             $CurrentFileInfo = $getID3->analyze($nextinputfilename);
             if ($CurrentFileInfo['fileformat'] == 'mp3') {
-
                 ob_start();
                 if ($fp_source = fopen($nextinputfilename, 'rb')) {
-
                     ob_end_clean();
                     $CurrentOutputPosition = ftell($fp_output);
 
@@ -68,37 +65,27 @@ function CombineMultipleMP3sTo($FilenameOut, $FilenamesIn)
                     $EndOfFileOffset = $CurrentOutputPosition + ($CurrentFileInfo['avdataend'] - $CurrentFileInfo['avdataoffset']);
                     fseek($fp_output, $EndOfFileOffset, SEEK_SET);
                     ftruncate($fp_output, $EndOfFileOffset);
-
                 } else {
-
                     $errormessage = ob_get_contents();
                     ob_end_clean();
                     echo 'failed to open '.$nextinputfilename.' for reading';
                     fclose($fp_output);
 
                     return false;
-
                 }
-
             } else {
-
                 echo $nextinputfilename.' is not MP3 format';
                 fclose($fp_output);
 
                 return false;
-
             }
-
         }
-
     } else {
-
         $errormessage = ob_get_contents();
         ob_end_clean();
         echo 'failed to open '.$FilenameOut.' for writing';
 
         return false;
-
     }
 
     fclose($fp_output);

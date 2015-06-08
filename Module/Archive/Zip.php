@@ -23,14 +23,14 @@ use GetId3\Lib\Helper;
  * module for analyzing pkZip files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Zip extends BaseHandler
 {
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -45,20 +45,18 @@ class Zip extends BaseHandler
         $info['zip']['entries_count'] = 0;
 
         if (!Helper::intValueSupported($info['filesize'])) {
-            $info['error'][] = 'File is larger than ' . round(PHP_INT_MAX / 1073741824) . 'GB, not supported by PHP';
+            $info['error'][] = 'File is larger than '.round(PHP_INT_MAX / 1073741824).'GB, not supported by PHP';
 
             return false;
         } else {
             $EOCDsearchData = '';
             $EOCDsearchCounter = 0;
             while ($EOCDsearchCounter++ < 512) {
-
                 fseek($this->getid3->fp, -128 * $EOCDsearchCounter, SEEK_END);
-                $EOCDsearchData = fread($this->getid3->fp, 128) . $EOCDsearchData;
+                $EOCDsearchData = fread($this->getid3->fp, 128).$EOCDsearchData;
 
-                if (strstr($EOCDsearchData, 'PK' . "\x05\x06")) {
-
-                    $EOCDposition = strpos($EOCDsearchData, 'PK' . "\x05\x06");
+                if (strstr($EOCDsearchData, 'PK'."\x05\x06")) {
+                    $EOCDposition = strpos($EOCDsearchData, 'PK'."\x05\x06");
                     fseek($this->getid3->fp,
                           (-128 * $EOCDsearchCounter) + $EOCDposition, SEEK_END);
                     $info['zip']['end_central_directory'] = $this->ZIPparseEndOfCentralDirectory();
@@ -69,7 +67,7 @@ class Zip extends BaseHandler
                     $info['zip']['entries_count'] = 0;
                     while ($centraldirectoryentry = $this->ZIPparseCentralDirectory($this->getid3->fp)) {
                         $info['zip']['central_directory'][] = $centraldirectoryentry;
-                        $info['zip']['entries_count']++;
+                        ++$info['zip']['entries_count'];
                         $info['zip']['compressed_size'] += $centraldirectoryentry['compressed_size'];
                         $info['zip']['uncompressed_size'] += $centraldirectoryentry['uncompressed_size'];
 
@@ -111,7 +109,7 @@ class Zip extends BaseHandler
             // central directory couldn't be found and/or parsed
             // scan through actual file data entries, recover as much as possible from probable trucated file
             if ($info['zip']['compressed_size'] > ($info['filesize'] - 46 - 22)) {
-                $info['error'][] = 'Warning: Truncated file! - Total compressed file sizes (' . $info['zip']['compressed_size'] . ' bytes) is greater than filesize minus Central Directory and End Of Central Directory structures (' . ($info['filesize'] - 46 - 22) . ' bytes)';
+                $info['error'][] = 'Warning: Truncated file! - Total compressed file sizes ('.$info['zip']['compressed_size'].' bytes) is greater than filesize minus Central Directory and End Of Central Directory structures ('.($info['filesize'] - 46 - 22).' bytes)';
             }
             $info['error'][] = 'Cannot find End Of Central Directory - returned list of files in [zip][entries] array may not be complete';
             foreach ($info['zip']['entries'] as $key => $valuearray) {
@@ -120,7 +118,6 @@ class Zip extends BaseHandler
 
             return true;
         } else {
-
             unset($info['zip']);
             $info['fileformat'] = '';
             $info['error'][] = 'Cannot find End Of Central Directory (truncated file?)';
@@ -130,8 +127,7 @@ class Zip extends BaseHandler
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function getZIPHeaderFilepointerTopDown()
     {
@@ -146,7 +142,7 @@ class Zip extends BaseHandler
         rewind($this->getid3->fp);
         while ($fileentry = $this->ZIPparseLocalFileHeader()) {
             $info['zip']['entries'][] = $fileentry;
-            $info['zip']['entries_count']++;
+            ++$info['zip']['entries_count'];
         }
         if ($info['zip']['entries_count'] == 0) {
             $info['error'][] = 'No Local File Header entries found';
@@ -157,7 +153,7 @@ class Zip extends BaseHandler
         $info['zip']['entries_count'] = 0;
         while ($centraldirectoryentry = $this->ZIPparseCentralDirectory($this->getid3->fp)) {
             $info['zip']['central_directory'][] = $centraldirectoryentry;
-            $info['zip']['entries_count']++;
+            ++$info['zip']['entries_count'];
             $info['zip']['compressed_size'] += $centraldirectoryentry['compressed_size'];
             $info['zip']['uncompressed_size'] += $centraldirectoryentry['uncompressed_size'];
         }
@@ -183,8 +179,7 @@ class Zip extends BaseHandler
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function getZIPentriesFilepointer()
     {
@@ -197,7 +192,7 @@ class Zip extends BaseHandler
         rewind($this->getid3->fp);
         while ($fileentry = $this->ZIPparseLocalFileHeader()) {
             $info['zip']['entries'][] = $fileentry;
-            $info['zip']['entries_count']++;
+            ++$info['zip']['entries_count'];
             $info['zip']['compressed_size'] += $fileentry['compressed_size'];
             $info['zip']['uncompressed_size'] += $fileentry['uncompressed_size'];
         }
@@ -211,8 +206,7 @@ class Zip extends BaseHandler
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function ZIPparseLocalFileHeader()
     {
@@ -309,8 +303,7 @@ class Zip extends BaseHandler
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function ZIPparseCentralDirectory()
     {
@@ -416,8 +409,7 @@ class Zip extends BaseHandler
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function ZIPparseEndOfCentralDirectory()
     {
@@ -465,9 +457,9 @@ class Zip extends BaseHandler
     }
 
     /**
-     *
      * @param  type $flagbytes
      * @param  type $compressionmethod
+     *
      * @return type
      */
     public static function ZIPparseGeneralPurposeFlags($flagbytes,
@@ -505,9 +497,10 @@ class Zip extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $ZIPversionOSLookup
+     *
      * @param  type $index
+     *
      * @return type
      */
     public static function ZIPversionOSLookup($index)
@@ -530,16 +523,17 @@ class Zip extends BaseHandler
             14 => 'VFAT',
             15 => 'Alternate MVS',
             16 => 'BeOS',
-            17 => 'Tandem'
+            17 => 'Tandem',
         );
 
         return (isset($ZIPversionOSLookup[$index]) ? $ZIPversionOSLookup[$index] : '[unknown]');
     }
 
     /**
-     *
      * @staticvar array $ZIPcompressionMethodLookup
+     *
      * @param  type $index
+     *
      * @return type
      */
     public static function ZIPcompressionMethodLookup($index)
@@ -555,16 +549,16 @@ class Zip extends BaseHandler
             7 => 'tokenize',
             8 => 'deflate',
             9 => 'deflate64',
-            10 => 'PKWARE Date Compression Library Imploding'
+            10 => 'PKWARE Date Compression Library Imploding',
         );
 
         return (isset($ZIPcompressionMethodLookup[$index]) ? $ZIPcompressionMethodLookup[$index] : '[unknown]');
     }
 
     /**
-     *
      * @param  type $DOSdate
      * @param  type $DOStime
+     *
      * @return type
      */
     public static function DOStime2UNIXtime($DOSdate, $DOStime)

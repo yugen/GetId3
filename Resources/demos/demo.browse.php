@@ -1,4 +1,5 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
 //  available at http://getid3.sourceforge.net                 //
@@ -34,16 +35,16 @@ require_once '../getid3/getid3.php';
 //define('GETID3_HELPERAPPSDIR', 'C:\\helperapps\\');
 
 // Initialize getID3 engine
-$getID3 = new getID3;
+$getID3 = new getID3();
 $getID3->setOption(array('encoding' => $PageEncoding));
 
-$getID3checkColor_Head           = 'CCCCDD';
+$getID3checkColor_Head = 'CCCCDD';
 $getID3checkColor_DirectoryLight = 'FFCCCC';
-$getID3checkColor_DirectoryDark  = 'EEBBBB';
-$getID3checkColor_FileLight      = 'EEEEEE';
-$getID3checkColor_FileDark       = 'DDDDDD';
-$getID3checkColor_UnknownLight   = 'CCCCFF';
-$getID3checkColor_UnknownDark    = 'BBBBDD';
+$getID3checkColor_DirectoryDark = 'EEBBBB';
+$getID3checkColor_FileLight = 'EEEEEE';
+$getID3checkColor_FileDark = 'DDDDDD';
+$getID3checkColor_UnknownLight = 'CCCCFF';
+$getID3checkColor_UnknownDark = 'BBBBDD';
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -73,7 +74,6 @@ if (isset($_REQUEST['deletefile'])) {
 }
 
 if (isset($_REQUEST['filename'])) {
-
     if (!file_exists($_REQUEST['filename']) || !is_file($_REQUEST['filename'])) {
         die(getid3_lib::iconv_fallback('ISO-8859-1', 'UTF-8', $_REQUEST['filename'].' does not exist'));
     }
@@ -86,7 +86,7 @@ if (isset($_REQUEST['filename'])) {
     $ThisFileInfo = $getID3->analyze($_REQUEST['filename']);
     $AutoGetHashes = (bool) (isset($ThisFileInfo['filesize']) && ($ThisFileInfo['filesize'] > 0) && ($ThisFileInfo['filesize'] < (50 * 1048576))); // auto-get md5_data, md5_file, sha1_data, sha1_file if filesize < 50MB, and NOT zero (which may indicate a file>2GB)
     if ($AutoGetHashes) {
-        $ThisFileInfo['md5_file']  = md5_file($_REQUEST['filename']);
+        $ThisFileInfo['md5_file'] = md5_file($_REQUEST['filename']);
         $ThisFileInfo['sha1_file'] = sha1_file($_REQUEST['filename']);
     }
 
@@ -111,9 +111,7 @@ if (isset($_REQUEST['filename'])) {
     echo table_var_dump($ThisFileInfo, false, $PageEncoding);
     $endtime = microtime(true);
     echo 'File parsed in '.number_format($endtime - $starttime, 3).' seconds.<br>';
-
 } else {
-
     $listdirectory = (isset($_REQUEST['listdirectory']) ? $_REQUEST['listdirectory'] : '.');
     $listdirectory = realpath($listdirectory); // get rid of /../../ references
     $currentfulldir = $listdirectory.'/';
@@ -126,22 +124,21 @@ if (isset($_REQUEST['filename'])) {
 
     ob_start();
     if ($handle = opendir($listdirectory)) {
-
         ob_end_clean();
         echo str_repeat(' ', 300); // IE buffers the first 300 or so chars, making this progressive display useless - fill the buffer with spaces
         echo 'Processing';
 
         $starttime = microtime(true);
 
-        $TotalScannedUnknownFiles  = 0;
-        $TotalScannedKnownFiles    = 0;
+        $TotalScannedUnknownFiles = 0;
+        $TotalScannedKnownFiles = 0;
         $TotalScannedPlaytimeFiles = 0;
-        $TotalScannedBitrateFiles  = 0;
-        $TotalScannedFilesize      = 0;
-        $TotalScannedPlaytime      = 0;
-        $TotalScannedBitrate       = 0;
-        $FilesWithWarnings         = 0;
-        $FilesWithErrors           = 0;
+        $TotalScannedBitrateFiles = 0;
+        $TotalScannedFilesize = 0;
+        $TotalScannedPlaytime = 0;
+        $TotalScannedBitrate = 0;
+        $FilesWithWarnings = 0;
+        $FilesWithErrors = 0;
 
         while ($file = readdir($handle)) {
             $currentfilename = $listdirectory.'/'.$file;
@@ -165,15 +162,12 @@ if (isset($_REQUEST['filename'])) {
                     break;
             }
             // symbolic-link-resolution enhancements by davidbullock״ech-center*com
-            $TargetObject     = realpath($currentfilename);  // Find actual file path, resolve if it's a symbolic link
+            $TargetObject = realpath($currentfilename);  // Find actual file path, resolve if it's a symbolic link
             $TargetObjectType = filetype($TargetObject);     // Check file type without examining extension
 
             if ($TargetObjectType == 'dir') {
-
                 $DirectoryContents[$currentfulldir]['dir'][$file]['filename'] = $file;
-
             } elseif ($TargetObjectType == 'file') {
-
                 $getID3->setOption(array('option_md5_data' => isset($_REQUEST['ShowMD5'])));
                 $fileinformation = $getID3->analyze($currentfilename);
 
@@ -189,17 +183,17 @@ if (isset($_REQUEST['filename'])) {
                     $DirectoryContents[$currentfulldir]['known'][$file] = $fileinformation;
                     $TotalScannedPlaytime += (isset($fileinformation['playtime_seconds']) ? $fileinformation['playtime_seconds'] : 0);
                     $TotalScannedBitrate  += (isset($fileinformation['bitrate'])          ? $fileinformation['bitrate']          : 0);
-                    $TotalScannedKnownFiles++;
+                    ++$TotalScannedKnownFiles;
                 } else {
                     $DirectoryContents[$currentfulldir]['other'][$file] = $fileinformation;
                     $DirectoryContents[$currentfulldir]['other'][$file]['playtime_string'] = '-';
-                    $TotalScannedUnknownFiles++;
+                    ++$TotalScannedUnknownFiles;
                 }
                 if (isset($fileinformation['playtime_seconds']) && ($fileinformation['playtime_seconds'] > 0)) {
-                    $TotalScannedPlaytimeFiles++;
+                    ++$TotalScannedPlaytimeFiles;
                 }
                 if (isset($fileinformation['bitrate']) && ($fileinformation['bitrate'] > 0)) {
-                    $TotalScannedBitrateFiles++;
+                    ++$TotalScannedBitrateFiles;
                 }
             }
         }
@@ -281,12 +275,12 @@ if (isset($_REQUEST['filename'])) {
 
                     echo '<td align="left">&nbsp;';
                     if (!empty($fileinfo['warning'])) {
-                        $FilesWithWarnings++;
+                        ++$FilesWithWarnings;
                         echo '<a href="#" onClick="alert(\''.htmlentities(str_replace("'", "\\'", preg_replace('#[\r\n\t]+#', ' ', implode('\\n', $fileinfo['warning']))), ENT_QUOTES).'\'); return false;" title="'.htmlentities(implode("; \n", $fileinfo['warning']), ENT_QUOTES).'">warning</a><br>';
                     }
                     if (!empty($fileinfo['error'])) {
-                        $FilesWithErrors++;
-                        echo '<a href="#" onClick="alert(\''.htmlentities(str_replace("'", "\\'", preg_replace('#[\r\n\t]+#', ' ', implode('\\n', $fileinfo['error']))),   ENT_QUOTES).'\'); return false;" title="'.htmlentities(implode("; \n", $fileinfo['error']),   ENT_QUOTES).'">error</a><br>';
+                        ++$FilesWithErrors;
+                        echo '<a href="#" onClick="alert(\''.htmlentities(str_replace("'", "\\'", preg_replace('#[\r\n\t]+#', ' ', implode('\\n', $fileinfo['error']))), ENT_QUOTES).'\'); return false;" title="'.htmlentities(implode("; \n", $fileinfo['error']), ENT_QUOTES).'">error</a><br>';
                     }
                     echo '</td>';
 
@@ -332,12 +326,12 @@ if (isset($_REQUEST['filename'])) {
                     //echo '<td align="left">&nbsp;</td>'; // Warning/Error
                     echo '<td align="left">&nbsp;';
                     if (!empty($fileinfo['warning'])) {
-                        $FilesWithWarnings++;
+                        ++$FilesWithWarnings;
                         echo '<a href="#" onClick="alert(\''.htmlentities(implode('\\n', $fileinfo['warning']), ENT_QUOTES).'\'); return false;" title="'.htmlentities(implode("\n", $fileinfo['warning']), ENT_QUOTES).'">warning</a><br>';
                     }
                     if (!empty($fileinfo['error'])) {
                         if ($fileinfo['error'][0] != 'unable to determine file format') {
-                            $FilesWithErrors++;
+                            ++$FilesWithErrors;
                             echo '<a href="#" onClick="alert(\''.htmlentities(implode('\\n', $fileinfo['error']), ENT_QUOTES).'\'); return false;" title="'.htmlentities(implode("\n", $fileinfo['error']), ENT_QUOTES).'">error</a><br>';
                         }
                     }
@@ -397,19 +391,19 @@ function RemoveAccents($string)
             "\x9C" => 'oe',
             "\xC6" => 'AE',
             "\xE6" => 'ae',
-            "\xB5" => 'u'
+            "\xB5" => 'u',
         )
     );
 }
 
-function BitrateColor($bitrate, $BitrateMaxScale=768)
+function BitrateColor($bitrate, $BitrateMaxScale = 768)
 {
     // $BitrateMaxScale is bitrate of maximum-quality color (bright green)
     // below this is gradient, above is solid green
 
     $bitrate *= (256 / $BitrateMaxScale); // scale from 1-[768]kbps to 1-256
     $bitrate = round(min(max($bitrate, 1), 256));
-    $bitrate--;    // scale from 1-256kbps to 0-255kbps
+    --$bitrate;    // scale from 1-256kbps to 0-255kbps
 
     $Rcomponent = max(255 - ($bitrate * 2), 0);
     $Gcomponent = max(($bitrate * 2) - 255, 0);
@@ -422,7 +416,7 @@ function BitrateColor($bitrate, $BitrateMaxScale=768)
     return str_pad(dechex($Rcomponent), 2, '0', STR_PAD_LEFT).str_pad(dechex($Gcomponent), 2, '0', STR_PAD_LEFT).str_pad(dechex($Bcomponent), 2, '0', STR_PAD_LEFT);
 }
 
-function BitrateText($bitrate, $decimals=0, $vbr=false)
+function BitrateText($bitrate, $decimals = 0, $vbr = false)
 {
     return '<span style="color: #'.BitrateColor($bitrate).($vbr ? '; font-weight: bold;' : '').'">'.number_format($bitrate, $decimals).' kbps</span>';
 }
@@ -440,7 +434,7 @@ function string_var_dump($variable)
     return $dumpedvariable;
 }
 
-function table_var_dump($variable, $wrap_in_td=false, $encoding='ISO-8859-1')
+function table_var_dump($variable, $wrap_in_td = false, $encoding = 'ISO-8859-1')
 {
     $returnstring = '';
     switch (gettype($variable)) {
@@ -522,7 +516,7 @@ function NiceDisplayFiletypeFormat(&$fileinfo)
         return '-';
     }
 
-    $output  = $fileinfo['fileformat'];
+    $output = $fileinfo['fileformat'];
     if (empty($fileinfo['video']['dataformat']) && empty($fileinfo['audio']['dataformat'])) {
         return $output;  // 'gif'
     }
@@ -554,7 +548,6 @@ function NiceDisplayFiletypeFormat(&$fileinfo)
     $output .= '.'.$fileinfo['audio']['dataformat']; // asf.wmv.wma
 
     return $output;
-
 }
 
 function MoreNaturalSort($ar1, $ar2)
@@ -562,8 +555,8 @@ function MoreNaturalSort($ar1, $ar2)
     if ($ar1 === $ar2) {
         return 0;
     }
-    $len1     = strlen($ar1);
-    $len2     = strlen($ar2);
+    $len1 = strlen($ar1);
+    $len2 = strlen($ar2);
     $shortest = min($len1, $len2);
     if (substr($ar1, 0, $shortest) === substr($ar2, 0, $shortest)) {
         // the shorter argument is the beginning of the longer one, like "str" and "string"
@@ -577,7 +570,7 @@ function MoreNaturalSort($ar1, $ar2)
     }
     $ar1 = RemoveAccents(strtolower(trim($ar1)));
     $ar2 = RemoveAccents(strtolower(trim($ar2)));
-    $translatearray = array('\''=>'', '"'=>'', '_'=>' ', '('=>'', ')'=>'', '-'=>' ', '  '=>' ', '.'=>'', ','=>'');
+    $translatearray = array('\'' => '', '"' => '', '_' => ' ', '(' => '', ')' => '', '-' => ' ', '  ' => ' ', '.' => '', ',' => '');
     foreach ($translatearray as $key => $val) {
         $ar1 = str_replace($key, $val, $ar1);
         $ar2 = str_replace($key, $val, $ar2);
@@ -592,7 +585,7 @@ function MoreNaturalSort($ar1, $ar2)
     return 0;
 }
 
-function PoweredBygetID3($string='')
+function PoweredBygetID3($string = '')
 {
     global $getID3;
     if (!$string) {

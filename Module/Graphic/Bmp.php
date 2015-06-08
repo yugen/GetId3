@@ -23,25 +23,23 @@ use GetId3\Lib\Helper;
  * module for analyzing BMP Image files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Bmp extends BaseHandler
 {
     /**
-     *
      * @var false
      */
     public $ExtractPalette = false;
     /**
-     *
      * @var false
      */
-    public $ExtractData    = false;
+    public $ExtractData = false;
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -49,9 +47,9 @@ class Bmp extends BaseHandler
 
         // shortcuts
         $info['bmp']['header']['raw'] = array();
-        $thisfile_bmp                         = &$info['bmp'];
-        $thisfile_bmp_header                  = &$thisfile_bmp['header'];
-        $thisfile_bmp_header_raw              = &$thisfile_bmp_header['raw'];
+        $thisfile_bmp = &$info['bmp'];
+        $thisfile_bmp_header = &$thisfile_bmp['header'];
+        $thisfile_bmp_header_raw = &$thisfile_bmp_header['raw'];
 
         // BITMAPFILEHEADER [14 bytes] - http://msdn.microsoft.com/library/en-us/gdi/bitmaps_62uq.asp
         // all versions
@@ -65,7 +63,7 @@ class Bmp extends BaseHandler
         $offset = 0;
         $BMPheader = fread($this->getid3->fp, 14 + 40);
 
-        $thisfile_bmp_header_raw['identifier']  = substr($BMPheader, $offset, 2);
+        $thisfile_bmp_header_raw['identifier'] = substr($BMPheader, $offset, 2);
         $offset += 2;
 
         $magic = 'BM';
@@ -77,11 +75,11 @@ class Bmp extends BaseHandler
             return false;
         }
 
-        $thisfile_bmp_header_raw['filesize']    = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+        $thisfile_bmp_header_raw['filesize'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
         $offset += 4;
-        $thisfile_bmp_header_raw['reserved1']   = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
+        $thisfile_bmp_header_raw['reserved1'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
         $offset += 2;
-        $thisfile_bmp_header_raw['reserved2']   = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
+        $thisfile_bmp_header_raw['reserved2'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
         $offset += 2;
         $thisfile_bmp_header_raw['data_offset'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
         $offset += 4;
@@ -92,22 +90,22 @@ class Bmp extends BaseHandler
         $planes22 = Helper::LittleEndian2Int(substr($BMPheader, 22, 2));
         $planes26 = Helper::LittleEndian2Int(substr($BMPheader, 26, 2));
         if (($planes22 == 1) && ($planes26 != 1)) {
-            $thisfile_bmp['type_os']      = 'OS/2';
+            $thisfile_bmp['type_os'] = 'OS/2';
             $thisfile_bmp['type_version'] = 1;
         } elseif (($planes26 == 1) && ($planes22 != 1)) {
-            $thisfile_bmp['type_os']      = 'Windows';
+            $thisfile_bmp['type_os'] = 'Windows';
             $thisfile_bmp['type_version'] = 1;
         } elseif ($thisfile_bmp_header_raw['header_size'] == 12) {
-            $thisfile_bmp['type_os']      = 'OS/2';
+            $thisfile_bmp['type_os'] = 'OS/2';
             $thisfile_bmp['type_version'] = 1;
         } elseif ($thisfile_bmp_header_raw['header_size'] == 40) {
-            $thisfile_bmp['type_os']      = 'Windows';
+            $thisfile_bmp['type_os'] = 'Windows';
             $thisfile_bmp['type_version'] = 1;
         } elseif ($thisfile_bmp_header_raw['header_size'] == 84) {
-            $thisfile_bmp['type_os']      = 'Windows';
+            $thisfile_bmp['type_os'] = 'Windows';
             $thisfile_bmp['type_version'] = 4;
         } elseif ($thisfile_bmp_header_raw['header_size'] == 100) {
-            $thisfile_bmp['type_os']      = 'Windows';
+            $thisfile_bmp['type_os'] = 'Windows';
             $thisfile_bmp['type_version'] = 5;
         } else {
             $info['error'][] = 'Unknown BMP subtype (or not a BMP file)';
@@ -117,9 +115,9 @@ class Bmp extends BaseHandler
             return false;
         }
 
-        $info['fileformat']                  = 'bmp';
-        $info['video']['dataformat']         = 'bmp';
-        $info['video']['lossless']           = true;
+        $info['fileformat'] = 'bmp';
+        $info['video']['dataformat'] = 'bmp';
+        $info['video']['lossless'] = true;
         $info['video']['pixel_aspect_ratio'] = (float) 1;
 
         if ($thisfile_bmp['type_os'] == 'OS/2') {
@@ -133,18 +131,18 @@ class Bmp extends BaseHandler
             // WORD   NumPlanes;        /* Number of bit planes (color depth) */
             // WORD   BitsPerPixel;     /* Number of bits per pixel per plane */
 
-            $thisfile_bmp_header_raw['width']          = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
+            $thisfile_bmp_header_raw['width'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
             $offset += 2;
-            $thisfile_bmp_header_raw['height']         = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
+            $thisfile_bmp_header_raw['height'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
             $offset += 2;
-            $thisfile_bmp_header_raw['planes']         = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
+            $thisfile_bmp_header_raw['planes'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
             $offset += 2;
             $thisfile_bmp_header_raw['bits_per_pixel'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
             $offset += 2;
 
-            $info['video']['resolution_x']    = $thisfile_bmp_header_raw['width'];
-            $info['video']['resolution_y']    = $thisfile_bmp_header_raw['height'];
-            $info['video']['codec']           = 'BI_RGB '.$thisfile_bmp_header_raw['bits_per_pixel'].'-bit';
+            $info['video']['resolution_x'] = $thisfile_bmp_header_raw['width'];
+            $info['video']['resolution_y'] = $thisfile_bmp_header_raw['height'];
+            $info['video']['codec'] = 'BI_RGB '.$thisfile_bmp_header_raw['bits_per_pixel'].'-bit';
             $info['video']['bits_per_sample'] = $thisfile_bmp_header_raw['bits_per_pixel'];
 
             if ($thisfile_bmp['type_version'] >= 2) {
@@ -163,40 +161,39 @@ class Bmp extends BaseHandler
                 // DWORD  ColorEncoding;    /* Color model used in bitmap */
                 // DWORD  Identifier;       /* Reserved for application use */
 
-                $thisfile_bmp_header_raw['compression']      = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['compression'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['bmp_data_size']    = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['bmp_data_size'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['resolution_h']     = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['resolution_h'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['resolution_v']     = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['resolution_v'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['colors_used']      = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['colors_used'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
                 $thisfile_bmp_header_raw['colors_important'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
                 $thisfile_bmp_header_raw['resolution_units'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
                 $offset += 2;
-                $thisfile_bmp_header_raw['reserved1']        = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
+                $thisfile_bmp_header_raw['reserved1'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
                 $offset += 2;
-                $thisfile_bmp_header_raw['recording']        = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
+                $thisfile_bmp_header_raw['recording'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
                 $offset += 2;
-                $thisfile_bmp_header_raw['rendering']        = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
+                $thisfile_bmp_header_raw['rendering'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
                 $offset += 2;
-                $thisfile_bmp_header_raw['size1']            = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['size1'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['size2']            = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['size2'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['color_encoding']   = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['color_encoding'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['identifier']       = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['identifier'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
 
                 $thisfile_bmp_header['compression'] = $this->BMPcompressionOS2Lookup($thisfile_bmp_header_raw['compression']);
 
                 $info['video']['codec'] = $thisfile_bmp_header['compression'].' '.$thisfile_bmp_header_raw['bits_per_pixel'].'-bit';
             }
-
         } elseif ($thisfile_bmp['type_os'] == 'Windows') {
 
             // Windows-format BMP
@@ -217,31 +214,31 @@ class Bmp extends BaseHandler
 
             // possibly integrate this section and module.audio-video.riff.php::ParseBITMAPINFOHEADER() ?
 
-            $thisfile_bmp_header_raw['width']            = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+            $thisfile_bmp_header_raw['width'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4), true);
             $offset += 4;
-            $thisfile_bmp_header_raw['height']           = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+            $thisfile_bmp_header_raw['height'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4), true);
             $offset += 4;
-            $thisfile_bmp_header_raw['planes']           = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
+            $thisfile_bmp_header_raw['planes'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
             $offset += 2;
-            $thisfile_bmp_header_raw['bits_per_pixel']   = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
+            $thisfile_bmp_header_raw['bits_per_pixel'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 2));
             $offset += 2;
-            $thisfile_bmp_header_raw['compression']      = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+            $thisfile_bmp_header_raw['compression'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
             $offset += 4;
-            $thisfile_bmp_header_raw['bmp_data_size']    = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+            $thisfile_bmp_header_raw['bmp_data_size'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
             $offset += 4;
-            $thisfile_bmp_header_raw['resolution_h']     = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+            $thisfile_bmp_header_raw['resolution_h'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4), true);
             $offset += 4;
-            $thisfile_bmp_header_raw['resolution_v']     = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+            $thisfile_bmp_header_raw['resolution_v'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4), true);
             $offset += 4;
-            $thisfile_bmp_header_raw['colors_used']      = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+            $thisfile_bmp_header_raw['colors_used'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
             $offset += 4;
             $thisfile_bmp_header_raw['colors_important'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
             $offset += 4;
 
-            $thisfile_bmp_header['compression']  = $this->BMPcompressionWindowsLookup($thisfile_bmp_header_raw['compression']);
-            $info['video']['resolution_x']    = $thisfile_bmp_header_raw['width'];
-            $info['video']['resolution_y']    = $thisfile_bmp_header_raw['height'];
-            $info['video']['codec']           = $thisfile_bmp_header['compression'].' '.$thisfile_bmp_header_raw['bits_per_pixel'].'-bit';
+            $thisfile_bmp_header['compression'] = $this->BMPcompressionWindowsLookup($thisfile_bmp_header_raw['compression']);
+            $info['video']['resolution_x'] = $thisfile_bmp_header_raw['width'];
+            $info['video']['resolution_y'] = $thisfile_bmp_header_raw['height'];
+            $info['video']['codec'] = $thisfile_bmp_header['compression'].' '.$thisfile_bmp_header_raw['bits_per_pixel'].'-bit';
             $info['video']['bits_per_sample'] = $thisfile_bmp_header_raw['bits_per_pixel'];
 
             if (($thisfile_bmp['type_version'] >= 4) || ($thisfile_bmp_header_raw['compression'] == 3)) {
@@ -259,32 +256,32 @@ class Bmp extends BaseHandler
                 // DWORD        bV4GammaRed;
                 // DWORD        bV4GammaGreen;
                 // DWORD        bV4GammaBlue;
-                $thisfile_bmp_header_raw['red_mask']     = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['red_mask'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['green_mask']   = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['green_mask'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['blue_mask']    = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['blue_mask'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['alpha_mask']   = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['alpha_mask'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['cs_type']      = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['cs_type'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['ciexyz_red']   =                  substr($BMPheader, $offset, 4);
+                $thisfile_bmp_header_raw['ciexyz_red'] = substr($BMPheader, $offset, 4);
                 $offset += 4;
-                $thisfile_bmp_header_raw['ciexyz_green'] =                  substr($BMPheader, $offset, 4);
+                $thisfile_bmp_header_raw['ciexyz_green'] = substr($BMPheader, $offset, 4);
                 $offset += 4;
-                $thisfile_bmp_header_raw['ciexyz_blue']  =                  substr($BMPheader, $offset, 4);
+                $thisfile_bmp_header_raw['ciexyz_blue'] = substr($BMPheader, $offset, 4);
                 $offset += 4;
-                $thisfile_bmp_header_raw['gamma_red']    = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['gamma_red'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['gamma_green']  = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['gamma_green'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['gamma_blue']   = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['gamma_blue'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
 
-                $thisfile_bmp_header['ciexyz_red']   = Helper::FixedPoint2_30(strrev($thisfile_bmp_header_raw['ciexyz_red']));
+                $thisfile_bmp_header['ciexyz_red'] = Helper::FixedPoint2_30(strrev($thisfile_bmp_header_raw['ciexyz_red']));
                 $thisfile_bmp_header['ciexyz_green'] = Helper::FixedPoint2_30(strrev($thisfile_bmp_header_raw['ciexyz_green']));
-                $thisfile_bmp_header['ciexyz_blue']  = Helper::FixedPoint2_30(strrev($thisfile_bmp_header_raw['ciexyz_blue']));
+                $thisfile_bmp_header['ciexyz_blue'] = Helper::FixedPoint2_30(strrev($thisfile_bmp_header_raw['ciexyz_blue']));
             }
 
             if ($thisfile_bmp['type_version'] >= 5) {
@@ -296,22 +293,19 @@ class Bmp extends BaseHandler
                 // DWORD        bV5ProfileData;
                 // DWORD        bV5ProfileSize;
                 // DWORD        bV5Reserved;
-                $thisfile_bmp_header_raw['intent']              = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['intent'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
                 $thisfile_bmp_header_raw['profile_data_offset'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['profile_data_size']   = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['profile_data_size'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
-                $thisfile_bmp_header_raw['reserved3']           = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
+                $thisfile_bmp_header_raw['reserved3'] = Helper::LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
             }
-
         } else {
-
             $info['error'][] = 'Unknown BMP format in header.';
 
             return false;
-
         }
 
         if ($this->ExtractPalette || $this->ExtractData) {
@@ -324,19 +318,19 @@ class Bmp extends BaseHandler
             if ($PaletteEntries > 0) {
                 $BMPpalette = fread($this->getid3->fp, 4 * $PaletteEntries);
                 $paletteoffset = 0;
-                for ($i = 0; $i < $PaletteEntries; $i++) {
+                for ($i = 0; $i < $PaletteEntries; ++$i) {
                     // RGBQUAD          - http://msdn.microsoft.com/library/en-us/gdi/bitmaps_5f8y.asp
                     // BYTE    rgbBlue;
                     // BYTE    rgbGreen;
                     // BYTE    rgbRed;
                     // BYTE    rgbReserved;
-                    $blue  = Helper::LittleEndian2Int(substr($BMPpalette, $paletteoffset++, 1));
+                    $blue = Helper::LittleEndian2Int(substr($BMPpalette, $paletteoffset++, 1));
                     $green = Helper::LittleEndian2Int(substr($BMPpalette, $paletteoffset++, 1));
-                    $red   = Helper::LittleEndian2Int(substr($BMPpalette, $paletteoffset++, 1));
+                    $red = Helper::LittleEndian2Int(substr($BMPpalette, $paletteoffset++, 1));
                     if (($thisfile_bmp['type_os'] == 'OS/2') && ($thisfile_bmp['type_version'] == 1)) {
                         // no padding byte
                     } else {
-                        $paletteoffset++; // padding byte
+                        ++$paletteoffset; // padding byte
                     }
                     $thisfile_bmp['palette'][$i] = (($red << 16) | ($green << 8) | $blue);
                 }
@@ -354,74 +348,74 @@ class Bmp extends BaseHandler
                 case 0: // BI_RGB
                     switch ($thisfile_bmp_header_raw['bits_per_pixel']) {
                         case 1:
-                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; $row--) {
+                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; --$row) {
                                 for ($col = 0; $col < $thisfile_bmp_header_raw['width']; $col = $col) {
                                     $paletteindexbyte = ord($BMPpixelData{$pixeldataoffset++});
-                                    for ($i = 7; $i >= 0; $i--) {
+                                    for ($i = 7; $i >= 0; --$i) {
                                         $paletteindex = ($paletteindexbyte & (0x01 << $i)) >> $i;
                                         $thisfile_bmp['data'][$row][$col] = $thisfile_bmp['palette'][$paletteindex];
-                                        $col++;
+                                        ++$col;
                                     }
                                 }
                                 while (($pixeldataoffset % 4) != 0) {
                                     // lines are padded to nearest DWORD
-                                    $pixeldataoffset++;
+                                    ++$pixeldataoffset;
                                 }
                             }
                             break;
 
                         case 4:
-                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; $row--) {
+                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; --$row) {
                                 for ($col = 0; $col < $thisfile_bmp_header_raw['width']; $col = $col) {
                                     $paletteindexbyte = ord($BMPpixelData{$pixeldataoffset++});
-                                    for ($i = 1; $i >= 0; $i--) {
+                                    for ($i = 1; $i >= 0; --$i) {
                                         $paletteindex = ($paletteindexbyte & (0x0F << (4 * $i))) >> (4 * $i);
                                         $thisfile_bmp['data'][$row][$col] = $thisfile_bmp['palette'][$paletteindex];
-                                        $col++;
+                                        ++$col;
                                     }
                                 }
                                 while (($pixeldataoffset % 4) != 0) {
                                     // lines are padded to nearest DWORD
-                                    $pixeldataoffset++;
+                                    ++$pixeldataoffset;
                                 }
                             }
                             break;
 
                         case 8:
-                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; $row--) {
-                                for ($col = 0; $col < $thisfile_bmp_header_raw['width']; $col++) {
+                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; --$row) {
+                                for ($col = 0; $col < $thisfile_bmp_header_raw['width']; ++$col) {
                                     $paletteindex = ord($BMPpixelData{$pixeldataoffset++});
                                     $thisfile_bmp['data'][$row][$col] = $thisfile_bmp['palette'][$paletteindex];
                                 }
                                 while (($pixeldataoffset % 4) != 0) {
                                     // lines are padded to nearest DWORD
-                                    $pixeldataoffset++;
+                                    ++$pixeldataoffset;
                                 }
                             }
                             break;
 
                         case 24:
-                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; $row--) {
-                                for ($col = 0; $col < $thisfile_bmp_header_raw['width']; $col++) {
-                                    $thisfile_bmp['data'][$row][$col] = (ord($BMPpixelData{$pixeldataoffset+2}) << 16) | (ord($BMPpixelData{$pixeldataoffset+1}) << 8) | ord($BMPpixelData{$pixeldataoffset});
+                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; --$row) {
+                                for ($col = 0; $col < $thisfile_bmp_header_raw['width']; ++$col) {
+                                    $thisfile_bmp['data'][$row][$col] = (ord($BMPpixelData{$pixeldataoffset + 2}) << 16) | (ord($BMPpixelData{$pixeldataoffset + 1}) << 8) | ord($BMPpixelData{$pixeldataoffset});
                                     $pixeldataoffset += 3;
                                 }
                                 while (($pixeldataoffset % 4) != 0) {
                                     // lines are padded to nearest DWORD
-                                    $pixeldataoffset++;
+                                    ++$pixeldataoffset;
                                 }
                             }
                             break;
 
                         case 32:
-                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; $row--) {
-                                for ($col = 0; $col < $thisfile_bmp_header_raw['width']; $col++) {
-                                    $thisfile_bmp['data'][$row][$col] = (ord($BMPpixelData{$pixeldataoffset+3}) << 24) | (ord($BMPpixelData{$pixeldataoffset+2}) << 16) | (ord($BMPpixelData{$pixeldataoffset+1}) << 8) | ord($BMPpixelData{$pixeldataoffset});
+                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; --$row) {
+                                for ($col = 0; $col < $thisfile_bmp_header_raw['width']; ++$col) {
+                                    $thisfile_bmp['data'][$row][$col] = (ord($BMPpixelData{$pixeldataoffset + 3}) << 24) | (ord($BMPpixelData{$pixeldataoffset + 2}) << 16) | (ord($BMPpixelData{$pixeldataoffset + 1}) << 8) | ord($BMPpixelData{$pixeldataoffset});
                                     $pixeldataoffset += 4;
                                 }
                                 while (($pixeldataoffset % 4) != 0) {
                                     // lines are padded to nearest DWORD
-                                    $pixeldataoffset++;
+                                    ++$pixeldataoffset;
                                 }
                             }
                             break;
@@ -441,7 +435,7 @@ class Bmp extends BaseHandler
                         case 8:
                             $pixelcounter = 0;
                             while ($pixeldataoffset < strlen($BMPpixelData)) {
-                                $firstbyte  = Helper::LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
+                                $firstbyte = Helper::LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
                                 $secondbyte = Helper::LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
                                 if ($firstbyte == 0) {
 
@@ -475,31 +469,29 @@ class Bmp extends BaseHandler
                                             // value in the range 03H through FFH. The second byte represents the
                                             // number of bytes that follow, each of which contains the color index
                                             // of a single pixel. Each run must be aligned on a word boundary.
-                                            for ($i = 0; $i < $secondbyte; $i++) {
+                                            for ($i = 0; $i < $secondbyte; ++$i) {
                                                 $paletteindex = Helper::LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
                                                 $col = $pixelcounter % $thisfile_bmp_header_raw['width'];
                                                 $row = $thisfile_bmp_header_raw['height'] - 1 - (($pixelcounter - $col) / $thisfile_bmp_header_raw['width']);
                                                 $thisfile_bmp['data'][$row][$col] = $thisfile_bmp['palette'][$paletteindex];
-                                                $pixelcounter++;
+                                                ++$pixelcounter;
                                             }
                                             while (($pixeldataoffset % 2) != 0) {
                                                 // Each run must be aligned on a word boundary.
-                                                $pixeldataoffset++;
+                                                ++$pixeldataoffset;
                                             }
                                             break;
                                     }
-
                                 } else {
 
                                     // encoded mode - the first byte specifies the number of consecutive pixels
                                     // to be drawn using the color index contained in the second byte.
-                                    for ($i = 0; $i < $firstbyte; $i++) {
+                                    for ($i = 0; $i < $firstbyte; ++$i) {
                                         $col = $pixelcounter % $thisfile_bmp_header_raw['width'];
                                         $row = $thisfile_bmp_header_raw['height'] - 1 - (($pixelcounter - $col) / $thisfile_bmp_header_raw['width']);
                                         $thisfile_bmp['data'][$row][$col] = $thisfile_bmp['palette'][$secondbyte];
-                                        $pixelcounter++;
+                                        ++$pixelcounter;
                                     }
-
                                 }
                             }
                             break;
@@ -515,7 +507,7 @@ class Bmp extends BaseHandler
                         case 4:
                             $pixelcounter = 0;
                             while ($pixeldataoffset < strlen($BMPpixelData)) {
-                                $firstbyte  = Helper::LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
+                                $firstbyte = Helper::LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
                                 $secondbyte = Helper::LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
                                 if ($firstbyte == 0) {
 
@@ -550,25 +542,24 @@ class Bmp extends BaseHandler
                                             // high- and low-order 4 bits, one color index for each pixel. In absolute mode,
                                             // each run must be aligned on a word boundary.
                                             unset($paletteindexes);
-                                            for ($i = 0; $i < ceil($secondbyte / 2); $i++) {
+                                            for ($i = 0; $i < ceil($secondbyte / 2); ++$i) {
                                                 $paletteindexbyte = Helper::LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
                                                 $paletteindexes[] = ($paletteindexbyte & 0xF0) >> 4;
                                                 $paletteindexes[] = ($paletteindexbyte & 0x0F);
                                             }
                                             while (($pixeldataoffset % 2) != 0) {
                                                 // Each run must be aligned on a word boundary.
-                                                $pixeldataoffset++;
+                                                ++$pixeldataoffset;
                                             }
 
                                             foreach ($paletteindexes as $paletteindex) {
                                                 $col = $pixelcounter % $thisfile_bmp_header_raw['width'];
                                                 $row = $thisfile_bmp_header_raw['height'] - 1 - (($pixelcounter - $col) / $thisfile_bmp_header_raw['width']);
                                                 $thisfile_bmp['data'][$row][$col] = $thisfile_bmp['palette'][$paletteindex];
-                                                $pixelcounter++;
+                                                ++$pixelcounter;
                                             }
                                             break;
                                     }
-
                                 } else {
 
                                     // encoded mode - the first byte of the pair contains the number of pixels to be
@@ -580,13 +571,12 @@ class Bmp extends BaseHandler
                                     // pixels specified by the first byte have been drawn.
                                     $paletteindexes[0] = ($secondbyte & 0xF0) >> 4;
                                     $paletteindexes[1] = ($secondbyte & 0x0F);
-                                    for ($i = 0; $i < $firstbyte; $i++) {
+                                    for ($i = 0; $i < $firstbyte; ++$i) {
                                         $col = $pixelcounter % $thisfile_bmp_header_raw['width'];
                                         $row = $thisfile_bmp_header_raw['height'] - 1 - (($pixelcounter - $col) / $thisfile_bmp_header_raw['width']);
                                         $thisfile_bmp['data'][$row][$col] = $thisfile_bmp['palette'][$paletteindexes[($i % 2)]];
-                                        $pixelcounter++;
+                                        ++$pixelcounter;
                                     }
-
                                 }
                             }
                             break;
@@ -601,31 +591,31 @@ class Bmp extends BaseHandler
                     switch ($thisfile_bmp_header_raw['bits_per_pixel']) {
                         case 16:
                         case 32:
-                            $redshift   = 0;
+                            $redshift = 0;
                             $greenshift = 0;
-                            $blueshift  = 0;
+                            $blueshift = 0;
                             while ((($thisfile_bmp_header_raw['red_mask'] >> $redshift) & 0x01) == 0) {
-                                $redshift++;
+                                ++$redshift;
                             }
                             while ((($thisfile_bmp_header_raw['green_mask'] >> $greenshift) & 0x01) == 0) {
-                                $greenshift++;
+                                ++$greenshift;
                             }
                             while ((($thisfile_bmp_header_raw['blue_mask'] >> $blueshift) & 0x01) == 0) {
-                                $blueshift++;
+                                ++$blueshift;
                             }
-                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; $row--) {
-                                for ($col = 0; $col < $thisfile_bmp_header_raw['width']; $col++) {
+                            for ($row = ($thisfile_bmp_header_raw['height'] - 1); $row >= 0; --$row) {
+                                for ($col = 0; $col < $thisfile_bmp_header_raw['width']; ++$col) {
                                     $pixelvalue = Helper::LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset, $thisfile_bmp_header_raw['bits_per_pixel'] / 8));
                                     $pixeldataoffset += $thisfile_bmp_header_raw['bits_per_pixel'] / 8;
 
-                                    $red   = intval(round(((($pixelvalue & $thisfile_bmp_header_raw['red_mask'])   >> $redshift)   / ($thisfile_bmp_header_raw['red_mask']   >> $redshift))   * 255));
+                                    $red = intval(round(((($pixelvalue & $thisfile_bmp_header_raw['red_mask'])   >> $redshift)   / ($thisfile_bmp_header_raw['red_mask']   >> $redshift))   * 255));
                                     $green = intval(round(((($pixelvalue & $thisfile_bmp_header_raw['green_mask']) >> $greenshift) / ($thisfile_bmp_header_raw['green_mask'] >> $greenshift)) * 255));
-                                    $blue  = intval(round(((($pixelvalue & $thisfile_bmp_header_raw['blue_mask'])  >> $blueshift)  / ($thisfile_bmp_header_raw['blue_mask']  >> $blueshift))  * 255));
+                                    $blue = intval(round(((($pixelvalue & $thisfile_bmp_header_raw['blue_mask'])  >> $blueshift)  / ($thisfile_bmp_header_raw['blue_mask']  >> $blueshift))  * 255));
                                     $thisfile_bmp['data'][$row][$col] = (($red << 16) | ($green << 8) | ($blue));
                                 }
                                 while (($pixeldataoffset % 4) != 0) {
                                     // lines are padded to nearest DWORD
-                                    $pixeldataoffset++;
+                                    ++$pixeldataoffset;
                                 }
                             }
                             break;
@@ -646,9 +636,9 @@ class Bmp extends BaseHandler
     }
 
     /**
-     *
      * @param  type    $BMPinfo
-     * @return boolean
+     *
+     * @return bool
      */
     public function PlotBMP(&$BMPinfo)
     {
@@ -660,12 +650,12 @@ class Bmp extends BaseHandler
         }
         set_time_limit(intval(round($BMPinfo['resolution_x'] * $BMPinfo['resolution_y'] / 10000)));
         if ($im = ImageCreateTrueColor($BMPinfo['resolution_x'], $BMPinfo['resolution_y'])) {
-            for ($row = 0; $row < $BMPinfo['resolution_y']; $row++) {
-                for ($col = 0; $col < $BMPinfo['resolution_x']; $col++) {
+            for ($row = 0; $row < $BMPinfo['resolution_y']; ++$row) {
+                for ($col = 0; $col < $BMPinfo['resolution_x']; ++$col) {
                     if (isset($BMPinfo['bmp']['data'][$row][$col])) {
-                        $red   = ($BMPinfo['bmp']['data'][$row][$col] & 0x00FF0000) >> 16;
+                        $red = ($BMPinfo['bmp']['data'][$row][$col] & 0x00FF0000) >> 16;
                         $green = ($BMPinfo['bmp']['data'][$row][$col] & 0x0000FF00) >> 8;
-                        $blue  = ($BMPinfo['bmp']['data'][$row][$col] & 0x000000FF);
+                        $blue = ($BMPinfo['bmp']['data'][$row][$col] & 0x000000FF);
                         $pixelcolor = ImageColorAllocate($im, $red, $green, $blue);
                         ImageSetPixel($im, $col, $row, $pixelcolor);
                     } else {
@@ -691,9 +681,10 @@ class Bmp extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $BMPcompressionWindowsLookup
+     *
      * @param  type $compressionid
+     *
      * @return type
      */
     public function BMPcompressionWindowsLookup($compressionid)
@@ -704,16 +695,17 @@ class Bmp extends BaseHandler
             2 => 'BI_RLE4',
             3 => 'BI_BITFIELDS',
             4 => 'BI_JPEG',
-            5 => 'BI_PNG'
+            5 => 'BI_PNG',
         );
 
         return (isset($BMPcompressionWindowsLookup[$compressionid]) ? $BMPcompressionWindowsLookup[$compressionid] : 'invalid');
     }
 
     /**
-     *
      * @staticvar array $BMPcompressionOS2Lookup
+     *
      * @param  type $compressionid
+     *
      * @return type
      */
     public function BMPcompressionOS2Lookup($compressionid)
@@ -728,5 +720,4 @@ class Bmp extends BaseHandler
 
         return (isset($BMPcompressionOS2Lookup[$compressionid]) ? $BMPcompressionOS2Lookup[$compressionid] : 'invalid');
     }
-
 }

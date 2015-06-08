@@ -24,14 +24,13 @@ use GetId3\GetId3Core;
  * module for analyzing FLAC and OggFLAC audio files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Flac extends BaseHandler
 {
-
     /**
-     *
      * @return type
      */
     public function analyze()
@@ -46,27 +45,26 @@ class Flac extends BaseHandler
         if ($StreamMarker != $magic) {
             return $this->error('Expecting "'.Helper::PrintHexBytes($magic).'" at offset '.$info['avdataoffset'].', found "'.Helper::PrintHexBytes($StreamMarker).'"');
         }
-        $info['fileformat']            = 'flac';
-        $info['audio']['dataformat']   = 'flac';
+        $info['fileformat'] = 'flac';
+        $info['audio']['dataformat'] = 'flac';
         $info['audio']['bitrate_mode'] = 'vbr';
-        $info['audio']['lossless']     = true;
+        $info['audio']['lossless'] = true;
 
         return $this->parseMETAdata();
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function parseMETAdata()
     {
         $info = &$this->getid3->info;
         do {
-            $BlockOffset   = $this->ftell();
-            $BlockHeader   = $this->fread(4);
+            $BlockOffset = $this->ftell();
+            $BlockHeader = $this->fread(4);
             $LastBlockFlag = (bool) (Helper::BigEndian2Int(substr($BlockHeader, 0, 1)) & 0x80);
-            $BlockType     = Helper::BigEndian2Int(substr($BlockHeader, 0, 1)) & 0x7F;
-            $BlockLength   = Helper::BigEndian2Int(substr($BlockHeader, 1, 3));
+            $BlockType = Helper::BigEndian2Int(substr($BlockHeader, 0, 1)) & 0x7F;
+            $BlockLength = Helper::BigEndian2Int(substr($BlockHeader, 1, 3));
             $BlockTypeText = self::metaBlockTypeLookup($BlockType);
 
             if (($BlockOffset + 4 + $BlockLength) > $info['avdataend']) {
@@ -81,13 +79,13 @@ class Flac extends BaseHandler
             $info['flac'][$BlockTypeText]['raw'] = array();
             $BlockTypeText_raw = &$info['flac'][$BlockTypeText]['raw'];
 
-            $BlockTypeText_raw['offset']          = $BlockOffset;
+            $BlockTypeText_raw['offset'] = $BlockOffset;
             $BlockTypeText_raw['last_meta_block'] = $LastBlockFlag;
-            $BlockTypeText_raw['block_type']      = $BlockType;
+            $BlockTypeText_raw['block_type'] = $BlockType;
             $BlockTypeText_raw['block_type_text'] = $BlockTypeText;
-            $BlockTypeText_raw['block_length']    = $BlockLength;
+            $BlockTypeText_raw['block_length'] = $BlockLength;
             if ($BlockTypeText_raw['block_type'] != 0x06) { // do not read attachment data automatically
-                $BlockTypeText_raw['block_data']  = $this->fread($BlockLength);
+                $BlockTypeText_raw['block_data'] = $this->fread($BlockLength);
             }
 
             switch ($BlockTypeText) {
@@ -172,13 +170,12 @@ class Flac extends BaseHandler
 
         // set md5_data_source - built into flac 0.5+
         if (isset($info['flac']['STREAMINFO']['audio_signature'])) {
-
             if ($info['flac']['STREAMINFO']['audio_signature'] === str_repeat("\x00", 16)) {
                 $this->warning('FLAC STREAMINFO.audio_signature is null (known issue with libOggFLAC)');
             } else {
                 $info['md5_data_source'] = '';
                 $md5 = $info['flac']['STREAMINFO']['audio_signature'];
-                for ($i = 0; $i < strlen($md5); $i++) {
+                for ($i = 0; $i < strlen($md5); ++$i) {
                     $info['md5_data_source'] .= str_pad(dechex(ord($md5[$i])), 2, '00', STR_PAD_LEFT);
                 }
                 if (!preg_match('/^[0-9a-f]{32}$/', $info['md5_data_source'])) {
@@ -201,9 +198,9 @@ class Flac extends BaseHandler
     }
 
     /**
-     *
      * @param  type    $BlockData
-     * @return boolean
+     *
+     * @return bool
      */
     private function parseSTREAMINFO($BlockData)
     {
@@ -212,26 +209,25 @@ class Flac extends BaseHandler
         $info['flac']['STREAMINFO'] = array();
         $streaminfo = &$info['flac']['STREAMINFO'];
 
-        $streaminfo['min_block_size']  = Helper::BigEndian2Int(substr($BlockData, 0, 2));
-        $streaminfo['max_block_size']  = Helper::BigEndian2Int(substr($BlockData, 2, 2));
-        $streaminfo['min_frame_size']  = Helper::BigEndian2Int(substr($BlockData, 4, 3));
-        $streaminfo['max_frame_size']  = Helper::BigEndian2Int(substr($BlockData, 7, 3));
+        $streaminfo['min_block_size'] = Helper::BigEndian2Int(substr($BlockData, 0, 2));
+        $streaminfo['max_block_size'] = Helper::BigEndian2Int(substr($BlockData, 2, 2));
+        $streaminfo['min_frame_size'] = Helper::BigEndian2Int(substr($BlockData, 4, 3));
+        $streaminfo['max_frame_size'] = Helper::BigEndian2Int(substr($BlockData, 7, 3));
 
-        $SRCSBSS                       = Helper::BigEndian2Bin(substr($BlockData, 10, 8));
-        $streaminfo['sample_rate']     = Helper::Bin2Dec(substr($SRCSBSS,  0, 20));
-        $streaminfo['channels']        = Helper::Bin2Dec(substr($SRCSBSS, 20,  3)) + 1;
-        $streaminfo['bits_per_sample'] = Helper::Bin2Dec(substr($SRCSBSS, 23,  5)) + 1;
-        $streaminfo['samples_stream']  = Helper::Bin2Dec(substr($SRCSBSS, 28, 36));
+        $SRCSBSS = Helper::BigEndian2Bin(substr($BlockData, 10, 8));
+        $streaminfo['sample_rate'] = Helper::Bin2Dec(substr($SRCSBSS, 0, 20));
+        $streaminfo['channels'] = Helper::Bin2Dec(substr($SRCSBSS, 20, 3)) + 1;
+        $streaminfo['bits_per_sample'] = Helper::Bin2Dec(substr($SRCSBSS, 23, 5)) + 1;
+        $streaminfo['samples_stream'] = Helper::Bin2Dec(substr($SRCSBSS, 28, 36));
 
         $streaminfo['audio_signature'] = substr($BlockData, 18, 16);
 
         if (!empty($streaminfo['sample_rate'])) {
-
-            $info['audio']['bitrate_mode']    = 'vbr';
-            $info['audio']['sample_rate']     = $streaminfo['sample_rate'];
-            $info['audio']['channels']        = $streaminfo['channels'];
+            $info['audio']['bitrate_mode'] = 'vbr';
+            $info['audio']['sample_rate'] = $streaminfo['sample_rate'];
+            $info['audio']['channels'] = $streaminfo['channels'];
             $info['audio']['bits_per_sample'] = $streaminfo['bits_per_sample'];
-            $info['playtime_seconds']         = $streaminfo['samples_stream'] / $streaminfo['sample_rate'];
+            $info['playtime_seconds'] = $streaminfo['samples_stream'] / $streaminfo['sample_rate'];
             if ($info['playtime_seconds'] > 0) {
                 if (!$this->isDependencyFor('matroska')) {
                     $info['audio']['bitrate'] = (($info['avdataend'] - $info['avdataoffset']) * 8) / $info['playtime_seconds'];
@@ -239,7 +235,6 @@ class Flac extends BaseHandler
                     $this->warning('Cannot determine audio bitrate because total stream size is unknown');
                 }
             }
-
         } else {
             return $this->error('Corrupt METAdata block: STREAMINFO');
         }
@@ -248,9 +243,9 @@ class Flac extends BaseHandler
     }
 
     /**
-     *
      * @param  type    $BlockData
-     * @return boolean
+     *
+     * @return bool
      */
     private function parseAPPLICATION($BlockData)
     {
@@ -264,9 +259,9 @@ class Flac extends BaseHandler
     }
 
     /**
-     *
      * @param  type    $BlockData
-     * @return boolean
+     *
+     * @return bool
      */
     private function parseSEEKTABLE($BlockData)
     {
@@ -283,15 +278,12 @@ class Flac extends BaseHandler
                 // placeholder point
                 Helper::safe_inc($info['flac']['SEEKTABLE']['placeholders'], 1);
                 $offset += 10;
-
             } else {
-
-                $SampleNumber                                        = Helper::BigEndian2Int($SampleNumberString);
-                $info['flac']['SEEKTABLE'][$SampleNumber]['offset']  = Helper::BigEndian2Int(substr($BlockData, $offset, 8));
+                $SampleNumber = Helper::BigEndian2Int($SampleNumberString);
+                $info['flac']['SEEKTABLE'][$SampleNumber]['offset'] = Helper::BigEndian2Int(substr($BlockData, $offset, 8));
                 $offset += 8;
                 $info['flac']['SEEKTABLE'][$SampleNumber]['samples'] = Helper::BigEndian2Int(substr($BlockData, $offset, 2));
                 $offset += 2;
-
             }
         }
 
@@ -299,9 +291,9 @@ class Flac extends BaseHandler
     }
 
     /**
-     *
      * @param  type    $BlockData
-     * @return boolean
+     *
+     * @return bool
      */
     private function parseVORBIS_COMMENT($BlockData)
     {
@@ -325,51 +317,51 @@ class Flac extends BaseHandler
     }
 
     /**
-     *
      * @param  type    $BlockData
-     * @return boolean
+     *
+     * @return bool
      */
     private function parseCUESHEET($BlockData)
     {
         $info = &$this->getid3->info;
         $offset = 0;
-        $info['flac']['CUESHEET']['media_catalog_number'] =                              trim(substr($BlockData, $offset, 128), "\0");
+        $info['flac']['CUESHEET']['media_catalog_number'] = trim(substr($BlockData, $offset, 128), "\0");
         $offset += 128;
-        $info['flac']['CUESHEET']['lead_in_samples']      =         Helper::BigEndian2Int(substr($BlockData, $offset, 8));
+        $info['flac']['CUESHEET']['lead_in_samples'] = Helper::BigEndian2Int(substr($BlockData, $offset, 8));
         $offset += 8;
-        $info['flac']['CUESHEET']['flags']['is_cd']       = (bool) (Helper::BigEndian2Int(substr($BlockData, $offset, 1)) & 0x80);
+        $info['flac']['CUESHEET']['flags']['is_cd'] = (bool) (Helper::BigEndian2Int(substr($BlockData, $offset, 1)) & 0x80);
         $offset += 1;
 
         $offset += 258; // reserved
 
-        $info['flac']['CUESHEET']['number_tracks']        =         Helper::BigEndian2Int(substr($BlockData, $offset, 1));
+        $info['flac']['CUESHEET']['number_tracks'] = Helper::BigEndian2Int(substr($BlockData, $offset, 1));
         $offset += 1;
 
-        for ($track = 0; $track < $info['flac']['CUESHEET']['number_tracks']; $track++) {
+        for ($track = 0; $track < $info['flac']['CUESHEET']['number_tracks']; ++$track) {
             $TrackSampleOffset = Helper::BigEndian2Int(substr($BlockData, $offset, 8));
             $offset += 8;
-            $TrackNumber       = Helper::BigEndian2Int(substr($BlockData, $offset, 1));
+            $TrackNumber = Helper::BigEndian2Int(substr($BlockData, $offset, 1));
             $offset += 1;
 
-            $info['flac']['CUESHEET']['tracks'][$TrackNumber]['sample_offset']         = $TrackSampleOffset;
+            $info['flac']['CUESHEET']['tracks'][$TrackNumber]['sample_offset'] = $TrackSampleOffset;
 
-            $info['flac']['CUESHEET']['tracks'][$TrackNumber]['isrc']                  =                           substr($BlockData, $offset, 12);
+            $info['flac']['CUESHEET']['tracks'][$TrackNumber]['isrc'] = substr($BlockData, $offset, 12);
             $offset += 12;
 
-            $TrackFlagsRaw                                                             = Helper::BigEndian2Int(substr($BlockData, $offset, 1));
+            $TrackFlagsRaw = Helper::BigEndian2Int(substr($BlockData, $offset, 1));
             $offset += 1;
-            $info['flac']['CUESHEET']['tracks'][$TrackNumber]['flags']['is_audio']     = (bool) ($TrackFlagsRaw & 0x80);
+            $info['flac']['CUESHEET']['tracks'][$TrackNumber]['flags']['is_audio'] = (bool) ($TrackFlagsRaw & 0x80);
             $info['flac']['CUESHEET']['tracks'][$TrackNumber]['flags']['pre_emphasis'] = (bool) ($TrackFlagsRaw & 0x40);
 
             $offset += 13; // reserved
 
-            $info['flac']['CUESHEET']['tracks'][$TrackNumber]['index_points']          = Helper::BigEndian2Int(substr($BlockData, $offset, 1));
+            $info['flac']['CUESHEET']['tracks'][$TrackNumber]['index_points'] = Helper::BigEndian2Int(substr($BlockData, $offset, 1));
             $offset += 1;
 
-            for ($index = 0; $index < $info['flac']['CUESHEET']['tracks'][$TrackNumber]['index_points']; $index++) {
+            for ($index = 0; $index < $info['flac']['CUESHEET']['tracks'][$TrackNumber]['index_points']; ++$index) {
                 $IndexSampleOffset = Helper::BigEndian2Int(substr($BlockData, $offset, 8));
                 $offset += 8;
-                $IndexNumber       = Helper::BigEndian2Int(substr($BlockData, $offset, 1));
+                $IndexNumber = Helper::BigEndian2Int(substr($BlockData, $offset, 1));
                 $offset += 1;
 
                 $offset += 3; // reserved
@@ -382,26 +374,26 @@ class Flac extends BaseHandler
     }
 
     /**
-     *
      * @param  type    $Block
-     * @return boolean
+     *
+     * @return bool
      */
-    public function parsePICTURE($Block='')
+    public function parsePICTURE($Block = '')
     {
         $info = &$this->getid3->info;
 
-        $picture['typeid']         = Helper::BigEndian2Int($this->fread(4));
-        $picture['type']           = self::pictureTypeLookup($picture['typeid']);
-        $picture['image_mime']     = $this->fread(Helper::BigEndian2Int($this->fread(4)));
-        $descr_length              = Helper::BigEndian2Int($this->fread(4));
+        $picture['typeid'] = Helper::BigEndian2Int($this->fread(4));
+        $picture['type'] = self::pictureTypeLookup($picture['typeid']);
+        $picture['image_mime'] = $this->fread(Helper::BigEndian2Int($this->fread(4)));
+        $descr_length = Helper::BigEndian2Int($this->fread(4));
         if ($descr_length) {
             $picture['description'] = $this->fread($descr_length);
         }
-        $picture['width']          = Helper::BigEndian2Int($this->fread(4));
-        $picture['height']         = Helper::BigEndian2Int($this->fread(4));
-        $picture['color_depth']    = Helper::BigEndian2Int($this->fread(4));
+        $picture['width'] = Helper::BigEndian2Int($this->fread(4));
+        $picture['height'] = Helper::BigEndian2Int($this->fread(4));
+        $picture['color_depth'] = Helper::BigEndian2Int($this->fread(4));
         $picture['colors_indexed'] = Helper::BigEndian2Int($this->fread(4));
-        $data_length               = Helper::BigEndian2Int($this->fread(4));
+        $data_length = Helper::BigEndian2Int($this->fread(4));
 
         if ($picture['image_mime'] == '-->') {
             $picture['data'] = $this->fread($data_length);
@@ -418,9 +410,10 @@ class Flac extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $metaBlockTypeLookup
+     *
      * @param  type $blocktype
+     *
      * @return type
      */
     public static function metaBlockTypeLookup($blocktype)
@@ -440,9 +433,10 @@ class Flac extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $applicationIDLookup
+     *
      * @param  type $applicationid
+     *
      * @return type
      */
     public static function applicationIDLookup($applicationid)
@@ -458,14 +452,15 @@ class Flac extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $lookup
+     *
      * @param  type $type_id
+     *
      * @return type
      */
     public static function pictureTypeLookup($type_id)
     {
-        static $lookup = array (
+        static $lookup = array(
              0 => 'Other',
              1 => '32x32 pixels \'file icon\' (PNG only)',
              2 => 'Other file icon',

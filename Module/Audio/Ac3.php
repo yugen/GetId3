@@ -23,26 +23,24 @@ use GetId3\Lib\Helper;
  * module for analyzing AC-3 (aka Dolby Digital) audio files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Ac3 extends BaseHandler
 {
     /**
-     *
      * @var array
      */
     private $AC3header = array();
 
     /**
-     *
-     * @var integer
+     * @var int
      */
     private $BSIoffset = 0;
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -50,9 +48,9 @@ class Ac3 extends BaseHandler
 
         ///AH
         $info['ac3']['raw']['bsi'] = array();
-        $thisfile_ac3              = &$info['ac3'];
-        $thisfile_ac3_raw          = &$thisfile_ac3['raw'];
-        $thisfile_ac3_raw_bsi      = &$thisfile_ac3_raw['bsi'];
+        $thisfile_ac3 = &$info['ac3'];
+        $thisfile_ac3_raw = &$thisfile_ac3['raw'];
+        $thisfile_ac3_raw_bsi = &$thisfile_ac3_raw['bsi'];
 
         // http://www.atsc.org/standards/a_52a.pdf
 
@@ -94,13 +92,13 @@ class Ac3 extends BaseHandler
             $this->fseek(-2, SEEK_CUR);
         }
 
-        $info['audio']['dataformat']   = 'ac3';
+        $info['audio']['dataformat'] = 'ac3';
         $info['audio']['bitrate_mode'] = 'cbr';
-        $info['audio']['lossless']     = false;
+        $info['audio']['lossless'] = false;
 
-        $thisfile_ac3_raw['synchinfo']['crc1']       = Helper::LittleEndian2Int(substr($this->AC3header['syncinfo'], $offset, 2));
-        $ac3_synchinfo_fscod_frmsizecod              = Helper::LittleEndian2Int(substr($this->AC3header['syncinfo'], ($offset + 2), 1));
-        $thisfile_ac3_raw['synchinfo']['fscod']      = ($ac3_synchinfo_fscod_frmsizecod & 0xC0) >> 6;
+        $thisfile_ac3_raw['synchinfo']['crc1'] = Helper::LittleEndian2Int(substr($this->AC3header['syncinfo'], $offset, 2));
+        $ac3_synchinfo_fscod_frmsizecod = Helper::LittleEndian2Int(substr($this->AC3header['syncinfo'], ($offset + 2), 1));
+        $thisfile_ac3_raw['synchinfo']['fscod'] = ($ac3_synchinfo_fscod_frmsizecod & 0xC0) >> 6;
         $thisfile_ac3_raw['synchinfo']['frmsizecod'] = ($ac3_synchinfo_fscod_frmsizecod & 0x3F);
 
         $thisfile_ac3['sample_rate'] = self::sampleRateCodeLookup($thisfile_ac3_raw['synchinfo']['fscod']);
@@ -109,7 +107,7 @@ class Ac3 extends BaseHandler
         }
 
         $thisfile_ac3['frame_length'] = self::frameSizeLookup($thisfile_ac3_raw['synchinfo']['frmsizecod'], $thisfile_ac3_raw['synchinfo']['fscod']);
-        $thisfile_ac3['bitrate']      = self::bitrateLookup($thisfile_ac3_raw['synchinfo']['frmsizecod']);
+        $thisfile_ac3['bitrate'] = self::bitrateLookup($thisfile_ac3_raw['synchinfo']['frmsizecod']);
         $info['audio']['bitrate'] = $thisfile_ac3['bitrate'];
 
         $this->AC3header['bsi'] = Helper::BigEndian2Bin($this->fread(15));
@@ -195,10 +193,10 @@ class Ac3 extends BaseHandler
         $thisfile_ac3_raw_bsi['audprodie'] = (bool) $this->readHeaderBSI(1);
         if ($thisfile_ac3_raw_bsi['audprodie']) {
             $thisfile_ac3_raw_bsi['mixlevel'] = $this->readHeaderBSI(5);
-            $thisfile_ac3_raw_bsi['roomtyp']  = $this->readHeaderBSI(2);
+            $thisfile_ac3_raw_bsi['roomtyp'] = $this->readHeaderBSI(2);
 
             $thisfile_ac3['mixing_level'] = (80 + $thisfile_ac3_raw_bsi['mixlevel']).'dB';
-            $thisfile_ac3['room_type']    = self::roomTypeLookup($thisfile_ac3_raw_bsi['roomtyp']);
+            $thisfile_ac3['room_type'] = self::roomTypeLookup($thisfile_ac3_raw_bsi['roomtyp']);
         }
 
         if ($thisfile_ac3_raw_bsi['acmod'] == 0x00) {
@@ -225,17 +223,16 @@ class Ac3 extends BaseHandler
             $thisfile_ac3_raw_bsi['audprodie2'] = (bool) $this->readHeaderBSI(1);
             if ($thisfile_ac3_raw_bsi['audprodie2']) {
                 $thisfile_ac3_raw_bsi['mixlevel2'] = $this->readHeaderBSI(5);
-                $thisfile_ac3_raw_bsi['roomtyp2']  = $this->readHeaderBSI(2);
+                $thisfile_ac3_raw_bsi['roomtyp2'] = $this->readHeaderBSI(2);
 
                 $thisfile_ac3['mixing_level2'] = (80 + $thisfile_ac3_raw_bsi['mixlevel2']).'dB';
-                $thisfile_ac3['room_type2']    = self::roomTypeLookup($thisfile_ac3_raw_bsi['roomtyp2']);
+                $thisfile_ac3['room_type2'] = self::roomTypeLookup($thisfile_ac3_raw_bsi['roomtyp2']);
             }
-
         }
 
         $thisfile_ac3_raw_bsi['copyright'] = (bool) $this->readHeaderBSI(1);
 
-        $thisfile_ac3_raw_bsi['original']  = (bool) $this->readHeaderBSI(1);
+        $thisfile_ac3_raw_bsi['original'] = (bool) $this->readHeaderBSI(1);
 
         $thisfile_ac3_raw_bsi['timecode1_flag'] = (bool) $this->readHeaderBSI(1);
         if ($thisfile_ac3_raw_bsi['timecode1_flag']) {
@@ -261,8 +258,8 @@ class Ac3 extends BaseHandler
     }
 
     /**
-     *
      * @param  type $length
+     *
      * @return type
      */
     private function readHeaderBSI($length)
@@ -274,9 +271,10 @@ class Ac3 extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $AC3sampleRateCodeLookup
+     *
      * @param  type $fscod
+     *
      * @return type
      */
     public static function sampleRateCodeLookup($fscod)
@@ -285,24 +283,25 @@ class Ac3 extends BaseHandler
             0 => 48000,
             1 => 44100,
             2 => 32000,
-            3 => 'reserved' // If the reserved code is indicated, the decoder should not attempt to decode audio and should mute.
+            3 => 'reserved', // If the reserved code is indicated, the decoder should not attempt to decode audio and should mute.
         );
 
         return (isset($AC3sampleRateCodeLookup[$fscod]) ? $AC3sampleRateCodeLookup[$fscod] : false);
     }
 
     /**
-     *
      * @staticvar array $AC3serviceTypeLookup
+     *
      * @param  type $bsmod
      * @param  type $acmod
+     *
      * @return type
      */
     public static function serviceTypeLookup($bsmod, $acmod)
     {
         static $AC3serviceTypeLookup = array();
         if (empty($AC3serviceTypeLookup)) {
-            for ($i = 0; $i <= 7; $i++) {
+            for ($i = 0; $i <= 7; ++$i) {
                 $AC3serviceTypeLookup[0][$i] = 'main audio service: complete main (CM)';
                 $AC3serviceTypeLookup[1][$i] = 'main audio service: music and effects (ME)';
                 $AC3serviceTypeLookup[2][$i] = 'associated service: visually impaired (VI)';
@@ -312,8 +311,8 @@ class Ac3 extends BaseHandler
                 $AC3serviceTypeLookup[6][$i] = 'associated service: emergency (E)';
             }
 
-            $AC3serviceTypeLookup[7][1]      = 'associated service: voice over (VO)';
-            for ($i = 2; $i <= 7; $i++) {
+            $AC3serviceTypeLookup[7][1] = 'associated service: voice over (VO)';
+            for ($i = 2; $i <= 7; ++$i) {
                 $AC3serviceTypeLookup[7][$i] = 'main audio service: karaoke';
             }
         }
@@ -322,9 +321,10 @@ class Ac3 extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $AC3audioCodingModeLookup
+     *
      * @param  type $acmod
+     *
      * @return type
      */
     public static function audioCodingModeLookup($acmod)
@@ -332,15 +332,15 @@ class Ac3 extends BaseHandler
         static $AC3audioCodingModeLookup = array();
         if (empty($AC3audioCodingModeLookup)) {
             // array(channel configuration, # channels (not incl LFE), channel order)
-            $AC3audioCodingModeLookup = array (
-                0 => array('channel_config'=>'1+1', 'num_channels'=>2, 'channel_order'=>'Ch1,Ch2'),
-                1 => array('channel_config'=>'1/0', 'num_channels'=>1, 'channel_order'=>'C'),
-                2 => array('channel_config'=>'2/0', 'num_channels'=>2, 'channel_order'=>'L,R'),
-                3 => array('channel_config'=>'3/0', 'num_channels'=>3, 'channel_order'=>'L,C,R'),
-                4 => array('channel_config'=>'2/1', 'num_channels'=>3, 'channel_order'=>'L,R,S'),
-                5 => array('channel_config'=>'3/1', 'num_channels'=>4, 'channel_order'=>'L,C,R,S'),
-                6 => array('channel_config'=>'2/2', 'num_channels'=>4, 'channel_order'=>'L,R,SL,SR'),
-                7 => array('channel_config'=>'3/2', 'num_channels'=>5, 'channel_order'=>'L,C,R,SL,SR')
+            $AC3audioCodingModeLookup = array(
+                0 => array('channel_config' => '1+1', 'num_channels' => 2, 'channel_order' => 'Ch1,Ch2'),
+                1 => array('channel_config' => '1/0', 'num_channels' => 1, 'channel_order' => 'C'),
+                2 => array('channel_config' => '2/0', 'num_channels' => 2, 'channel_order' => 'L,R'),
+                3 => array('channel_config' => '3/0', 'num_channels' => 3, 'channel_order' => 'L,C,R'),
+                4 => array('channel_config' => '2/1', 'num_channels' => 3, 'channel_order' => 'L,R,S'),
+                5 => array('channel_config' => '3/1', 'num_channels' => 4, 'channel_order' => 'L,C,R,S'),
+                6 => array('channel_config' => '2/2', 'num_channels' => 4, 'channel_order' => 'L,R,SL,SR'),
+                7 => array('channel_config' => '3/2', 'num_channels' => 5, 'channel_order' => 'L,C,R,SL,SR'),
             );
         }
 
@@ -348,9 +348,10 @@ class Ac3 extends BaseHandler
     }
 
     /**
-     *
      * @staticvar type $AC3centerMixLevelLookup
+     *
      * @param  type $cmixlev
+     *
      * @return type
      */
     public static function centerMixLevelLookup($cmixlev)
@@ -361,7 +362,7 @@ class Ac3 extends BaseHandler
                 0 => pow(2, -3.0 / 6), // 0.707 (–3.0 dB)
                 1 => pow(2, -4.5 / 6), // 0.595 (–4.5 dB)
                 2 => pow(2, -6.0 / 6), // 0.500 (–6.0 dB)
-                3 => 'reserved'
+                3 => 'reserved',
             );
         }
 
@@ -369,9 +370,10 @@ class Ac3 extends BaseHandler
     }
 
     /**
-     *
      * @staticvar type $AC3surroundMixLevelLookup
+     *
      * @param  type $surmixlev
+     *
      * @return type
      */
     public static function surroundMixLevelLookup($surmixlev)
@@ -382,7 +384,7 @@ class Ac3 extends BaseHandler
                 0 => pow(2, -3.0 / 6),
                 1 => pow(2, -6.0 / 6),
                 2 => 0,
-                3 => 'reserved'
+                3 => 'reserved',
             );
         }
 
@@ -390,9 +392,10 @@ class Ac3 extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $AC3dolbySurroundModeLookup
+     *
      * @param  type $dsurmod
+     *
      * @return type
      */
     public static function dolbySurroundModeLookup($dsurmod)
@@ -401,38 +404,38 @@ class Ac3 extends BaseHandler
             0 => 'not indicated',
             1 => 'Not Dolby Surround encoded',
             2 => 'Dolby Surround encoded',
-            3 => 'reserved'
+            3 => 'reserved',
         );
 
         return (isset($AC3dolbySurroundModeLookup[$dsurmod]) ? $AC3dolbySurroundModeLookup[$dsurmod] : false);
     }
 
     /**
-     *
      * @param  type    $acmod
      * @param  type    $lfeon
-     * @return boolean
+     *
+     * @return bool
      */
     public static function channelsEnabledLookup($acmod, $lfeon)
     {
         $AC3channelsEnabledLookup = array(
-            'ch1'=>(bool) ($acmod == 0),
-            'ch2'=>(bool) ($acmod == 0),
-            'left'=>(bool) ($acmod > 1),
-            'right'=>(bool) ($acmod > 1),
-            'center'=>(bool) ($acmod & 0x01),
-            'surround_mono'=>false,
-            'surround_left'=>false,
-            'surround_right'=>false,
-            'lfe'=>$lfeon);
+            'ch1' => (bool) ($acmod == 0),
+            'ch2' => (bool) ($acmod == 0),
+            'left' => (bool) ($acmod > 1),
+            'right' => (bool) ($acmod > 1),
+            'center' => (bool) ($acmod & 0x01),
+            'surround_mono' => false,
+            'surround_left' => false,
+            'surround_right' => false,
+            'lfe' => $lfeon, );
         switch ($acmod) {
             case 4:
             case 5:
-                $AC3channelsEnabledLookup['surround_mono']  = true;
+                $AC3channelsEnabledLookup['surround_mono'] = true;
                 break;
             case 6:
             case 7:
-                $AC3channelsEnabledLookup['surround_left']  = true;
+                $AC3channelsEnabledLookup['surround_left'] = true;
                 $AC3channelsEnabledLookup['surround_right'] = true;
                 break;
         }
@@ -441,8 +444,8 @@ class Ac3 extends BaseHandler
     }
 
     /**
-     *
      * @param  type $compre
+     *
      * @return type
      */
     public static function heavyCompression($compre)
@@ -496,9 +499,10 @@ class Ac3 extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $AC3roomTypeLookup
+     *
      * @param  type $roomtyp
+     *
      * @return type
      */
     public static function roomTypeLookup($roomtyp)
@@ -507,37 +511,38 @@ class Ac3 extends BaseHandler
             0 => 'not indicated',
             1 => 'large room, X curve monitor',
             2 => 'small room, flat monitor',
-            3 => 'reserved'
+            3 => 'reserved',
         );
 
         return (isset($AC3roomTypeLookup[$roomtyp]) ? $AC3roomTypeLookup[$roomtyp] : false);
     }
 
     /**
-     *
      * @staticvar array $AC3frameSizeLookup
+     *
      * @param  type $frmsizecod
      * @param  type $fscod
+     *
      * @return type
      */
     public static function frameSizeLookup($frmsizecod, $fscod)
     {
-        $padding     = (bool) ($frmsizecod % 2);
-        $framesizeid =   floor($frmsizecod / 2);
+        $padding = (bool) ($frmsizecod % 2);
+        $framesizeid = floor($frmsizecod / 2);
 
         static $AC3frameSizeLookup = array();
         if (empty($AC3frameSizeLookup)) {
-            $AC3frameSizeLookup = array (
-                0  => array(128, 138, 192),
-                1  => array(40, 160, 174, 240),
-                2  => array(48, 192, 208, 288),
-                3  => array(56, 224, 242, 336),
-                4  => array(64, 256, 278, 384),
-                5  => array(80, 320, 348, 480),
-                6  => array(96, 384, 416, 576),
-                7  => array(112, 448, 486, 672),
-                8  => array(128, 512, 556, 768),
-                9  => array(160, 640, 696, 960),
+            $AC3frameSizeLookup = array(
+                0 => array(128, 138, 192),
+                1 => array(40, 160, 174, 240),
+                2 => array(48, 192, 208, 288),
+                3 => array(56, 224, 242, 336),
+                4 => array(64, 256, 278, 384),
+                5 => array(80, 320, 348, 480),
+                6 => array(96, 384, 416, 576),
+                7 => array(112, 448, 486, 672),
+                8 => array(128, 512, 556, 768),
+                9 => array(160, 640, 696, 960),
                 10 => array(192, 768, 834, 1152),
                 11 => array(224, 896, 974, 1344),
                 12 => array(256, 1024, 1114, 1536),
@@ -546,7 +551,7 @@ class Ac3 extends BaseHandler
                 15 => array(448, 1792, 1950, 2688),
                 16 => array(512, 2048, 2228, 3072),
                 17 => array(576, 2304, 2506, 3456),
-                18 => array(640, 2560, 2786, 3840)
+                18 => array(640, 2560, 2786, 3840),
             );
         }
         if (($fscod == 1) && $padding) {
@@ -558,26 +563,27 @@ class Ac3 extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $AC3bitrateLookup
+     *
      * @param  type $frmsizecod
+     *
      * @return type
      */
     public static function bitrateLookup($frmsizecod)
     {
-        $framesizeid =   floor($frmsizecod / 2);
+        $framesizeid = floor($frmsizecod / 2);
 
         static $AC3bitrateLookup = array(
-            0  => 32000,
-            1  => 40000,
-            2  => 48000,
-            3  => 56000,
-            4  => 64000,
-            5  => 80000,
-            6  => 96000,
-            7  => 112000,
-            8  => 128000,
-            9  => 160000,
+            0 => 32000,
+            1 => 40000,
+            2 => 48000,
+            3 => 56000,
+            4 => 64000,
+            5 => 80000,
+            6 => 96000,
+            7 => 112000,
+            8 => 128000,
+            9 => 160000,
             10 => 192000,
             11 => 224000,
             12 => 256000,
@@ -586,7 +592,7 @@ class Ac3 extends BaseHandler
             15 => 448000,
             16 => 512000,
             17 => 576000,
-            18 => 640000
+            18 => 640000,
         );
 
         return (isset($AC3bitrateLookup[$framesizeid]) ? $AC3bitrateLookup[$framesizeid] : false);

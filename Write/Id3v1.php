@@ -24,8 +24,10 @@ use GetId3\Module\Tag;
  * module for writing ID3v1 tags
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
+ *
  * @uses GetId3\Module\Tag\Id3v1
  */
 class Id3v1
@@ -34,19 +36,16 @@ class Id3v1
     public $filesize;
     public $tag_data;
     /**
-     *
      * @var array
      */
     public $warnings = array(); // any non-critical errors will be stored here
     /**
-     *
      * @var array
      */
-    public $errors   = array(); // any critical errors will be stored here
+    public $errors = array(); // any critical errors will be stored here
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function __construct()
     {
@@ -54,8 +53,7 @@ class Id3v1
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function WriteID3v1()
     {
@@ -77,18 +75,17 @@ class Id3v1
                 $this->tag_data['track'] = (isset($this->tag_data['track']) ? $this->tag_data['track'] : (isset($this->tag_data['track_number']) ? $this->tag_data['track_number'] : (isset($this->tag_data['tracknumber']) ? $this->tag_data['tracknumber'] : '')));
 
                 $new_id3v1_tag_data = Tag\Id3v1::GenerateID3v1Tag(
-                                                        (isset($this->tag_data['title']  ) ? $this->tag_data['title']   : ''),
-                                                        (isset($this->tag_data['artist'] ) ? $this->tag_data['artist']  : ''),
-                                                        (isset($this->tag_data['album']  ) ? $this->tag_data['album']   : ''),
-                                                        (isset($this->tag_data['year']   ) ? $this->tag_data['year']    : ''),
+                                                        (isset($this->tag_data['title']) ? $this->tag_data['title']   : ''),
+                                                        (isset($this->tag_data['artist']) ? $this->tag_data['artist']  : ''),
+                                                        (isset($this->tag_data['album']) ? $this->tag_data['album']   : ''),
+                                                        (isset($this->tag_data['year']) ? $this->tag_data['year']    : ''),
                                                         (isset($this->tag_data['genreid']) ? $this->tag_data['genreid'] : ''),
                                                         (isset($this->tag_data['comment']) ? $this->tag_data['comment'] : ''),
-                                                        (isset($this->tag_data['track']  ) ? $this->tag_data['track']   : ''));
+                                                        (isset($this->tag_data['track']) ? $this->tag_data['track']   : ''));
                 fwrite($fp_source, $new_id3v1_tag_data, 128);
                 fclose($fp_source);
 
                 return true;
-
             } else {
                 $this->errors[] = 'Could not fopen('.$this->filename.', "r+b")';
 
@@ -101,8 +98,7 @@ class Id3v1
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function FixID3v1Padding()
     {
@@ -111,11 +107,11 @@ class Id3v1
 
         // Initialize GetId3 engine
         $getID3 = new GetId3Core();
-        $getID3->option_tag_id3v2  = false;
+        $getID3->option_tag_id3v2 = false;
         $getID3->option_tag_apetag = false;
-        $getID3->option_tags_html  = false;
+        $getID3->option_tags_html = false;
         $getID3->option_extra_info = false;
-        $getID3->option_tag_id3v1  = true;
+        $getID3->option_tag_id3v1 = true;
         $ThisFileInfo = $getID3->analyze($this->filename);
         if (isset($ThisFileInfo['tags']['id3v1'])) {
             foreach ($ThisFileInfo['tags']['id3v1'] as $key => $value) {
@@ -140,7 +136,6 @@ class Id3v1
                 return false;
             }
             if ($fp_source = fopen($this->filename, 'r+b')) {
-
                 fseek($fp_source, -128, SEEK_END);
                 if (fread($fp_source, 3) == 'TAG') {
                     ftruncate($fp_source, $this->filesize - 128);
@@ -150,7 +145,6 @@ class Id3v1
                 fclose($fp_source);
 
                 return true;
-
             } else {
                 $this->errors[] = 'Could not fopen('.$this->filename.', "r+b")';
             }
@@ -162,8 +156,7 @@ class Id3v1
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function setRealFileSize()
     {
@@ -175,15 +168,14 @@ class Id3v1
         // 32-bit PHP will not return correct values for filesize() if file is >=2GB
         // but GetId3->analyze() has workarounds to get actual filesize
         $getID3 = new GetId3Core();
-        $getID3->option_tag_id3v1  = false;
-        $getID3->option_tag_id3v2  = false;
+        $getID3->option_tag_id3v1 = false;
+        $getID3->option_tag_id3v2 = false;
         $getID3->option_tag_apetag = false;
-        $getID3->option_tags_html  = false;
+        $getID3->option_tags_html = false;
         $getID3->option_extra_info = false;
         $ThisFileInfo = $getID3->analyze($this->filename);
         $this->filesize = $ThisFileInfo['filesize'];
 
         return true;
     }
-
 }

@@ -23,34 +23,31 @@ use GetId3\GetId3Core;
  * module for writing APE tags
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
+ *
  * @uses GetId3\Module\Tag\Apetag
  */
 class Apetag
 {
-
     public $filename;
     public $tag_data;
     /**
-     *
-     * @var boolean
+     * @var bool
      */
     public $always_preserve_replaygain = true;    // ReplayGain / MP3gain tags will be copied from old tag even if not passed in data
     /**
-     *
      * @var array
      */
-    public $warnings                   = array(); // any non-critical errors will be stored here
+    public $warnings = array(); // any non-critical errors will be stored here
     /**
-     *
      * @var array
      */
-    public $errors                     = array(); // any critical errors will be stored here
+    public $errors = array(); // any critical errors will be stored here
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function __construct()
     {
@@ -58,8 +55,7 @@ class Apetag
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function WriteAPEtag()
     {
@@ -127,8 +123,7 @@ class Apetag
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function DeleteAPEtag()
     {
@@ -136,7 +131,6 @@ class Apetag
         $ThisFileInfo = $getID3->analyze($this->filename);
         if (isset($ThisFileInfo['ape']['tag_offset_start']) && isset($ThisFileInfo['ape']['tag_offset_end'])) {
             if (is_writable($this->filename) && is_file($this->filename) && ($fp = fopen($this->filename, 'a+b'))) {
-
                 flock($fp, LOCK_EX);
                 $oldignoreuserabort = ignore_user_abort(true);
 
@@ -167,8 +161,7 @@ class Apetag
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function GenerateAPEtag()
     {
@@ -190,7 +183,7 @@ class Apetag
             $valuestring = rtrim($valuestring, "\x00");
 
             // Length of the assigned value in bytes
-            $tagitem  = Helper::LittleEndian2String(strlen($valuestring), 4);
+            $tagitem = Helper::LittleEndian2String(strlen($valuestring), 4);
 
             //$tagitem .= $this->GenerateAPEtagFlags(true, true, false, 0, false);
             $tagitem .= "\x00\x00\x00\x00";
@@ -199,26 +192,25 @@ class Apetag
             $tagitem .= $valuestring;
 
             $items[] = $tagitem;
-
         }
 
         return $this->GenerateAPEtagHeaderFooter($items, true).implode('', $items).$this->GenerateAPEtagHeaderFooter($items, false);
     }
 
     /**
-     *
      * @param  type $items
      * @param  type $isheader
+     *
      * @return type
      */
-    public function GenerateAPEtagHeaderFooter(&$items, $isheader=false)
+    public function GenerateAPEtagHeaderFooter(&$items, $isheader = false)
     {
         $tagdatalength = 0;
         foreach ($items as $itemdata) {
             $tagdatalength += strlen($itemdata);
         }
 
-        $APEheader  = 'APETAGEX';
+        $APEheader = 'APETAGEX';
         $APEheader .= Helper::LittleEndian2String(2000, 4);
         $APEheader .= Helper::LittleEndian2String(32 + $tagdatalength, 4);
         $APEheader .= Helper::LittleEndian2String(count($items), 4);
@@ -229,15 +221,15 @@ class Apetag
     }
 
     /**
-     *
      * @param  type $header
      * @param  type $footer
      * @param  type $isheader
      * @param  type $encodingid
      * @param  type $readonly
+     *
      * @return type
      */
-    public function GenerateAPEtagFlags($header=true, $footer=true, $isheader=false, $encodingid=0, $readonly=false)
+    public function GenerateAPEtagFlags($header = true, $footer = true, $isheader = false, $encodingid = 0, $readonly = false)
     {
         $APEtagFlags = array_fill(0, 4, 0);
         if ($header) {
@@ -264,8 +256,8 @@ class Apetag
     }
 
     /**
-     *
      * @param  type $itemkey
+     *
      * @return type
      */
     public function CleanAPEtagItemKey($itemkey)
@@ -287,7 +279,5 @@ class Apetag
         }
 
         return $itemkey;
-
     }
-
 }

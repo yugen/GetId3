@@ -59,13 +59,13 @@ use GetId3\GetId3Core;
  * **  set $hide to TRUE to prefix db file with .ht to pervent access from web client
  * **  this is a default setting in the Apache configuration:
 
-  # The following lines prevent .htaccess and .htpasswd files from being viewed by Web clients.
+ # The following lines prevent .htaccess and .htpasswd files from being viewed by Web clients.
 
-  <Files ~ "^\.ht">
-  Order allow,deny
-  Deny from all
-  Satisfy all
-  </Files>
+ <Files ~ "^\.ht">
+ Order allow,deny
+ Deny from all
+ Satisfy all
+ </Files>
 
  * *******************************************************************************
  *
@@ -90,16 +90,14 @@ use GetId3\GetId3Core;
  *
  * IMHO this is still a bit slow, I'm using this with MP4/MOV/ M4v files
  * there is a plan to add directory scanning and analyzing to make things work much faster
- *
- *
  */
 
 /**
- *
  * @author James Heinrich <info@getid3.org>
  * @author Allan Hansen <ahØartemis*dk>
  * @author Carlo Capocasa <calroØcarlocapocasa*com>
  * @author Karl G. Holz <newaeonØmac*com>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
@@ -107,29 +105,33 @@ class Sqlite3 extends GetId3
 {
     /**
      * hold the sqlite db
+     *
      * @var SQLite Resource
      */
     private $db;
 
     /**
      * table to use for caching
-     * @var string $table
+     *
+     * @var string
      */
     private $table;
 
     /**
      * __construct()
+     *
      * @param  string $table holds name of sqlite table
+     *
      * @return type
      */
     public function __construct($table = 'getid3_cache', $hide = false)
     {
         $this->table = $table; // Set table
-        $file = dirname(__FILE__) . '/' . basename(__FILE__, 'php') . 'sqlite';
+        $file = dirname(__FILE__).'/'.basename(__FILE__, 'php').'sqlite';
         if ($hide) {
-            $file = dirname(__FILE__) . '/.ht.' . basename(__FILE__, 'php') . 'sqlite';
+            $file = dirname(__FILE__).'/.ht.'.basename(__FILE__, 'php').'sqlite';
         }
-        $this->db = new SQLite3($file);
+        $this->db = new self($file);
         $db = $this->db;
         $this->create_table();   // Create cache table if not exists
         $version = '';
@@ -156,7 +158,7 @@ class Sqlite3 extends GetId3
 
     /**
      * clear the cache
-     * @access private
+     *
      * @return type
      */
     private function clear_cache()
@@ -175,8 +177,10 @@ class Sqlite3 extends GetId3
 
     /**
      * analyze file and cache them, if cached pull from the db
+     *
      * @param  type    $filename
-     * @return boolean
+     *
+     * @return bool
      */
     public function analyze($filename)
     {
@@ -221,6 +225,7 @@ class Sqlite3 extends GetId3
     /**
      * create data base table
      * this is almost the same as MySQL, with the exception of the dirname being added
+     *
      * @return type
      */
     private function create_table()
@@ -237,8 +242,8 @@ class Sqlite3 extends GetId3
      * This function is not in the MySQL extention, it's ment to speed up requesting multiple files
      * which is ideal for podcasting, playlists, etc.
      *
-     * @access public
      * @param  string $dir directory to search the cache database for
+     *
      * @return array  return an array of matching id3 data
      */
     public function get_cached_dir($dir)

@@ -15,18 +15,18 @@ class GraphicTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        self::$jpgFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'jpgsample.jpg';
-        self::$pngFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'pngsample.png';
-        self::$bmpFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'bmpsample.bmp';
-        self::$svgFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'svgsample.svg';
-        self::$tiffFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'tiffsample.tif';
+        self::$jpgFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'jpgsample.jpg';
+        self::$pngFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'pngsample.png';
+        self::$bmpFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'bmpsample.bmp';
+        self::$svgFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'svgsample.svg';
+        self::$tiffFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'tiffsample.tif';
         self::$class = 'GetId3\\GetId3Core';
     }
 
     public function testClass()
     {
         if (!class_exists(self::$class)) {
-            $this->markTestSkipped(self::$class . ' is not available.');
+            $this->markTestSkipped(self::$class.' is not available.');
         }
         $this->assertTrue(class_exists(self::$class));
         $this->assertClassHasAttribute('option_md5_data', self::$class);

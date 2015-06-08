@@ -14,17 +14,17 @@ class AudioVideoTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        self::$quicktimeFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'sample_iTunes.mov';
-        self::$flvFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'flvsample.flv';
-        self::$realFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'realsample.rm';
-        self::$asfFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'asfsample.asf';
+        self::$quicktimeFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'sample_iTunes.mov';
+        self::$flvFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'flvsample.flv';
+        self::$realFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'realsample.rm';
+        self::$asfFile = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'asfsample.asf';
         self::$class = 'GetId3\\GetId3Core';
     }
 
     public function testClass()
     {
         if (!class_exists(self::$class)) {
-            $this->markTestSkipped(self::$class . ' is not available.');
+            $this->markTestSkipped(self::$class.' is not available.');
         }
         $this->assertTrue(class_exists(self::$class));
         $this->assertClassHasAttribute('option_md5_data', self::$class);

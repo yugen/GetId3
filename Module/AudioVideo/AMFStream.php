@@ -23,6 +23,7 @@ use GetId3\Lib\Helper;
  *
  * @author James Heinrich <info@getid3.org>
  * @author Seth Kaufman <seth@whirl-i-gig.com>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
@@ -32,17 +33,15 @@ class AMFStream
     public $pos;
 
     /**
-     *
      * @param type $bytes
      */
     public function __construct(&$bytes)
     {
-        $this->bytes = & $bytes;
+        $this->bytes = &$bytes;
         $this->pos = 0;
     }
 
     /**
-     *
      * @return type
      */
     public function readByte()
@@ -52,7 +51,6 @@ class AMFStream
     }
 
     /**
-     *
      * @return type
      */
     public function readInt()
@@ -61,7 +59,6 @@ class AMFStream
     }
 
     /**
-     *
      * @return type
      */
     public function readLong()
@@ -70,7 +67,6 @@ class AMFStream
     }
 
     /**
-     *
      * @return type
      */
     public function readDouble()
@@ -79,7 +75,6 @@ class AMFStream
     }
 
     /**
-     *
      * @return type
      */
     public function readUTF()
@@ -90,7 +85,6 @@ class AMFStream
     }
 
     /**
-     *
      * @return type
      */
     public function readLongUTF()
@@ -101,8 +95,8 @@ class AMFStream
     }
 
     /**
-     *
      * @param  type $length
+     *
      * @return type
      */
     public function read($length)
@@ -114,7 +108,6 @@ class AMFStream
     }
 
     /**
-     *
      * @return type
      */
     public function peekByte()
@@ -127,7 +120,6 @@ class AMFStream
     }
 
     /**
-     *
      * @return type
      */
     public function peekInt()
@@ -140,7 +132,6 @@ class AMFStream
     }
 
     /**
-     *
      * @return type
      */
     public function peekLong()
@@ -153,7 +144,6 @@ class AMFStream
     }
 
     /**
-     *
      * @return type
      */
     public function peekDouble()
@@ -166,7 +156,6 @@ class AMFStream
     }
 
     /**
-     *
      * @return type
      */
     public function peekUTF()
@@ -179,7 +168,6 @@ class AMFStream
     }
 
     /**
-     *
      * @return type
      */
     public function peekLongUTF()

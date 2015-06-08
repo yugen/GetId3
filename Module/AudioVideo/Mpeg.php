@@ -25,8 +25,10 @@ use GetId3\GetId3Core;
  * module for analyzing MPEG files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
+ *
  * @uses GetId3\Module\Audio_Mp3
  */
 class Mpeg extends BaseHandler
@@ -41,15 +43,14 @@ class Mpeg extends BaseHandler
     const GETID3_MPEG_AUDIO_START = "\x00\x00\x01\xC0";
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
         $info = &$this->getid3->info;
 
         if ($info['avdataend'] <= $info['avdataoffset']) {
-            $info['error'][] = '"avdataend" (' . $info['avdataend'] . ') is unexpectedly less-than-or-equal-to "avdataoffset" (' . $info['avdataoffset'] . ')';
+            $info['error'][] = '"avdataend" ('.$info['avdataend'].') is unexpectedly less-than-or-equal-to "avdataoffset" ('.$info['avdataoffset'].')';
 
             return false;
         }
@@ -143,7 +144,7 @@ class Mpeg extends BaseHandler
                                                                                                                  1));
                 $info['mpeg']['video']['raw']['intra_quant'] = Helper::Bin2Dec(substr($assortedinformation,
                                                                                                  31,
-                                                                                                 1)) . substr(Helper::BigEndian2Bin(substr($MPEGstreamData,
+                                                                                                 1)).substr(Helper::BigEndian2Bin(substr($MPEGstreamData,
                                                                                                                                                       $VideoChunkOffset,
                                                                                                                                                       64)),
                                                                                                                                                       0,
@@ -156,7 +157,6 @@ class Mpeg extends BaseHandler
                     $VideoChunkOffset += 64;
                 }
             } else {
-
                 $info['mpeg']['video']['raw']['non_intra_quant_flag'] = (bool) Helper::Bin2Dec(substr($assortedinformation,
                                                                                                                  31,
                                                                                                                  1));
@@ -169,10 +169,9 @@ class Mpeg extends BaseHandler
             }
 
             if ($info['mpeg']['video']['raw']['bitrate'] == 0x3FFFF) { // 18 set bits
-                $info['warning'][] = 'This version of GetId3Core() [' . $this->getid3->version() . '] cannot determine average bitrate of VBR MPEG video files';
+                $info['warning'][] = 'This version of GetId3Core() ['.$this->getid3->version().'] cannot determine average bitrate of VBR MPEG video files';
                 $info['mpeg']['video']['bitrate_mode'] = 'vbr';
             } else {
-
                 $info['mpeg']['video']['bitrate'] = $info['mpeg']['video']['raw']['bitrate'] * 400;
                 $info['mpeg']['video']['bitrate_mode'] = 'cbr';
                 $info['video']['bitrate'] = $info['mpeg']['video']['bitrate'];
@@ -186,7 +185,6 @@ class Mpeg extends BaseHandler
             $info['video']['lossless'] = false;
             $info['video']['bits_per_sample'] = 24;
         } else {
-
             $info['error'][] = 'Could not find start of video block in the first 100,000 bytes (or before end of file) - this might not be an MPEG-video file?';
         }
 
@@ -215,7 +213,7 @@ class Mpeg extends BaseHandler
             $getid3_temp->openfile($this->getid3->filename);
             $getid3_temp->info = $info;
             $getid3_mp3 = new Mp3($getid3_temp);
-            for ($i = 0; $i <= 7; $i++) {
+            for ($i = 0; $i <= 7; ++$i) {
                 // some files have the MPEG-audio header 8 bytes after the end of the $00 $00 $01 $C0 signature, some have it up to 13 bytes (or more?) after
                 // I have no idea why or what the difference is, so this is a stupid hack.
                 // If anybody has any better idea of what's going on, please let me know - info@getid3.org
@@ -272,9 +270,9 @@ class Mpeg extends BaseHandler
     }
 
     /**
-     *
      * @param  type $VideoBitrate
      * @param  type $AudioBitrate
+     *
      * @return type
      */
     public function MPEGsystemNonOverheadPercentage($VideoBitrate, $AudioBitrate)
@@ -328,8 +326,8 @@ class Mpeg extends BaseHandler
     }
 
     /**
-     *
      * @param  type $rawframerate
+     *
      * @return type
      */
     public function MPEGvideoFramerateLookup($rawframerate)
@@ -340,8 +338,8 @@ class Mpeg extends BaseHandler
     }
 
     /**
-     *
      * @param  type $rawaspectratio
+     *
      * @return type
      */
     public function MPEGvideoAspectRatioLookup($rawaspectratio)
@@ -352,8 +350,8 @@ class Mpeg extends BaseHandler
     }
 
     /**
-     *
      * @param  type $rawaspectratio
+     *
      * @return type
      */
     public function MPEGvideoAspectRatioTextLookup($rawaspectratio)

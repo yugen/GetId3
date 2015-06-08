@@ -23,15 +23,14 @@ use GetId3\Lib\Helper;
  * module for analyzing Nullsoft NSV files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Nsv extends BaseHandler
 {
-
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -43,21 +42,21 @@ class Nsv extends BaseHandler
         switch ($NSVheader) {
             case 'NSVs':
                 if ($this->getNSVsHeaderFilepointer(0)) {
-                    $info['fileformat']          = 'nsv';
+                    $info['fileformat'] = 'nsv';
                     $info['audio']['dataformat'] = 'nsv';
                     $info['video']['dataformat'] = 'nsv';
-                    $info['audio']['lossless']   = false;
-                    $info['video']['lossless']   = false;
+                    $info['audio']['lossless'] = false;
+                    $info['video']['lossless'] = false;
                 }
                 break;
 
             case 'NSVf':
                 if ($this->getNSVfHeaderFilepointer(0)) {
-                    $info['fileformat']          = 'nsv';
+                    $info['fileformat'] = 'nsv';
                     $info['audio']['dataformat'] = 'nsv';
                     $info['video']['dataformat'] = 'nsv';
-                    $info['audio']['lossless']   = false;
-                    $info['video']['lossless']   = false;
+                    $info['audio']['lossless'] = false;
+                    $info['video']['lossless'] = false;
                     $this->getNSVsHeaderFilepointer($info['nsv']['NSVf']['header_length']);
                 }
                 break;
@@ -77,9 +76,9 @@ class Nsv extends BaseHandler
     }
 
     /**
-     *
      * @param  type    $fileoffset
-     * @return boolean
+     *
+     * @return bool
      */
     public function getNSVsHeaderFilepointer($fileoffset)
     {
@@ -88,7 +87,7 @@ class Nsv extends BaseHandler
         $NSVsheader = fread($this->getid3->fp, 28);
         $offset = 0;
 
-        $info['nsv']['NSVs']['identifier']      =                  substr($NSVsheader, $offset, 4);
+        $info['nsv']['NSVs']['identifier'] = substr($NSVsheader, $offset, 4);
         $offset += 4;
 
         if ($info['nsv']['NSVs']['identifier'] != 'NSVs') {
@@ -98,15 +97,15 @@ class Nsv extends BaseHandler
             return false;
         }
 
-        $info['nsv']['NSVs']['offset']          = $fileoffset;
+        $info['nsv']['NSVs']['offset'] = $fileoffset;
 
-        $info['nsv']['NSVs']['video_codec']     =                              substr($NSVsheader, $offset, 4);
+        $info['nsv']['NSVs']['video_codec'] = substr($NSVsheader, $offset, 4);
         $offset += 4;
-        $info['nsv']['NSVs']['audio_codec']     =                              substr($NSVsheader, $offset, 4);
+        $info['nsv']['NSVs']['audio_codec'] = substr($NSVsheader, $offset, 4);
         $offset += 4;
-        $info['nsv']['NSVs']['resolution_x']    = Helper::LittleEndian2Int(substr($NSVsheader, $offset, 2));
+        $info['nsv']['NSVs']['resolution_x'] = Helper::LittleEndian2Int(substr($NSVsheader, $offset, 2));
         $offset += 2;
-        $info['nsv']['NSVs']['resolution_y']    = Helper::LittleEndian2Int(substr($NSVsheader, $offset, 2));
+        $info['nsv']['NSVs']['resolution_y'] = Helper::LittleEndian2Int(substr($NSVsheader, $offset, 2));
         $offset += 2;
 
         $info['nsv']['NSVs']['framerate_index'] = Helper::LittleEndian2Int(substr($NSVsheader, $offset, 1));
@@ -130,12 +129,12 @@ class Nsv extends BaseHandler
             case 'PCM ':
                 $info['nsv']['NSVs']['bits_channel'] = Helper::LittleEndian2Int(substr($NSVsheader, $offset, 1));
                 $offset += 1;
-                $info['nsv']['NSVs']['channels']     = Helper::LittleEndian2Int(substr($NSVsheader, $offset, 1));
+                $info['nsv']['NSVs']['channels'] = Helper::LittleEndian2Int(substr($NSVsheader, $offset, 1));
                 $offset += 1;
-                $info['nsv']['NSVs']['sample_rate']  = Helper::LittleEndian2Int(substr($NSVsheader, $offset, 2));
+                $info['nsv']['NSVs']['sample_rate'] = Helper::LittleEndian2Int(substr($NSVsheader, $offset, 2));
                 $offset += 2;
 
-                $info['audio']['sample_rate']        = $info['nsv']['NSVs']['sample_rate'];
+                $info['audio']['sample_rate'] = $info['nsv']['NSVs']['sample_rate'];
                 break;
 
             case 'MP3 ':
@@ -146,30 +145,30 @@ class Nsv extends BaseHandler
                 break;
         }
 
-        $info['video']['resolution_x']       = $info['nsv']['NSVs']['resolution_x'];
-        $info['video']['resolution_y']       = $info['nsv']['NSVs']['resolution_y'];
-        $info['nsv']['NSVs']['frame_rate']   = $this->NSVframerateLookup($info['nsv']['NSVs']['framerate_index']);
-        $info['video']['frame_rate']         = $info['nsv']['NSVs']['frame_rate'];
-        $info['video']['bits_per_sample']    = 24;
+        $info['video']['resolution_x'] = $info['nsv']['NSVs']['resolution_x'];
+        $info['video']['resolution_y'] = $info['nsv']['NSVs']['resolution_y'];
+        $info['nsv']['NSVs']['frame_rate'] = $this->NSVframerateLookup($info['nsv']['NSVs']['framerate_index']);
+        $info['video']['frame_rate'] = $info['nsv']['NSVs']['frame_rate'];
+        $info['video']['bits_per_sample'] = 24;
         $info['video']['pixel_aspect_ratio'] = (float) 1;
 
         return true;
     }
 
     /**
-     *
      * @param  type    $fileoffset
      * @param  type    $getTOCoffsets
-     * @return boolean
+     *
+     * @return bool
      */
-    public function getNSVfHeaderFilepointer($fileoffset, $getTOCoffsets=false)
+    public function getNSVfHeaderFilepointer($fileoffset, $getTOCoffsets = false)
     {
         $info = &$this->getid3->info;
         fseek($this->getid3->fp, $fileoffset, SEEK_SET);
         $NSVfheader = fread($this->getid3->fp, 28);
         $offset = 0;
 
-        $info['nsv']['NSVf']['identifier']    =                  substr($NSVfheader, $offset, 4);
+        $info['nsv']['NSVf']['identifier'] = substr($NSVfheader, $offset, 4);
         $offset += 4;
 
         if ($info['nsv']['NSVf']['identifier'] != 'NSVf') {
@@ -179,20 +178,20 @@ class Nsv extends BaseHandler
             return false;
         }
 
-        $info['nsv']['NSVs']['offset']        = $fileoffset;
+        $info['nsv']['NSVs']['offset'] = $fileoffset;
 
         $info['nsv']['NSVf']['header_length'] = Helper::LittleEndian2Int(substr($NSVfheader, $offset, 4));
         $offset += 4;
-        $info['nsv']['NSVf']['file_size']     = Helper::LittleEndian2Int(substr($NSVfheader, $offset, 4));
+        $info['nsv']['NSVf']['file_size'] = Helper::LittleEndian2Int(substr($NSVfheader, $offset, 4));
         $offset += 4;
 
         if ($info['nsv']['NSVf']['file_size'] > $info['avdataend']) {
             $info['warning'][] = 'truncated file - NSVf header indicates '.$info['nsv']['NSVf']['file_size'].' bytes, file actually '.$info['avdataend'].' bytes';
         }
 
-        $info['nsv']['NSVf']['playtime_ms']   = Helper::LittleEndian2Int(substr($NSVfheader, $offset, 4));
+        $info['nsv']['NSVf']['playtime_ms'] = Helper::LittleEndian2Int(substr($NSVfheader, $offset, 4));
         $offset += 4;
-        $info['nsv']['NSVf']['meta_size']     = Helper::LittleEndian2Int(substr($NSVfheader, $offset, 4));
+        $info['nsv']['NSVf']['meta_size'] = Helper::LittleEndian2Int(substr($NSVfheader, $offset, 4));
         $offset += 4;
         $info['nsv']['NSVf']['TOC_entries_1'] = Helper::LittleEndian2Int(substr($NSVfheader, $offset, 4));
         $offset += 4;
@@ -207,7 +206,7 @@ class Nsv extends BaseHandler
 
         $NSVfheader .= fread($this->getid3->fp, $info['nsv']['NSVf']['meta_size'] + (4 * $info['nsv']['NSVf']['TOC_entries_1']) + (4 * $info['nsv']['NSVf']['TOC_entries_2']));
         $NSVfheaderlength = strlen($NSVfheader);
-        $info['nsv']['NSVf']['metadata']      =                  substr($NSVfheader, $offset, $info['nsv']['NSVf']['meta_size']);
+        $info['nsv']['NSVf']['metadata'] = substr($NSVfheader, $offset, $info['nsv']['NSVf']['meta_size']);
         $offset += $info['nsv']['NSVf']['meta_size'];
 
         if ($getTOCoffsets) {
@@ -216,7 +215,7 @@ class Nsv extends BaseHandler
                 if ($TOCcounter < $info['nsv']['NSVf']['TOC_entries_1']) {
                     $info['nsv']['NSVf']['TOC_1'][$TOCcounter] = Helper::LittleEndian2Int(substr($NSVfheader, $offset, 4));
                     $offset += 4;
-                    $TOCcounter++;
+                    ++$TOCcounter;
                 }
             }
         }
@@ -233,15 +232,16 @@ class Nsv extends BaseHandler
         }
 
         $info['playtime_seconds'] = $info['nsv']['NSVf']['playtime_ms'] / 1000;
-        $info['bitrate']          = ($info['nsv']['NSVf']['file_size'] * 8) / $info['playtime_seconds'];
+        $info['bitrate'] = ($info['nsv']['NSVf']['file_size'] * 8) / $info['playtime_seconds'];
 
         return true;
     }
 
     /**
-     *
      * @staticvar array $NSVframerateLookup
+     *
      * @param  type $framerateindex
+     *
      * @return type
      */
     public static function NSVframerateLookup($framerateindex)

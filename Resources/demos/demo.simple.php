@@ -23,7 +23,7 @@ echo '</head><body>';
 require_once '../getid3/getid3.php';
 
 // Initialize getID3 engine
-$getID3 = new getID3;
+$getID3 = new getID3();
 
 $DirectoryToScan = '/change/to/directory/you/want/to/scan'; // change to whatever directory you want to scan
 $dir = opendir($DirectoryToScan);

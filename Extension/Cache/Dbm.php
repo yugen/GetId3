@@ -21,74 +21,74 @@ use GetId3\Exception\DefaultException;
 /////////////////////////////////////////////////////////////////
 
 /**
-* This is a caching extension for GetId3(). It works the exact same
-* way as the GetId3 class, but return cached information very fast
-*
-* Example:
-*
-*    Normal GetId3 usage (example):
-*
-*       require_once 'getid3/getid3.php';
-*       $getID3 = new GetId3;
-*       $getID3->setEncoding('UTF-8');
-*       $info1 = $getID3->analyze('file1.flac');
-*       $info2 = $getID3->analyze('file2.wv');
-*
-*    GetId3_cached usage:
-*
-*       require_once 'getid3/getid3.php';
-*       require_once 'getid3/getid3/extension.cache.dbm.php';
-*       $getID3 = new GetId3_cached('db3', '/tmp/getid3_cache.dbm',
-*                                          '/tmp/getid3_cache.lock');
-*       $getID3->setEncoding('UTF-8');
-*       $info1 = $getID3->analyze('file1.flac');
-*       $info2 = $getID3->analyze('file2.wv');
-*
-*
-* Supported Cache Types
-*
-*   SQL Databases:          (use extension.cache.mysql)
-*
-*   cache_type          cache_options
-*   -------------------------------------------------------------------
-*   mysql               host, database, username, password
-*
-*
-*   DBM-Style Databases:    (this extension)
-*
-*   cache_type          cache_options
-*   -------------------------------------------------------------------
-*   gdbm                dbm_filename, lock_filename
-*   ndbm                dbm_filename, lock_filename
-*   db2                 dbm_filename, lock_filename
-*   db3                 dbm_filename, lock_filename
-*   db4                 dbm_filename, lock_filename  (PHP5 required)
-*
-*   PHP must have write access to both dbm_filename and lock_filename.
-*
-*
-* Recommended Cache Types
-*
-*   Infrequent updates, many reads      any DBM
-*   Frequent updates                    mysql
-*/
+ * This is a caching extension for GetId3(). It works the exact same
+ * way as the GetId3 class, but return cached information very fast
+ *
+ * Example:
+ *
+ *    Normal GetId3 usage (example):
+ *
+ *       require_once 'getid3/getid3.php';
+ *       $getID3 = new GetId3;
+ *       $getID3->setEncoding('UTF-8');
+ *       $info1 = $getID3->analyze('file1.flac');
+ *       $info2 = $getID3->analyze('file2.wv');
+ *
+ *    GetId3_cached usage:
+ *
+ *       require_once 'getid3/getid3.php';
+ *       require_once 'getid3/getid3/extension.cache.dbm.php';
+ *       $getID3 = new GetId3_cached('db3', '/tmp/getid3_cache.dbm',
+ *                                          '/tmp/getid3_cache.lock');
+ *       $getID3->setEncoding('UTF-8');
+ *       $info1 = $getID3->analyze('file1.flac');
+ *       $info2 = $getID3->analyze('file2.wv');
+ *
+ *
+ * Supported Cache Types
+ *
+ *   SQL Databases:          (use extension.cache.mysql)
+ *
+ *   cache_type          cache_options
+ *   -------------------------------------------------------------------
+ *   mysql               host, database, username, password
+ *
+ *
+ *   DBM-Style Databases:    (this extension)
+ *
+ *   cache_type          cache_options
+ *   -------------------------------------------------------------------
+ *   gdbm                dbm_filename, lock_filename
+ *   ndbm                dbm_filename, lock_filename
+ *   db2                 dbm_filename, lock_filename
+ *   db3                 dbm_filename, lock_filename
+ *   db4                 dbm_filename, lock_filename  (PHP5 required)
+ *
+ *   PHP must have write access to both dbm_filename and lock_filename.
+ *
+ *
+ * Recommended Cache Types
+ *
+ *   Infrequent updates, many reads      any DBM
+ *   Frequent updates                    mysql
+ */
 
 /**
- *
  * @author James Heinrich <info@getid3.org>
  * @author Allan Hansen <ahØartemis*dk>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Dbm extends GetId3
 {
-
     /**
      * public: constructor - see top of this file for cache type and cache_options
      *
      * @param  type      $cache_type
      * @param  type      $dbm_filename
      * @param  type      $lock_filename
+     *
      * @throws Exception
      */
     public function __construct($cache_type, $dbm_filename, $lock_filename)
@@ -111,7 +111,7 @@ class Dbm extends GetId3
         }
 
         // Open lock file for writing
-        if (!is_writeable($lock_filename)) {
+        if (!is_writable($lock_filename)) {
             throw new DefaultException('lock file: '.$lock_filename.' is not writable');
         }
         $this->lock = fopen($lock_filename, 'w');
@@ -142,7 +142,7 @@ class Dbm extends GetId3
         }
 
         // Init misc values
-        $this->cache_type   = $cache_type;
+        $this->cache_type = $cache_type;
         $this->dbm_filename = $dbm_filename;
 
         // Register destructor
@@ -199,6 +199,7 @@ class Dbm extends GetId3
      * analyze file
      *
      * @param  type $filename
+     *
      * @return type
      */
     public function analyze($filename)

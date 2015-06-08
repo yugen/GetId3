@@ -21,6 +21,7 @@ namespace GetId3\Module\AudioVideo;
  *
  * @author James Heinrich <info@getid3.org>
  * @author Seth Kaufman <seth@whirl-i-gig.com>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
@@ -29,16 +30,14 @@ class AMFReader
     public $stream;
 
     /**
-     *
      * @param type $stream
      */
     public function __construct(&$stream)
     {
-        $this->stream = & $stream;
+        $this->stream = &$stream;
     }
 
     /**
-     *
      * @return null|string
      */
     public function readData()
@@ -70,7 +69,7 @@ class AMFReader
 
             // null
             case 6:
-                return null;
+                return;
                 break;
 
             // Mixed array
@@ -113,7 +112,6 @@ class AMFReader
     }
 
     /**
-     *
      * @return type
      */
     public function readDouble()
@@ -122,7 +120,6 @@ class AMFReader
     }
 
     /**
-     *
      * @return type
      */
     public function readBoolean()
@@ -131,7 +128,6 @@ class AMFReader
     }
 
     /**
-     *
      * @return type
      */
     public function readString()
@@ -140,7 +136,6 @@ class AMFReader
     }
 
     /**
-     *
      * @return type
      */
     public function readObject()
@@ -163,7 +158,6 @@ class AMFReader
     }
 
     /**
-     *
      * @return type
      */
     public function readMixedArray()
@@ -189,7 +183,6 @@ class AMFReader
     }
 
     /**
-     *
      * @return type
      */
     public function readArray()
@@ -197,7 +190,7 @@ class AMFReader
         $length = $this->stream->readLong();
         $data = array();
 
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $data[] = $this->readData();
         }
 
@@ -205,7 +198,6 @@ class AMFReader
     }
 
     /**
-     *
      * @return type
      */
     public function readDate()
@@ -217,7 +209,6 @@ class AMFReader
     }
 
     /**
-     *
      * @return type
      */
     public function readLongString()
@@ -226,7 +217,6 @@ class AMFReader
     }
 
     /**
-     *
      * @return type
      */
     public function readXML()
@@ -235,7 +225,6 @@ class AMFReader
     }
 
     /**
-     *
      * @return type
      */
     public function readTypedObject()

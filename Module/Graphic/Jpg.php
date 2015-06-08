@@ -26,26 +26,26 @@ use GetId3\Module\Tag\Xmp;
  * module for analyzing JPEG Image files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
+ *
  * @uses GetId3\Module\Tag\Xmp (optional)
  * @uses ext-exif (optional)
  */
 class Jpg extends BaseHandler
 {
-
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
         $info = &$this->getid3->info;
 
-        $info['fileformat']                  = 'jpg';
-        $info['video']['dataformat']         = 'jpg';
-        $info['video']['lossless']           = false;
-        $info['video']['bits_per_sample']    = 24;
+        $info['fileformat'] = 'jpg';
+        $info['video']['dataformat'] = 'jpg';
+        $info['video']['lossless'] = false;
+        $info['video']['bits_per_sample'] = 24;
         $info['video']['pixel_aspect_ratio'] = (float) 1;
 
         fseek($this->getid3->fp, $info['avdataoffset'], SEEK_SET);
@@ -108,9 +108,8 @@ class Jpg extends BaseHandler
         }
 
         if (isset($info['jpg']['exif']['GPS'])) {
-
             if (isset($info['jpg']['exif']['GPS']['GPSVersion'])) {
-                for ($i = 0; $i < 4; $i++) {
+                for ($i = 0; $i < 4; ++$i) {
                     $version_subparts[$i] = ord(substr($info['jpg']['exif']['GPS']['GPSVersion'], $i, 1));
                 }
                 $info['jpg']['exif']['GPS']['computed']['version'] = 'v'.implode('.', $version_subparts);
@@ -128,7 +127,7 @@ class Jpg extends BaseHandler
                     ini_set('date.timezone', 'UTC');
                 }
 
-                $computed_time = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0, 5=>0);
+                $computed_time = array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0);
                 if (isset($info['jpg']['exif']['GPS']['GPSTimeStamp']) && is_array($info['jpg']['exif']['GPS']['GPSTimeStamp'])) {
                     foreach ($info['jpg']['exif']['GPS']['GPSTimeStamp'] as $key => $value) {
                         $computed_time[$key] = Helper::DecimalizeFraction($value);
@@ -157,7 +156,6 @@ class Jpg extends BaseHandler
                 $direction_multiplier = ((isset($info['jpg']['exif']['GPS']['GPSAltitudeRef']) && ($info['jpg']['exif']['GPS']['GPSAltitudeRef'] === chr(1))) ? -1 : 1);
                 $info['jpg']['exif']['GPS']['computed']['altitude'] = $direction_multiplier * Helper::DecimalizeFraction($info['jpg']['exif']['GPS']['GPSAltitude']);
             }
-
         }
 
         if (class_exists('GetId3\\Module\\Tag\\Xmp')) {
@@ -181,8 +179,8 @@ class Jpg extends BaseHandler
     }
 
     /**
-     *
      * @param  type $value
+     *
      * @return type
      */
     public function CastAsAppropriate($value)
@@ -201,9 +199,10 @@ class Jpg extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $IPTCrecordName
+     *
      * @param  type $iptc_record
+     *
      * @return type
      */
     public function IPTCrecordName($iptc_record)
@@ -225,11 +224,13 @@ class Jpg extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $IPTCrecordTagName
+     *
      * @param  type $iptc_record
      * @param  type $iptc_tagkey
+     *
      * @return type
+     *
      * @link http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/IPTC.html
      */
     public function IPTCrecordTagName($iptc_record, $iptc_tagkey)
@@ -237,58 +238,58 @@ class Jpg extends BaseHandler
         static $IPTCrecordTagName = array();
         if (empty($IPTCrecordTagName)) {
             $IPTCrecordTagName = array(
-                1 => array( // IPTC EnvelopeRecord Tags
-                    0   => 'EnvelopeRecordVersion',
-                    5   => 'Destination',
-                    20  => 'FileFormat',
-                    22  => 'FileVersion',
-                    30  => 'ServiceIdentifier',
-                    40  => 'EnvelopeNumber',
-                    50  => 'ProductID',
-                    60  => 'EnvelopePriority',
-                    70  => 'DateSent',
-                    80  => 'TimeSent',
-                    90  => 'CodedCharacterSet',
+                1 => array(// IPTC EnvelopeRecord Tags
+                    0 => 'EnvelopeRecordVersion',
+                    5 => 'Destination',
+                    20 => 'FileFormat',
+                    22 => 'FileVersion',
+                    30 => 'ServiceIdentifier',
+                    40 => 'EnvelopeNumber',
+                    50 => 'ProductID',
+                    60 => 'EnvelopePriority',
+                    70 => 'DateSent',
+                    80 => 'TimeSent',
+                    90 => 'CodedCharacterSet',
                     100 => 'UniqueObjectName',
                     120 => 'ARMIdentifier',
                     122 => 'ARMVersion',
                 ),
-                2 => array( // IPTC ApplicationRecord Tags
-                    0   => 'ApplicationRecordVersion',
-                    3   => 'ObjectTypeReference',
-                    4   => 'ObjectAttributeReference',
-                    5   => 'ObjectName',
-                    7   => 'EditStatus',
-                    8   => 'EditorialUpdate',
-                    10  => 'Urgency',
-                    12  => 'SubjectReference',
-                    15  => 'Category',
-                    20  => 'SupplementalCategories',
-                    22  => 'FixtureIdentifier',
-                    25  => 'Keywords',
-                    26  => 'ContentLocationCode',
-                    27  => 'ContentLocationName',
-                    30  => 'ReleaseDate',
-                    35  => 'ReleaseTime',
-                    37  => 'ExpirationDate',
-                    38  => 'ExpirationTime',
-                    40  => 'SpecialInstructions',
-                    42  => 'ActionAdvised',
-                    45  => 'ReferenceService',
-                    47  => 'ReferenceDate',
-                    50  => 'ReferenceNumber',
-                    55  => 'DateCreated',
-                    60  => 'TimeCreated',
-                    62  => 'DigitalCreationDate',
-                    63  => 'DigitalCreationTime',
-                    65  => 'OriginatingProgram',
-                    70  => 'ProgramVersion',
-                    75  => 'ObjectCycle',
-                    80  => 'By-line',
-                    85  => 'By-lineTitle',
-                    90  => 'City',
-                    92  => 'Sub-location',
-                    95  => 'Province-State',
+                2 => array(// IPTC ApplicationRecord Tags
+                    0 => 'ApplicationRecordVersion',
+                    3 => 'ObjectTypeReference',
+                    4 => 'ObjectAttributeReference',
+                    5 => 'ObjectName',
+                    7 => 'EditStatus',
+                    8 => 'EditorialUpdate',
+                    10 => 'Urgency',
+                    12 => 'SubjectReference',
+                    15 => 'Category',
+                    20 => 'SupplementalCategories',
+                    22 => 'FixtureIdentifier',
+                    25 => 'Keywords',
+                    26 => 'ContentLocationCode',
+                    27 => 'ContentLocationName',
+                    30 => 'ReleaseDate',
+                    35 => 'ReleaseTime',
+                    37 => 'ExpirationDate',
+                    38 => 'ExpirationTime',
+                    40 => 'SpecialInstructions',
+                    42 => 'ActionAdvised',
+                    45 => 'ReferenceService',
+                    47 => 'ReferenceDate',
+                    50 => 'ReferenceNumber',
+                    55 => 'DateCreated',
+                    60 => 'TimeCreated',
+                    62 => 'DigitalCreationDate',
+                    63 => 'DigitalCreationTime',
+                    65 => 'OriginatingProgram',
+                    70 => 'ProgramVersion',
+                    75 => 'ObjectCycle',
+                    80 => 'By-line',
+                    85 => 'By-lineTitle',
+                    90 => 'City',
+                    92 => 'Sub-location',
+                    95 => 'Province-State',
                     100 => 'Country-PrimaryLocationCode',
                     101 => 'Country-PrimaryLocationName',
                     103 => 'OriginalTransmissionReference',
@@ -324,24 +325,24 @@ class Jpg extends BaseHandler
                     231 => 'DocumentHistory',
                     232 => 'ExifCameraInfo',
                 ),
-                3 => array( // IPTC NewsPhoto Tags
-                    0   => 'NewsPhotoVersion',
-                    10  => 'IPTCPictureNumber',
-                    20  => 'IPTCImageWidth',
-                    30  => 'IPTCImageHeight',
-                    40  => 'IPTCPixelWidth',
-                    50  => 'IPTCPixelHeight',
-                    55  => 'SupplementalType',
-                    60  => 'ColorRepresentation',
-                    64  => 'InterchangeColorSpace',
-                    65  => 'ColorSequence',
-                    66  => 'ICC_Profile',
-                    70  => 'ColorCalibrationMatrix',
-                    80  => 'LookupTable',
-                    84  => 'NumIndexEntries',
-                    85  => 'ColorPalette',
-                    86  => 'IPTCBitsPerSample',
-                    90  => 'SampleStructure',
+                3 => array(// IPTC NewsPhoto Tags
+                    0 => 'NewsPhotoVersion',
+                    10 => 'IPTCPictureNumber',
+                    20 => 'IPTCImageWidth',
+                    30 => 'IPTCImageHeight',
+                    40 => 'IPTCPixelWidth',
+                    50 => 'IPTCPixelHeight',
+                    55 => 'SupplementalType',
+                    60 => 'ColorRepresentation',
+                    64 => 'InterchangeColorSpace',
+                    65 => 'ColorSequence',
+                    66 => 'ICC_Profile',
+                    70 => 'ColorCalibrationMatrix',
+                    80 => 'LookupTable',
+                    84 => 'NumIndexEntries',
+                    85 => 'ColorPalette',
+                    86 => 'IPTCBitsPerSample',
+                    90 => 'SampleStructure',
                     100 => 'ScanningDirection',
                     102 => 'IPTCImageRotation',
                     110 => 'DataCompressionMethod',
@@ -352,23 +353,21 @@ class Jpg extends BaseHandler
                     140 => 'MaximumDensityRange',
                     145 => 'GammaCompensatedValue',
                 ),
-                7 => array( // IPTC PreObjectData Tags
-                    10  => 'SizeMode',
-                    20  => 'MaxSubfileSize',
-                    90  => 'ObjectSizeAnnounced',
-                    95  => 'MaximumObjectSize',
+                7 => array(// IPTC PreObjectData Tags
+                    10 => 'SizeMode',
+                    20 => 'MaxSubfileSize',
+                    90 => 'ObjectSizeAnnounced',
+                    95 => 'MaximumObjectSize',
                 ),
-                8 => array( // IPTC ObjectData Tags
-                    10  => 'SubFile',
+                8 => array(// IPTC ObjectData Tags
+                    10 => 'SubFile',
                 ),
-                9 => array( // IPTC PostObjectData Tags
-                    10  => 'ConfirmedObjectSize',
+                9 => array(// IPTC PostObjectData Tags
+                    10 => 'ConfirmedObjectSize',
                 ),
             );
-
         }
 
         return (isset($IPTCrecordTagName[$iptc_record][$iptc_tagkey]) ? $IPTCrecordTagName[$iptc_record][$iptc_tagkey] : $iptc_tagkey);
     }
-
 }

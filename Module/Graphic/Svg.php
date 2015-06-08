@@ -22,14 +22,14 @@ use GetId3\Handler\BaseHandler;
  * module for analyzing SVG Image files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Svg extends BaseHandler
 {
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -48,7 +48,6 @@ class Svg extends BaseHandler
             $info['svg']['svg']['raw'] = $matches;
         }
         if (isset($info['svg']['svg']['raw'])) {
-
             $sections_to_fix = array('xml', 'doctype', 'svg');
             foreach ($sections_to_fix as $section_to_fix) {
                 if (!isset($info['svg'][$section_to_fix])) {
@@ -68,21 +67,21 @@ class Svg extends BaseHandler
                     $keyvaluepair = trim($keyvaluepair);
                     if ($keyvaluepair) {
                         $keyvalueexploded = explode('=', $keyvaluepair);
-                        $key   = (isset($keyvalueexploded[0]) ? $keyvalueexploded[0] : '');
+                        $key = (isset($keyvalueexploded[0]) ? $keyvalueexploded[0] : '');
                         $value = (isset($keyvalueexploded[1]) ? $keyvalueexploded[1] : '');
                         $info['svg'][$section_to_fix]['sections'][$key] = trim($value, '"');
                     }
                 }
             }
 
-            $info['fileformat']                  = 'svg';
-            $info['video']['dataformat']         = 'svg';
-            $info['video']['lossless']           = true;
+            $info['fileformat'] = 'svg';
+            $info['video']['dataformat'] = 'svg';
+            $info['video']['lossless'] = true;
             //$info['video']['bits_per_sample']    = 24;
             $info['video']['pixel_aspect_ratio'] = (float) 1;
 
             if (!empty($info['svg']['svg']['sections']['width'])) {
-                $info['svg']['width']  = intval($info['svg']['svg']['sections']['width']);
+                $info['svg']['width'] = intval($info['svg']['svg']['sections']['width']);
             }
             if (!empty($info['svg']['svg']['sections']['height'])) {
                 $info['svg']['height'] = intval($info['svg']['svg']['sections']['height']);
@@ -112,5 +111,4 @@ class Svg extends BaseHandler
 
         return false;
     }
-
 }

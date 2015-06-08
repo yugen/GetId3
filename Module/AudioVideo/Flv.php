@@ -59,17 +59,18 @@ use GetId3\Lib\Helper;
  *
  * @author James Heinrich <info@getid3.org>
  * @author Seth Kaufman <seth@whirl-i-gig.com>
+ *
  * @uses GetId3\Module\AudioVideo\AVCSequenceParameterSetReader
  * @uses GetId3\Module\AudioVideo\AMFReader
  * @uses GetId3\Module\AudioVideo\AMFStream
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Flv extends BaseHandler
 {
     /**
-     *
-     * @var integer
+     * @var int
      */
     public $max_frames = 100000; // break out of the loop if too many frames have been scanned; only scan this many if meta frame does not contain useful duration
 
@@ -84,8 +85,7 @@ class Flv extends BaseHandler
     const GETID3_FLV_VIDEO_H264 = 7;
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -105,7 +105,7 @@ class Flv extends BaseHandler
 
         $magic = 'FLV';
         if ($info['flv']['header']['signature'] != $magic) {
-            $info['error'][] = 'Expecting "' . Helper::PrintHexBytes($magic) . '" at offset ' . $info['avdataoffset'] . ', found "' . Helper::PrintHexBytes($info['flv']['header']['signature']) . '"';
+            $info['error'][] = 'Expecting "'.Helper::PrintHexBytes($magic).'" at offset '.$info['avdataoffset'].', found "'.Helper::PrintHexBytes($info['flv']['header']['signature']).'"';
             unset($info['flv']);
             unset($info['fileformat']);
 
@@ -148,7 +148,7 @@ class Flv extends BaseHandler
                 $Duration = $Timestamp;
             }
 
-            $flv_framecount['total']++;
+            ++$flv_framecount['total'];
             switch ($TagType) {
                 case self::GETID3_FLV_TAG_AUDIO:
                     $flv_framecount['audio']++;
@@ -212,7 +212,6 @@ class Flv extends BaseHandler
                             }
                             // end: moysevichØgmail*com
                         } elseif ($info['flv']['video']['videoCodec'] == self::GETID3_FLV_VIDEO_H263) {
-
                             $PictureSizeType = (Helper::BigEndian2Int(substr($FLVvideoHeader,
                                                                                         3,
                                                                                         2))) >> 7;
@@ -367,8 +366,8 @@ class Flv extends BaseHandler
     }
 
     /**
-     *
      * @param  type $id
+     *
      * @return type
      */
     public function FLVaudioFormat($id)
@@ -396,8 +395,8 @@ class Flv extends BaseHandler
     }
 
     /**
-     *
      * @param  type $id
+     *
      * @return type
      */
     public function FLVaudioRate($id)
@@ -413,8 +412,8 @@ class Flv extends BaseHandler
     }
 
     /**
-     *
      * @param  type $id
+     *
      * @return type
      */
     public function FLVaudioBitDepth($id)
@@ -428,8 +427,8 @@ class Flv extends BaseHandler
     }
 
     /**
-     *
      * @param  type $id
+     *
      * @return type
      */
     public function FLVvideoCodec($id)

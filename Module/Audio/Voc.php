@@ -23,15 +23,14 @@ use GetId3\Lib\Helper;
  * module for analyzing Creative VOC Audio files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Voc extends BaseHandler
 {
-
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -39,7 +38,7 @@ class Voc extends BaseHandler
 
         $OriginalAVdataOffset = $info['avdataoffset'];
         fseek($this->getid3->fp, $info['avdataoffset'], SEEK_SET);
-        $VOCheader  = fread($this->getid3->fp, 26);
+        $VOCheader = fread($this->getid3->fp, 26);
 
         $magic = 'Creative Voice File';
         if (substr($VOCheader, 0, 19) != $magic) {
@@ -51,13 +50,13 @@ class Voc extends BaseHandler
         // shortcuts
         $thisfile_audio = &$info['audio'];
         $info['voc'] = array();
-        $thisfile_voc        = &$info['voc'];
+        $thisfile_voc = &$info['voc'];
 
-        $info['fileformat']        = 'voc';
-        $thisfile_audio['dataformat']      = 'voc';
-        $thisfile_audio['bitrate_mode']    = 'cbr';
-        $thisfile_audio['lossless']        = true;
-        $thisfile_audio['channels']        = 1; // might be overriden below
+        $info['fileformat'] = 'voc';
+        $thisfile_audio['dataformat'] = 'voc';
+        $thisfile_audio['bitrate_mode'] = 'cbr';
+        $thisfile_audio['lossless'] = true;
+        $thisfile_audio['channels'] = 1; // might be overriden below
         $thisfile_audio['bits_per_sample'] = 8; // might be overriden below
 
         // byte #     Description
@@ -69,16 +68,15 @@ class Voc extends BaseHandler
         // 18-19      2's Comp of Ver. # + 1234h (VOC-HDR puts 29 11)
 
         $thisfile_voc['header']['datablock_offset'] = Helper::LittleEndian2Int(substr($VOCheader, 20, 2));
-        $thisfile_voc['header']['minor_version']    = Helper::LittleEndian2Int(substr($VOCheader, 22, 1));
-        $thisfile_voc['header']['major_version']    = Helper::LittleEndian2Int(substr($VOCheader, 23, 1));
+        $thisfile_voc['header']['minor_version'] = Helper::LittleEndian2Int(substr($VOCheader, 22, 1));
+        $thisfile_voc['header']['major_version'] = Helper::LittleEndian2Int(substr($VOCheader, 23, 1));
 
         do {
-
-            $BlockOffset    = ftell($this->getid3->fp);
-            $BlockData      = fread($this->getid3->fp, 4);
-            $BlockType      = ord($BlockData{0});
-            $BlockSize      = Helper::LittleEndian2Int(substr($BlockData, 1, 3));
-            $ThisBlock      = array();
+            $BlockOffset = ftell($this->getid3->fp);
+            $BlockData = fread($this->getid3->fp, 4);
+            $BlockType = ord($BlockData{0});
+            $BlockSize = Helper::LittleEndian2Int(substr($BlockData, 1, 3));
+            $ThisBlock = array();
 
             Helper::safe_inc($thisfile_voc['blocktypes'][$BlockType], 1);
             switch ($BlockType) {
@@ -93,7 +91,7 @@ class Voc extends BaseHandler
                     }
                     fseek($this->getid3->fp, $BlockSize - 2, SEEK_CUR);
 
-                    $ThisBlock['sample_rate_id']   = Helper::LittleEndian2Int(substr($BlockData, 4, 1));
+                    $ThisBlock['sample_rate_id'] = Helper::LittleEndian2Int(substr($BlockData, 4, 1));
                     $ThisBlock['compression_type'] = Helper::LittleEndian2Int(substr($BlockData, 5, 1));
 
                     $ThisBlock['compression_name'] = $this->VOCcompressionTypeLookup($ThisBlock['compression_type']);
@@ -123,11 +121,11 @@ class Voc extends BaseHandler
                     //00-01  Time Constant:
                     //   Mono: 65536 - (256000000 / sample_rate)
                     // Stereo: 65536 - (256000000 / (sample_rate * 2))
-                    $ThisBlock['time_constant'] =        Helper::LittleEndian2Int(substr($BlockData, 4, 2));
-                    $ThisBlock['pack_method']   =        Helper::LittleEndian2Int(substr($BlockData, 6, 1));
-                    $ThisBlock['stereo']        = (bool) Helper::LittleEndian2Int(substr($BlockData, 7, 1));
+                    $ThisBlock['time_constant'] = Helper::LittleEndian2Int(substr($BlockData, 4, 2));
+                    $ThisBlock['pack_method'] = Helper::LittleEndian2Int(substr($BlockData, 6, 1));
+                    $ThisBlock['stereo'] = (bool) Helper::LittleEndian2Int(substr($BlockData, 7, 1));
 
-                    $thisfile_audio['channels']    = ($ThisBlock['stereo'] ? 2 : 1);
+                    $thisfile_audio['channels'] = ($ThisBlock['stereo'] ? 2 : 1);
                     $thisfile_audio['sample_rate'] = Helper::trunc((256000000 / (65536 - $ThisBlock['time_constant'])) / $thisfile_audio['channels']);
                     break;
 
@@ -138,19 +136,19 @@ class Voc extends BaseHandler
                     }
                     fseek($this->getid3->fp, $BlockSize - 12, SEEK_CUR);
 
-                    $ThisBlock['sample_rate']      = Helper::LittleEndian2Int(substr($BlockData,  4, 4));
-                    $ThisBlock['bits_per_sample']  = Helper::LittleEndian2Int(substr($BlockData,  8, 1));
-                    $ThisBlock['channels']         = Helper::LittleEndian2Int(substr($BlockData,  9, 1));
-                    $ThisBlock['wFormat']          = Helper::LittleEndian2Int(substr($BlockData, 10, 2));
+                    $ThisBlock['sample_rate'] = Helper::LittleEndian2Int(substr($BlockData, 4, 4));
+                    $ThisBlock['bits_per_sample'] = Helper::LittleEndian2Int(substr($BlockData, 8, 1));
+                    $ThisBlock['channels'] = Helper::LittleEndian2Int(substr($BlockData, 9, 1));
+                    $ThisBlock['wFormat'] = Helper::LittleEndian2Int(substr($BlockData, 10, 2));
 
                     $ThisBlock['compression_name'] = $this->VOCwFormatLookup($ThisBlock['wFormat']);
                     if ($this->VOCwFormatActualBitsPerSampleLookup($ThisBlock['wFormat'])) {
                         $thisfile_voc['compressed_bits_per_sample'] = $this->VOCwFormatActualBitsPerSampleLookup($ThisBlock['wFormat']);
                     }
 
-                    $thisfile_audio['sample_rate']     = $ThisBlock['sample_rate'];
+                    $thisfile_audio['sample_rate'] = $ThisBlock['sample_rate'];
                     $thisfile_audio['bits_per_sample'] = $ThisBlock['bits_per_sample'];
-                    $thisfile_audio['channels']        = $ThisBlock['channels'];
+                    $thisfile_audio['channels'] = $ThisBlock['channels'];
                     break;
 
                 default:
@@ -160,12 +158,11 @@ class Voc extends BaseHandler
             }
 
             if (!empty($ThisBlock)) {
-                $ThisBlock['block_offset']  = $BlockOffset;
-                $ThisBlock['block_size']    = $BlockSize;
+                $ThisBlock['block_offset'] = $BlockOffset;
+                $ThisBlock['block_size'] = $BlockSize;
                 $ThisBlock['block_type_id'] = $BlockType;
                 $thisfile_voc['blocks'][] = $ThisBlock;
             }
-
         } while (!feof($this->getid3->fp) && ($BlockType != 0));
 
         // Terminator block doesn't have size field, so seek back 3 spaces
@@ -182,9 +179,10 @@ class Voc extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $VOCcompressionTypeLookup
+     *
      * @param  type $index
+     *
      * @return type
      */
     public function VOCcompressionTypeLookup($index)
@@ -193,16 +191,17 @@ class Voc extends BaseHandler
             0 => '8-bit',
             1 => '4-bit',
             2 => '2.6-bit',
-            3 => '2-bit'
+            3 => '2-bit',
         );
 
         return (isset($VOCcompressionTypeLookup[$index]) ? $VOCcompressionTypeLookup[$index] : 'Multi DAC ('.($index - 3).') channels');
     }
 
     /**
-     *
      * @staticvar array $VOCwFormatLookup
+     *
      * @param  type $index
+     *
      * @return type
      */
     public function VOCwFormatLookup($index)
@@ -215,16 +214,17 @@ class Voc extends BaseHandler
             0x0004 => '16-bit signed PCM',
             0x0006 => 'CCITT a-Law',
             0x0007 => 'CCITT u-Law',
-            0x2000 => 'Creative 16-bit to 4-bit ADPCM'
+            0x2000 => 'Creative 16-bit to 4-bit ADPCM',
         );
 
         return (isset($VOCwFormatLookup[$index]) ? $VOCwFormatLookup[$index] : false);
     }
 
     /**
-     *
      * @staticvar array $VOCwFormatLookup
+     *
      * @param  type $index
+     *
      * @return type
      */
     public function VOCwFormatActualBitsPerSampleLookup($index)
@@ -237,10 +237,9 @@ class Voc extends BaseHandler
             0x0004 => 16,
             0x0006 => 8,
             0x0007 => 8,
-            0x2000 => 4
+            0x2000 => 4,
         );
 
         return (isset($VOCwFormatLookup[$index]) ? $VOCwFormatLookup[$index] : false);
     }
-
 }

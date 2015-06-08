@@ -22,15 +22,14 @@ use GetId3\Handler\BaseHandler;
  * module for analyzing PDF files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Pdf extends BaseHandler
 {
-
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -41,7 +40,5 @@ class Pdf extends BaseHandler
         $info['error'][] = 'PDF parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
 
         return false;
-
     }
-
 }

@@ -60,8 +60,10 @@ use GetId3\Exception\DefaultException;
  * The APEv2 Tag Items Keys definition says "TRACK" is correct but foobar2000 uses "TRACKNUMBER" instead
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
+ *
  * @uses GetId3\Write\Apetag (optional)
  * @uses GetId3\Write\Id3v1 (optional)
  * @uses GetId3\Write\Vorbiscomment (optional)
@@ -73,59 +75,50 @@ class Tags
     // public
     public $filename;                            // absolute filename of file to write tags to
     /**
-     *
      * @var array
      */
-    public $tagformats         = array();        // array of tag formats to write ('id3v1', 'id3v2.2', 'id2v2.3', 'id3v2.4', 'ape', 'vorbiscomment', 'metaflac', 'real')
+    public $tagformats = array();        // array of tag formats to write ('id3v1', 'id3v2.2', 'id2v2.3', 'id3v2.4', 'ape', 'vorbiscomment', 'metaflac', 'real')
     /**
-     *
      * @var array
      */
-    public $tag_data           = array(array()); // 2-dimensional array of tag data (ex: $data['ARTIST'][0] = 'Elvis')
+    public $tag_data = array(array()); // 2-dimensional array of tag data (ex: $data['ARTIST'][0] = 'Elvis')
     /**
-     *
      * @var string
      */
-    public $tag_encoding       = 'ISO-8859-1';   // text encoding used for tag data ('ISO-8859-1', 'UTF-8', 'UTF-16', 'UTF-16LE', 'UTF-16BE', )
+    public $tag_encoding = 'ISO-8859-1';   // text encoding used for tag data ('ISO-8859-1', 'UTF-8', 'UTF-16', 'UTF-16LE', 'UTF-16BE', )
     /**
-     *
-     * @var boolean
+     * @var bool
      */
-    public $overwrite_tags     = true;          // if true will erase existing tag data and write only passed data; if false will merge passed data with existing tag data
+    public $overwrite_tags = true;          // if true will erase existing tag data and write only passed data; if false will merge passed data with existing tag data
     /**
-     *
-     * @var boolean
+     * @var bool
      */
-    public $remove_other_tags  = false;          // if true will erase remove all existing tags and only write those passed in $tagformats; if false will ignore any tags not mentioned in $tagformats
+    public $remove_other_tags = false;          // if true will erase remove all existing tags and only write those passed in $tagformats; if false will ignore any tags not mentioned in $tagformats
 
     /**
-     *
      * @var string
      */
     public $id3v2_tag_language = 'eng';          // ISO-639-2 3-character language code needed for some ID3v2 frames (http://www.id3.org/iso639-2.html)
     /**
-     *
-     * @var integer
+     * @var int
      */
     public $id3v2_paddedlength = 4096;           // minimum length of ID3v2 tags (will be padded to this length if tag data is shorter)
 
     /**
-     *
      * @var array
      */
-    public $warnings           = array();        // any non-critical errors will be stored here
+    public $warnings = array();        // any non-critical errors will be stored here
     /**
-     *
      * @var array
      */
-    public $errors             = array();        // any critical errors will be stored here
+    public $errors = array();        // any critical errors will be stored here
 
     // private
     public $ThisFileInfo; // analysis of file before writing
 
     /**
+     * @return bool
      *
-     * @return boolean
      * @throws Exception
      */
     public function __construct()
@@ -134,15 +127,14 @@ class Tags
             throw new DefaultException('GetId3\\GetId3Core not available while calling GetId3\\Write\\Tags()');
         }
         if (!class_exists('GetId3\\Lib\\Helper')) {
-            throw new DefaultException(__FILE__ . ' depends on ' . str_replace('_', DIRECTORY_SEPARATOR, 'GetId3_Lib_Helper') . '.php, which is missing.');
+            throw new DefaultException(__FILE__.' depends on '.str_replace('_', DIRECTORY_SEPARATOR, 'GetId3_Lib_Helper').'.php, which is missing.');
         }
 
         return true;
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function WriteTags()
     {
@@ -167,11 +159,9 @@ class Tags
 
             // empty file special case - allow any tag format, don't check existing format
             // could be useful if you want to generate tag data for a non-existant file
-            $this->ThisFileInfo = array('fileformat'=>'');
+            $this->ThisFileInfo = array('fileformat' => '');
             $AllowedTagFormats = array('id3v1', 'id3v2.2', 'id3v2.3', 'id3v2.4', 'ape', 'lyrics3');
-
         } else {
-
             $getID3 = new GetId3Core();
             $getID3->setEncoding($this->tag_encoding);
             $this->ThisFileInfo = $getID3->analyze($this->filename);
@@ -273,7 +263,7 @@ class Tags
                 case 'real':
                     $GETID3_ERRORARRAY = &$this->errors;
 
-                    if (!class_exists('GetId3\\Write\\' . ucfirst($tagformat))) {
+                    if (!class_exists('GetId3\\Write\\'.ucfirst($tagformat))) {
                         return false;
                     }
                     break;
@@ -295,7 +285,6 @@ class Tags
                     return false;
                     break;
             }
-
         }
 
         // Validation of supplied data
@@ -426,13 +415,12 @@ class Tags
         }
 
         return true;
-
     }
 
     /**
-     *
      * @param  type    $TagFormatsToDelete
-     * @return boolean
+     *
+     * @return bool
      */
     public function DeleteTags($TagFormatsToDelete)
     {
@@ -510,10 +498,11 @@ class Tags
     }
 
     /**
-     *
      * @param  type      $TagFormat
      * @param  type      $tag_data
-     * @return boolean
+     *
+     * @return bool
+     *
      * @throws Exception
      */
     public function MergeExistingTagData($TagFormat, &$tag_data)
@@ -533,7 +522,6 @@ class Tags
     }
 
     /**
-     *
      * @return type
      */
     public function FormatDataForAPE()
@@ -565,7 +553,6 @@ class Tags
     }
 
     /**
-     *
      * @return string
      */
     public function FormatDataForID3v1()
@@ -579,12 +566,12 @@ class Tags
                 }
             }
         }
-        $tag_data_id3v1['title']   =        Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['TITLE']      ) ? $this->tag_data['TITLE']       : array())));
-        $tag_data_id3v1['artist']  =        Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['ARTIST']     ) ? $this->tag_data['ARTIST']      : array())));
-        $tag_data_id3v1['album']   =        Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['ALBUM']      ) ? $this->tag_data['ALBUM']       : array())));
-        $tag_data_id3v1['year']    =        Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['YEAR']       ) ? $this->tag_data['YEAR']        : array())));
-        $tag_data_id3v1['comment'] =        Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['COMMENT']    ) ? $this->tag_data['COMMENT']     : array())));
-        $tag_data_id3v1['track']   = intval(Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['TRACKNUMBER']) ? $this->tag_data['TRACKNUMBER'] : array()))));
+        $tag_data_id3v1['title'] = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['TITLE']) ? $this->tag_data['TITLE']       : array())));
+        $tag_data_id3v1['artist'] = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['ARTIST']) ? $this->tag_data['ARTIST']      : array())));
+        $tag_data_id3v1['album'] = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['ALBUM']) ? $this->tag_data['ALBUM']       : array())));
+        $tag_data_id3v1['year'] = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['YEAR']) ? $this->tag_data['YEAR']        : array())));
+        $tag_data_id3v1['comment'] = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['COMMENT']) ? $this->tag_data['COMMENT']     : array())));
+        $tag_data_id3v1['track'] = intval(Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['TRACKNUMBER']) ? $this->tag_data['TRACKNUMBER'] : array()))));
         if ($tag_data_id3v1['track'] <= 0) {
             $tag_data_id3v1['track'] = '';
         }
@@ -595,17 +582,17 @@ class Tags
     }
 
     /**
-     *
      * @param  type    $id3v2_majorversion
-     * @return boolean
+     *
+     * @return bool
      */
     public function FormatDataForID3v2($id3v2_majorversion)
     {
         $tag_data_id3v2 = array();
 
-        $ID3v2_text_encoding_lookup[2] = array('ISO-8859-1'=>0, 'UTF-16'=>1);
-        $ID3v2_text_encoding_lookup[3] = array('ISO-8859-1'=>0, 'UTF-16'=>1);
-        $ID3v2_text_encoding_lookup[4] = array('ISO-8859-1'=>0, 'UTF-16'=>1, 'UTF-16BE'=>2, 'UTF-8'=>3);
+        $ID3v2_text_encoding_lookup[2] = array('ISO-8859-1' => 0, 'UTF-16' => 1);
+        $ID3v2_text_encoding_lookup[3] = array('ISO-8859-1' => 0, 'UTF-16' => 1);
+        $ID3v2_text_encoding_lookup[4] = array('ISO-8859-1' => 0, 'UTF-16' => 1, 'UTF-16BE' => 2, 'UTF-8' => 3);
         foreach ($this->tag_data as $tag_key => $valuearray) {
             $ID3v2_framename = Id3v2::ID3v2ShortFrameNameLookup($id3v2_majorversion, $tag_key);
             switch ($ID3v2_framename) {
@@ -615,7 +602,7 @@ class Tags
                             isset($apic_data_array['picturetypeid']) &&
                             isset($apic_data_array['description']) &&
                             isset($apic_data_array['mime'])) {
-                                $tag_data_id3v2['APIC'][] = $apic_data_array;
+                            $tag_data_id3v2['APIC'][] = $apic_data_array;
                         } else {
                             $this->errors[] = 'ID3v2 APIC data is not properly structured';
 
@@ -635,7 +622,7 @@ class Tags
                         if (isset($ID3v2_text_encoding_lookup[$id3v2_majorversion][$this->tag_encoding])) {
                             // source encoding is valid in ID3v2 - use it with no conversion
                             $tag_data_id3v2[$ID3v2_framename][$key]['encodingid'] = $ID3v2_text_encoding_lookup[$id3v2_majorversion][$this->tag_encoding];
-                            $tag_data_id3v2[$ID3v2_framename][$key]['data']       = $value;
+                            $tag_data_id3v2[$ID3v2_framename][$key]['data'] = $value;
                         } else {
                             // source encoding is NOT valid in ID3v2 - convert it to an ID3v2-valid encoding first
                             if ($id3v2_majorversion < 4) {
@@ -646,39 +633,38 @@ class Tags
                                 if (!$ID3v2_tag_data_converted && ($this->tag_encoding == 'ISO-8859-1')) {
                                     // great, leave data as-is for minimum compatability problems
                                     $tag_data_id3v2[$ID3v2_framename][$key]['encodingid'] = 0;
-                                    $tag_data_id3v2[$ID3v2_framename][$key]['data']       = $value;
+                                    $tag_data_id3v2[$ID3v2_framename][$key]['data'] = $value;
                                     $ID3v2_tag_data_converted = true;
                                 }
                                 if (!$ID3v2_tag_data_converted && ($this->tag_encoding == 'UTF-8')) {
                                     do {
                                         // if UTF-8 string does not include any characters above chr(127) then it is identical to ISO-8859-1
-                                        for ($i = 0; $i < strlen($value); $i++) {
+                                        for ($i = 0; $i < strlen($value); ++$i) {
                                             if (ord($value{$i}) > 127) {
                                                 break 2;
                                             }
                                         }
                                         $tag_data_id3v2[$ID3v2_framename][$key]['encodingid'] = 0;
-                                        $tag_data_id3v2[$ID3v2_framename][$key]['data']       = $value;
+                                        $tag_data_id3v2[$ID3v2_framename][$key]['data'] = $value;
                                         $ID3v2_tag_data_converted = true;
                                     } while (false);
                                 }
                                 if (!$ID3v2_tag_data_converted) {
                                     $tag_data_id3v2[$ID3v2_framename][$key]['encodingid'] = 1;
                                     //$tag_data_id3v2[$ID3v2_framename][$key]['data']       = GetId3_lib::iconv_fallback($this->tag_encoding, 'UTF-16', $value); // output is UTF-16LE+BOM or UTF-16BE+BOM depending on system architecture
-                                    $tag_data_id3v2[$ID3v2_framename][$key]['data']       = "\xFF\xFE".Helper::iconv_fallback($this->tag_encoding, 'UTF-16LE', $value); // force LittleEndian order version of UTF-16
+                                    $tag_data_id3v2[$ID3v2_framename][$key]['data'] = "\xFF\xFE".Helper::iconv_fallback($this->tag_encoding, 'UTF-16LE', $value); // force LittleEndian order version of UTF-16
                                     $ID3v2_tag_data_converted = true;
                                 }
-
                             } else {
                                 // convert data from other encoding to UTF-8
                                 $tag_data_id3v2[$ID3v2_framename][$key]['encodingid'] = 3;
-                                $tag_data_id3v2[$ID3v2_framename][$key]['data']       = Helper::iconv_fallback($this->tag_encoding, 'UTF-8', $value);
+                                $tag_data_id3v2[$ID3v2_framename][$key]['data'] = Helper::iconv_fallback($this->tag_encoding, 'UTF-8', $value);
                             }
                         }
 
                         // These values are not needed for all frame types, but if they're not used no matter
                         $tag_data_id3v2[$ID3v2_framename][$key]['description'] = '';
-                        $tag_data_id3v2[$ID3v2_framename][$key]['language']    = $this->id3v2_tag_language;
+                        $tag_data_id3v2[$ID3v2_framename][$key]['language'] = $this->id3v2_tag_language;
                     }
                     break;
             }
@@ -689,7 +675,6 @@ class Tags
     }
 
     /**
-     *
      * @return type
      */
     public function FormatDataForVorbisComment()
@@ -724,7 +709,6 @@ class Tags
     }
 
     /**
-     *
      * @return type
      */
     public function FormatDataForMetaFLAC()
@@ -735,19 +719,17 @@ class Tags
     }
 
     /**
-     *
      * @return type
      */
     public function FormatDataForReal()
     {
-        $tag_data_real['title']     = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['TITLE']    ) ? $this->tag_data['TITLE']     : array())));
-        $tag_data_real['artist']    = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['ARTIST']   ) ? $this->tag_data['ARTIST']    : array())));
+        $tag_data_real['title'] = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['TITLE']) ? $this->tag_data['TITLE']     : array())));
+        $tag_data_real['artist'] = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['ARTIST']) ? $this->tag_data['ARTIST']    : array())));
         $tag_data_real['copyright'] = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['COPYRIGHT']) ? $this->tag_data['COPYRIGHT'] : array())));
-        $tag_data_real['comment']   = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['COMMENT']  ) ? $this->tag_data['COMMENT']   : array())));
+        $tag_data_real['comment'] = Helper::iconv_fallback($this->tag_encoding, 'ISO-8859-1', implode(' ', (isset($this->tag_data['COMMENT']) ? $this->tag_data['COMMENT']   : array())));
 
         $this->MergeExistingTagData('real', $tag_data_real);
 
         return $tag_data_real;
     }
-
 }

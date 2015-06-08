@@ -29,15 +29,14 @@ use GetId3\Lib\Helper;
  *
  * @author James Heinrich <info@getid3.org>
  * @author Mike Mozolin <teddybearØmail*ru>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Tar extends BaseHandler
 {
-
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -58,13 +57,13 @@ class Tar extends BaseHandler
 
             // check the block
             $checksum = 0;
-            for ($i = 0; $i < 148; $i++) {
+            for ($i = 0; $i < 148; ++$i) {
                 $checksum += ord($buffer{$i});
             }
-            for ($i = 148; $i < 156; $i++) {
+            for ($i = 148; $i < 156; ++$i) {
                 $checksum += ord(' ');
             }
-            for ($i = 156; $i < 512; $i++) {
+            for ($i = 156; $i < 512; ++$i) {
                 $checksum += ord($buffer{$i});
             }
             $attr = unpack($unpack_header, $buffer);
@@ -89,7 +88,7 @@ class Tar extends BaseHandler
                 break;
             }
             if ($prefix) {
-                $name = $prefix . '/' . $name;
+                $name = $prefix.'/'.$name;
             }
             if ((preg_match('#/$#', $name)) && !$name) {
                 $typeflag = 5;
@@ -127,7 +126,7 @@ class Tar extends BaseHandler
                     'uname' => $uname,
                     'gname' => $gname,
                     'devmajor' => $devmaj,
-                    'devminor' => $devmin
+                    'devminor' => $devmin,
             );
             $info['tar']['files'] = Helper::array_merge_clobber($info['tar']['files'],
                                                                            Helper::CreateDeepArray($info['tar']['file_details'][$name]['name'],
@@ -142,20 +141,36 @@ class Tar extends BaseHandler
      * Parses the file mode to file permissions
      *
      * @param  type $mode
+     *
      * @return type
      */
     public function display_perms($mode)
     {
         // Determine Type
-        if ($mode & 0x1000) $type = 'p'; // FIFO pipe
-        elseif ($mode & 0x2000) $type = 'c'; // Character special
-        elseif ($mode & 0x4000) $type = 'd'; // Directory
-        elseif ($mode & 0x6000) $type = 'b'; // Block special
-        elseif ($mode & 0x8000) $type = '-'; // Regular
-        elseif ($mode & 0xA000) $type = 'l'; // Symbolic Link
-        elseif ($mode & 0xC000) $type = 's'; // Socket
-        else $type = 'u'; // UNKNOWN
-
+        if ($mode & 0x1000) {
+            $type = 'p';
+        } // FIFO pipe
+        elseif ($mode & 0x2000) {
+            $type = 'c';
+        } // Character special
+        elseif ($mode & 0x4000) {
+            $type = 'd';
+        } // Directory
+        elseif ($mode & 0x6000) {
+            $type = 'b';
+        } // Block special
+        elseif ($mode & 0x8000) {
+            $type = '-';
+        } // Regular
+        elseif ($mode & 0xA000) {
+            $type = 'l';
+        } // Symbolic Link
+        elseif ($mode & 0xC000) {
+            $type = 's';
+        } // Socket
+        else {
+            $type = 'u';
+        } // UNKNOWN
 
 // Determine permissions
         $owner['read'] = (($mode & 00400) ? 'r' : '-');
@@ -169,19 +184,22 @@ class Tar extends BaseHandler
         $world['execute'] = (($mode & 00001) ? 'x' : '-');
 
         // Adjust for SUID, SGID and sticky bit
-        if ($mode & 0x800)
-                $owner['execute'] = ($owner['execute'] == 'x') ? 's' : 'S';
-        if ($mode & 0x400)
-                $group['execute'] = ($group['execute'] == 'x') ? 's' : 'S';
-        if ($mode & 0x200)
-                $world['execute'] = ($world['execute'] == 'x') ? 't' : 'T';
+        if ($mode & 0x800) {
+            $owner['execute'] = ($owner['execute'] == 'x') ? 's' : 'S';
+        }
+        if ($mode & 0x400) {
+            $group['execute'] = ($group['execute'] == 'x') ? 's' : 'S';
+        }
+        if ($mode & 0x200) {
+            $world['execute'] = ($world['execute'] == 'x') ? 't' : 'T';
+        }
 
         $s = sprintf('%1s', $type);
         $s .= sprintf('%1s%1s%1s', $owner['read'], $owner['write'],
                       $owner['execute']);
         $s .= sprintf('%1s%1s%1s', $group['read'], $group['write'],
                       $group['execute']);
-        $s .= sprintf('%1s%1s%1s' . "\n", $world['read'], $world['write'],
+        $s .= sprintf('%1s%1s%1s'."\n", $world['read'], $world['write'],
                       $world['execute']);
 
         return $s;
@@ -191,7 +209,9 @@ class Tar extends BaseHandler
      * Converts the file type
      *
      * @staticvar array $flag_types
+     *
      * @param  type $typflag
+     *
      * @return type
      */
     public function get_flag_type($typflag)
@@ -211,7 +231,7 @@ class Tar extends BaseHandler
             'M' => 'LF_MULTIVOL',
             'N' => 'LF_NAMES',
             'S' => 'LF_SPARSE',
-            'V' => 'LF_VOLHDR'
+            'V' => 'LF_VOLHDR',
         );
 
         return (isset($flag_types[$typflag]) ? $flag_types[$typflag] : '');

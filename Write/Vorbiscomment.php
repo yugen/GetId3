@@ -22,29 +22,27 @@ use GetId3\GetId3Core;
  * module for writing VorbisComment tags
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
+ *
  * @uses helperapps/vorbiscomment.exe
  */
 class Vorbiscomment
 {
-
     public $filename;
     public $tag_data;
     /**
-     *
      * @var array
      */
     public $warnings = array(); // any non-critical errors will be stored here
     /**
-     *
      * @var array
      */
-    public $errors   = array(); // any critical errors will be stored here
+    public $errors = array(); // any critical errors will be stored here
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function __construct()
     {
@@ -52,8 +50,7 @@ class Vorbiscomment
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function WriteVorbisComment()
     {
@@ -66,14 +63,12 @@ class Vorbiscomment
         // Create file with new comments
         $tempcommentsfilename = tempnam(GetId3Core::getTempDir(), 'getID3');
         if (is_writable($tempcommentsfilename) && is_file($tempcommentsfilename) && ($fpcomments = fopen($tempcommentsfilename, 'wb'))) {
-
             foreach ($this->tag_data as $key => $value) {
                 foreach ($value as $commentdata) {
                     fwrite($fpcomments, $this->CleanVorbisCommentName($key).'='.$commentdata."\n");
                 }
             }
             fclose($fpcomments);
-
         } else {
             $this->errors[] = 'failed to open temporary tags file "'.$tempcommentsfilename.'", tags not written';
 
@@ -82,7 +77,6 @@ class Vorbiscomment
 
         $oldignoreuserabort = ignore_user_abort(true);
         if (GetId3Core::environmentIsWindows()) {
-
             if (file_exists(GetId3Core::getHelperAppsDir().'vorbiscomment.exe')) {
                 //$commandline = '"'.GetId3Core::getHelperAppsDir().'vorbiscomment.exe" -w --raw -c "'.$tempcommentsfilename.'" "'.str_replace('/', '\\', $this->filename).'"';
                 //  vorbiscomment works fine if you copy-paste the above commandline into a command prompt,
@@ -108,12 +102,9 @@ class Vorbiscomment
             } else {
                 $VorbiscommentError = 'vorbiscomment.exe not found in '.GetId3Core::getHelperAppsDir();
             }
-
         } else {
-
             $commandline = 'vorbiscomment -w --raw -c "'.$tempcommentsfilename.'" "'.$this->filename.'" 2>&1';
             $VorbiscommentError = `$commandline`;
-
         }
 
         // Remove temporary comments file
@@ -121,18 +112,15 @@ class Vorbiscomment
         ignore_user_abort($oldignoreuserabort);
 
         if (!empty($VorbiscommentError)) {
-
             $this->errors[] = 'system call to vorbiscomment failed with message: '."\n\n".$VorbiscommentError;
 
             return false;
-
         }
 
         return true;
     }
 
     /**
-     *
      * @return type
      */
     public function DeleteVorbisComment()
@@ -143,8 +131,8 @@ class Vorbiscomment
     }
 
     /**
-     *
      * @param  type $originalcommentname
+     *
      * @return type
      */
     public function CleanVorbisCommentName($originalcommentname)
@@ -157,7 +145,5 @@ class Vorbiscomment
         // Thanks Chris Bolt <chris-getid3Øbolt*cx> for improving this function
         // note: *reg_replace() replaces nulls with empty string (not space)
         return strtoupper(preg_replace('#[^ -<>-}]#', ' ', str_replace("\x00", ' ', $originalcommentname)));
-
     }
-
 }

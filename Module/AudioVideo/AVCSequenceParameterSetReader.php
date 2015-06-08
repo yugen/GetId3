@@ -23,7 +23,9 @@ use GetId3\Lib\Helper;
  *
  * @author James Heinrich <info@getid3.org>
  * @author Seth Kaufman <seth@whirl-i-gig.com>
+ *
  * @uses Flv
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
@@ -47,7 +49,6 @@ class AVCSequenceParameterSetReader
     const H264_PROFILE_HIGH444_PREDICTIVE = 244;
 
     /**
-     *
      * @param type $sps
      */
     public function __construct($sps)
@@ -74,12 +75,12 @@ class AVCSequenceParameterSetReader
             $this->expGolombUe();
             $this->skipBits(1);
             if ($this->getBit()) {
-                for ($i = 0; $i < 8; $i++) {
+                for ($i = 0; $i < 8; ++$i) {
                     if ($this->getBit()) {
                         $size = $i < 6 ? 16 : 64;
                         $lastScale = 8;
                         $nextScale = 8;
-                        for ($j = 0; $j < $size; $j++) {
+                        for ($j = 0; $j < $size; ++$j) {
                             if ($nextScale != 0) {
                                 $deltaScale = $this->expGolombUe();
                                 $nextScale = ($lastScale + $deltaScale + 256) % 256;
@@ -101,7 +102,7 @@ class AVCSequenceParameterSetReader
             $this->expGolombSe();
             $this->expGolombSe();
             $pocCycleLength = $this->expGolombUe();
-            for ($i = 0; $i < $pocCycleLength; $i++) {
+            for ($i = 0; $i < $pocCycleLength; ++$i) {
                 $this->expGolombSe();
             }
         }
@@ -113,7 +114,6 @@ class AVCSequenceParameterSetReader
     }
 
     /**
-     *
      * @param type $bits
      */
     public function skipBits($bits)
@@ -124,7 +124,6 @@ class AVCSequenceParameterSetReader
     }
 
     /**
-     *
      * @return type
      */
     public function getBit()
@@ -138,14 +137,14 @@ class AVCSequenceParameterSetReader
     }
 
     /**
-     *
      * @param  type $bits
+     *
      * @return type
      */
     public function getBits($bits)
     {
         $result = 0;
-        for ($i = 0; $i < $bits; $i++) {
+        for ($i = 0; $i < $bits; ++$i) {
             $result = ($result << 1) + $this->getBit();
         }
 
@@ -153,7 +152,6 @@ class AVCSequenceParameterSetReader
     }
 
     /**
-     *
      * @return int
      */
     public function expGolombUe()
@@ -161,7 +159,7 @@ class AVCSequenceParameterSetReader
         $significantBits = 0;
         $bit = $this->getBit();
         while ($bit == 0) {
-            $significantBits++;
+            ++$significantBits;
             $bit = $this->getBit();
 
             if ($significantBits > 31) {
@@ -174,7 +172,6 @@ class AVCSequenceParameterSetReader
     }
 
     /**
-     *
      * @return type
      */
     public function expGolombSe()
@@ -188,7 +185,6 @@ class AVCSequenceParameterSetReader
     }
 
     /**
-     *
      * @return type
      */
     public function getWidth()
@@ -197,7 +193,6 @@ class AVCSequenceParameterSetReader
     }
 
     /**
-     *
      * @return type
      */
     public function getHeight()

@@ -23,26 +23,25 @@ use GetId3\Lib\Helper;
  * module for analyzing Shockwave Flash files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Swf extends BaseHandler
 {
     /**
-     *
-     * @var boolean
+     * @var bool
      */
     public $ReturnAllTagData = false;
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
         $info = &$this->getid3->info;
 
-        $info['fileformat']          = 'swf';
+        $info['fileformat'] = 'swf';
         $info['video']['dataformat'] = 'swf';
 
         // http://www.openswf.org/spec/SWFfileformat.html
@@ -51,7 +50,7 @@ class Swf extends BaseHandler
 
         $SWFfileData = fread($this->getid3->fp, $info['avdataend'] - $info['avdataoffset']); // 8 + 2 + 2 + max(9) bytes NOT including Frame_Size RECT data
 
-        $info['swf']['header']['signature']  = substr($SWFfileData, 0, 3);
+        $info['swf']['header']['signature'] = substr($SWFfileData, 0, 3);
         switch ($info['swf']['header']['signature']) {
             case 'FWS':
                 $info['swf']['header']['compressed'] = false;
@@ -70,10 +69,10 @@ class Swf extends BaseHandler
                 break;
         }
         $info['swf']['header']['version'] = Helper::LittleEndian2Int(substr($SWFfileData, 3, 1));
-        $info['swf']['header']['length']  = Helper::LittleEndian2Int(substr($SWFfileData, 4, 4));
+        $info['swf']['header']['length'] = Helper::LittleEndian2Int(substr($SWFfileData, 4, 4));
 
         if ($info['swf']['header']['compressed']) {
-            $SWFHead     = substr($SWFfileData, 0, 8);
+            $SWFHead = substr($SWFfileData, 0, 8);
             $SWFfileData = substr($SWFfileData, 8);
             if ($decompressed = @gzuncompress($SWFfileData)) {
                 $SWFfileData = $SWFHead.$decompressed;
@@ -85,13 +84,13 @@ class Swf extends BaseHandler
         }
 
         $FrameSizeBitsPerValue = (ord(substr($SWFfileData, 8, 1)) & 0xF8) >> 3;
-        $FrameSizeDataLength   = ceil((5 + (4 * $FrameSizeBitsPerValue)) / 8);
-        $FrameSizeDataString   = str_pad(decbin(ord(substr($SWFfileData, 8, 1)) & 0x07), 3, '0', STR_PAD_LEFT);
-        for ($i = 1; $i < $FrameSizeDataLength; $i++) {
+        $FrameSizeDataLength = ceil((5 + (4 * $FrameSizeBitsPerValue)) / 8);
+        $FrameSizeDataString = str_pad(decbin(ord(substr($SWFfileData, 8, 1)) & 0x07), 3, '0', STR_PAD_LEFT);
+        for ($i = 1; $i < $FrameSizeDataLength; ++$i) {
             $FrameSizeDataString .= str_pad(decbin(ord(substr($SWFfileData, 8 + $i, 1))), 8, '0', STR_PAD_LEFT);
         }
         list($X1, $X2, $Y1, $Y2) = explode("\n", wordwrap($FrameSizeDataString, $FrameSizeBitsPerValue, "\n", 1));
-        $info['swf']['header']['frame_width']  = Helper::Bin2Dec($X2);
+        $info['swf']['header']['frame_width'] = Helper::Bin2Dec($X2);
         $info['swf']['header']['frame_height'] = Helper::Bin2Dec($Y2);
 
         // http://www-lehre.informatik.uni-osnabrueck.de/~fbstark/diplom/docs/swf/Flash_Uncovered.htm
@@ -101,12 +100,12 @@ class Swf extends BaseHandler
         // Example: 0x000C  ->  0x0C  ->  12     So the frame rate is 12 fps.
 
         // Byte at (8 + $FrameSizeDataLength) is always zero and ignored
-        $info['swf']['header']['frame_rate']  = Helper::LittleEndian2Int(substr($SWFfileData,  9 + $FrameSizeDataLength, 1));
+        $info['swf']['header']['frame_rate'] = Helper::LittleEndian2Int(substr($SWFfileData, 9 + $FrameSizeDataLength, 1));
         $info['swf']['header']['frame_count'] = Helper::LittleEndian2Int(substr($SWFfileData, 10 + $FrameSizeDataLength, 2));
 
-        $info['video']['frame_rate']         = $info['swf']['header']['frame_rate'];
-        $info['video']['resolution_x']       = intval(round($info['swf']['header']['frame_width']  / 20));
-        $info['video']['resolution_y']       = intval(round($info['swf']['header']['frame_height'] / 20));
+        $info['video']['frame_rate'] = $info['swf']['header']['frame_rate'];
+        $info['video']['resolution_x'] = intval(round($info['swf']['header']['frame_width']  / 20));
+        $info['video']['resolution_y'] = intval(round($info['swf']['header']['frame_height'] / 20));
         $info['video']['pixel_aspect_ratio'] = (float) 1;
 
         if (($info['swf']['header']['frame_count'] > 0) && ($info['swf']['header']['frame_rate'] > 0)) {
@@ -120,10 +119,10 @@ class Swf extends BaseHandler
         $SWFdataLength = strlen($SWFfileData);
 
         while ($CurrentOffset < $SWFdataLength) {
-//echo __LINE__.'='.number_format(microtime(true) - $start_time, 3).'<br>';
+            //echo __LINE__.'='.number_format(microtime(true) - $start_time, 3).'<br>';
 
             $TagIDTagLength = Helper::LittleEndian2Int(substr($SWFfileData, $CurrentOffset, 2));
-            $TagID     = ($TagIDTagLength & 0xFFFC) >> 6;
+            $TagID = ($TagIDTagLength & 0xFFFC) >> 6;
             $TagLength = ($TagIDTagLength & 0x003F);
             $CurrentOffset += 2;
             if ($TagLength == 0x3F) {
@@ -133,9 +132,9 @@ class Swf extends BaseHandler
 
             unset($TagData);
             $TagData['offset'] = $CurrentOffset;
-            $TagData['size']   = $TagLength;
-            $TagData['id']     = $TagID;
-            $TagData['data']   = substr($SWFfileData, $CurrentOffset, $TagLength);
+            $TagData['size'] = $TagLength;
+            $TagData['id'] = $TagID;
+            $TagData['data'] = substr($SWFfileData, $CurrentOffset, $TagLength);
             switch ($TagID) {
                 case 0: // end of movie
                     break 2;

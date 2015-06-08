@@ -1,4 +1,5 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
 //  available at http://getid3.sourceforge.net                 //
@@ -17,7 +18,7 @@ die('Due to a security issue, this demo has been disabled. It can be enabled by 
 require_once '../getid3/getid3.php';
 
 // Initialize getID3 engine
-$getID3 = new getID3;
+$getID3 = new getID3();
 
 // Analyze file and store returned data in $ThisFileInfo
 $ThisFileInfo = $getID3->analyze($filename);

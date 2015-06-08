@@ -23,14 +23,14 @@ use GetId3\Lib\Helper;
  * module for analyzing VQF audio files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Vqf extends BaseHandler
 {
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -39,15 +39,15 @@ class Vqf extends BaseHandler
         // based loosely on code from TTwinVQ by Jurgen Faul <jfaulØgmx*de>
         // http://jfaul.de/atl  or  http://j-faul.virtualave.net/atl/atl.html
 
-        $info['fileformat']            = 'vqf';
-        $info['audio']['dataformat']   = 'vqf';
+        $info['fileformat'] = 'vqf';
+        $info['audio']['dataformat'] = 'vqf';
         $info['audio']['bitrate_mode'] = 'cbr';
-        $info['audio']['lossless']     = false;
+        $info['audio']['lossless'] = false;
 
         // shortcut
         $info['vqf']['raw'] = array();
-        $thisfile_vqf               = &$info['vqf'];
-        $thisfile_vqf_raw           = &$thisfile_vqf['raw'];
+        $thisfile_vqf = &$info['vqf'];
+        $thisfile_vqf_raw = &$thisfile_vqf['raw'];
 
         fseek($this->getid3->fp, $info['avdataoffset'], SEEK_SET);
         $VQFheaderData = fread($this->getid3->fp, 16);
@@ -63,13 +63,12 @@ class Vqf extends BaseHandler
             return false;
         }
         $offset += 4;
-        $thisfile_vqf_raw['version'] =                           substr($VQFheaderData, $offset, 8);
+        $thisfile_vqf_raw['version'] = substr($VQFheaderData, $offset, 8);
         $offset += 8;
-        $thisfile_vqf_raw['size']    = Helper::BigEndian2Int(substr($VQFheaderData, $offset, 4));
+        $thisfile_vqf_raw['size'] = Helper::BigEndian2Int(substr($VQFheaderData, $offset, 4));
         $offset += 4;
 
         while (ftell($this->getid3->fp) < $info['avdataend']) {
-
             $ChunkBaseOffset = ftell($this->getid3->fp);
             $chunkoffset = 0;
             $ChunkData = fread($this->getid3->fp, 8);
@@ -93,21 +92,21 @@ class Vqf extends BaseHandler
                 case 'COMM':
                     // shortcut
                     $thisfile_vqf['COMM'] = array();
-                    $thisfile_vqf_COMM    = &$thisfile_vqf['COMM'];
+                    $thisfile_vqf_COMM = &$thisfile_vqf['COMM'];
 
-                    $thisfile_vqf_COMM['channel_mode']   = Helper::BigEndian2Int(substr($ChunkData, $chunkoffset, 4));
+                    $thisfile_vqf_COMM['channel_mode'] = Helper::BigEndian2Int(substr($ChunkData, $chunkoffset, 4));
                     $chunkoffset += 4;
-                    $thisfile_vqf_COMM['bitrate']        = Helper::BigEndian2Int(substr($ChunkData, $chunkoffset, 4));
+                    $thisfile_vqf_COMM['bitrate'] = Helper::BigEndian2Int(substr($ChunkData, $chunkoffset, 4));
                     $chunkoffset += 4;
-                    $thisfile_vqf_COMM['sample_rate']    = Helper::BigEndian2Int(substr($ChunkData, $chunkoffset, 4));
+                    $thisfile_vqf_COMM['sample_rate'] = Helper::BigEndian2Int(substr($ChunkData, $chunkoffset, 4));
                     $chunkoffset += 4;
                     $thisfile_vqf_COMM['security_level'] = Helper::BigEndian2Int(substr($ChunkData, $chunkoffset, 4));
                     $chunkoffset += 4;
 
-                    $info['audio']['channels']        = $thisfile_vqf_COMM['channel_mode'] + 1;
-                    $info['audio']['sample_rate']     = $this->VQFchannelFrequencyLookup($thisfile_vqf_COMM['sample_rate']);
-                    $info['audio']['bitrate']         = $thisfile_vqf_COMM['bitrate'] * 1000;
-                    $info['audio']['encoder_options'] = 'CBR' . ceil($info['audio']['bitrate']/1000);
+                    $info['audio']['channels'] = $thisfile_vqf_COMM['channel_mode'] + 1;
+                    $info['audio']['sample_rate'] = $this->VQFchannelFrequencyLookup($thisfile_vqf_COMM['sample_rate']);
+                    $info['audio']['bitrate'] = $thisfile_vqf_COMM['bitrate'] * 1000;
+                    $info['audio']['encoder_options'] = 'CBR'.ceil($info['audio']['bitrate'] / 1000);
 
                     if ($info['audio']['bitrate'] == 0) {
                         $info['error'][] = 'Corrupt VQF file: bitrate_audio == zero';
@@ -155,9 +154,10 @@ class Vqf extends BaseHandler
     }
 
     /**
-     *
      * @staticvar array $VQFchannelFrequencyLookup
+     *
      * @param  type $frequencyid
+     *
      * @return type
      */
     public function VQFchannelFrequencyLookup($frequencyid)
@@ -165,16 +165,17 @@ class Vqf extends BaseHandler
         static $VQFchannelFrequencyLookup = array(
             11 => 11025,
             22 => 22050,
-            44 => 44100
+            44 => 44100,
         );
 
         return (isset($VQFchannelFrequencyLookup[$frequencyid]) ? $VQFchannelFrequencyLookup[$frequencyid] : $frequencyid * 1000);
     }
 
     /**
-     *
      * @staticvar array $VQFcommentNiceNameLookup
+     *
      * @param  type $shortname
+     *
      * @return type
      */
     public function VQFcommentNiceNameLookup($shortname)
@@ -185,10 +186,9 @@ class Vqf extends BaseHandler
             '(c) ' => 'copyright',
             'FILE' => 'filename',
             'COMT' => 'comment',
-            'ALBM' => 'album'
+            'ALBM' => 'album',
         );
 
         return (isset($VQFcommentNiceNameLookup[$shortname]) ? $VQFcommentNiceNameLookup[$shortname] : $shortname);
     }
-
 }

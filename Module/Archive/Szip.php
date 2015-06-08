@@ -23,14 +23,14 @@ use GetId3\Lib\Helper;
  * module for analyzing SZIP compressed files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Szip extends BaseHandler
 {
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -39,9 +39,9 @@ class Szip extends BaseHandler
         fseek($this->getid3->fp, $info['avdataoffset'], SEEK_SET);
         $SZIPHeader = fread($this->getid3->fp, 6);
         if (substr($SZIPHeader, 0, 4) != "SZ\x0A\x04") {
-            $info['error'][] = 'Expecting "53 5A 0A 04" at offset ' . $info['avdataoffset'] . ', found "' . Helper::PrintHexBytes(substr($SZIPHeader,
+            $info['error'][] = 'Expecting "53 5A 0A 04" at offset '.$info['avdataoffset'].', found "'.Helper::PrintHexBytes(substr($SZIPHeader,
                                                                                                                                                     0,
-                                                                                                                                                    4)) . '"';
+                                                                                                                                                    4)).'"';
 
             return false;
         }

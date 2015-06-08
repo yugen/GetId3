@@ -25,7 +25,9 @@ use GetId3\Module\Tag\Id3v2;
  * module for analyzing ASF, WMA and WMV files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @uses GetId3\Module\AudioVideo\Riff
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
@@ -139,11 +141,13 @@ class Asf extends BaseHandler
     protected static $GETID3_ASF_Alt_Extended_Content_Encryption_Obj;
     /**
      * @var type
+     *
      * @link http://cpan.uwinnipeg.ca/htdocs/Audio-WMA/Audio/WMA.pm.html
      */
     protected static $GETID3_ASF_Index_Placeholder_Object;
     /**
      * @var type
+     *
      * @link http://cpan.uwinnipeg.ca/htdocs/Audio-WMA/Audio/WMA.pm.html
      */
     protected static $GETID3_ASF_Compatibility_Object;
@@ -164,8 +168,7 @@ class Asf extends BaseHandler
     }
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -208,7 +211,7 @@ class Asf extends BaseHandler
         $thisfile_asf_headerobject['objectid'] = substr($HeaderObjectData, 0, 16);
         $thisfile_asf_headerobject['objectid_guid'] = self::BytestringToGUID($thisfile_asf_headerobject['objectid']);
         if ($thisfile_asf_headerobject['objectid'] != self::$GETID3_ASF_Header_Object) {
-            $info['warning'][] = 'ASF header GUID {' . self::BytestringToGUID($thisfile_asf_headerobject['objectid']) . '} does not match expected "GETID3_ASF_Header_Object" GUID {' . self::BytestringToGUID(self::$GETID3_ASF_Header_Object) . '}';
+            $info['warning'][] = 'ASF header GUID {'.self::BytestringToGUID($thisfile_asf_headerobject['objectid']).'} does not match expected "GETID3_ASF_Header_Object" GUID {'.self::BytestringToGUID(self::$GETID3_ASF_Header_Object).'}';
             unset($info['fileformat']);
             unset($info['asf']);
 
@@ -234,7 +237,7 @@ class Asf extends BaseHandler
 
         for ($HeaderObjectsCounter = 0;
                 $HeaderObjectsCounter < $thisfile_asf_headerobject['headerobjects'];
-                $HeaderObjectsCounter++) {
+                ++$HeaderObjectsCounter) {
             $NextObjectGUID = substr($ASFHeaderData, $offset, 16);
             $offset += 16;
             $NextObjectGUIDtext = self::BytestringToGUID($NextObjectGUID);
@@ -456,7 +459,7 @@ class Asf extends BaseHandler
                     $offset += 16;
                     $thisfile_asf_headerextensionobject['reserved_1_guid'] = self::BytestringToGUID($thisfile_asf_headerextensionobject['reserved_1']);
                     if ($thisfile_asf_headerextensionobject['reserved_1'] != self::$GETID3_ASF_Reserved_1) {
-                        $info['warning'][] = 'header_extension_object.reserved_1 GUID (' . self::BytestringToGUID($thisfile_asf_headerextensionobject['reserved_1']) . ') does not match expected "GETID3_ASF_Reserved_1" GUID (' . self::BytestringToGUID(self::$GETID3_ASF_Reserved_1) . ')';
+                        $info['warning'][] = 'header_extension_object.reserved_1 GUID ('.self::BytestringToGUID($thisfile_asf_headerextensionobject['reserved_1']).') does not match expected "GETID3_ASF_Reserved_1" GUID ('.self::BytestringToGUID(self::$GETID3_ASF_Reserved_1).')';
                         //return false;
                         break;
                     }
@@ -465,7 +468,7 @@ class Asf extends BaseHandler
                                                                                                                    2));
                     $offset += 2;
                     if ($thisfile_asf_headerextensionobject['reserved_2'] != 6) {
-                        $info['warning'][] = 'header_extension_object.reserved_2 (' . Helper::PrintHexBytes($thisfile_asf_headerextensionobject['reserved_2']) . ') does not match expected value of "6"';
+                        $info['warning'][] = 'header_extension_object.reserved_2 ('.Helper::PrintHexBytes($thisfile_asf_headerextensionobject['reserved_2']).') does not match expected value of "6"';
                         //return false;
                         break;
                     }
@@ -514,7 +517,7 @@ class Asf extends BaseHandler
                     $offset += 16;
                     $thisfile_asf_codeclistobject['reserved_guid'] = self::BytestringToGUID($thisfile_asf_codeclistobject['reserved']);
                     if ($thisfile_asf_codeclistobject['reserved'] != self::GUIDtoBytestring('86D15241-311D-11D0-A3A4-00A0C90348F6')) {
-                        $info['warning'][] = 'codec_list_object.reserved GUID {' . self::BytestringToGUID($thisfile_asf_codeclistobject['reserved']) . '} does not match expected "GETID3_ASF_Reserved_1" GUID {86D15241-311D-11D0-A3A4-00A0C90348F6}';
+                        $info['warning'][] = 'codec_list_object.reserved GUID {'.self::BytestringToGUID($thisfile_asf_codeclistobject['reserved']).'} does not match expected "GETID3_ASF_Reserved_1" GUID {86D15241-311D-11D0-A3A4-00A0C90348F6}';
                         //return false;
                         break;
                     }
@@ -524,7 +527,7 @@ class Asf extends BaseHandler
                     $offset += 4;
                     for ($CodecEntryCounter = 0;
                             $CodecEntryCounter < $thisfile_asf_codeclistobject['codec_entries_count'];
-                            $CodecEntryCounter++) {
+                            ++$CodecEntryCounter) {
                         // shortcut
                         $thisfile_asf_codeclistobject['codec_entries'][$CodecEntryCounter] = array();
                         $thisfile_asf_codeclistobject_codecentries_current = &$thisfile_asf_codeclistobject['codec_entries'][$CodecEntryCounter];
@@ -565,9 +568,8 @@ class Asf extends BaseHandler
                         if ($thisfile_asf_codeclistobject_codecentries_current['type_raw'] == 2) { // audio codec
                             if (strpos($thisfile_asf_codeclistobject_codecentries_current['description'],
                                        ',') === false) {
-                                $info['warning'][] = '[asf][codec_list_object][codec_entries][' . $CodecEntryCounter . '][description] expected to contain comma-seperated list of parameters: "' . $thisfile_asf_codeclistobject_codecentries_current['description'] . '"';
+                                $info['warning'][] = '[asf][codec_list_object][codec_entries]['.$CodecEntryCounter.'][description] expected to contain comma-seperated list of parameters: "'.$thisfile_asf_codeclistobject_codecentries_current['description'].'"';
                             } else {
-
                                 list($AudioCodecBitrate, $AudioCodecFrequency, $AudioCodecChannels) = explode(',',
                                                                                                               self::TrimConvert($thisfile_asf_codeclistobject_codecentries_current['description']));
                                 $thisfile_audio['codec'] = self::TrimConvert($thisfile_asf_codeclistobject_codecentries_current['name']);
@@ -634,7 +636,7 @@ class Asf extends BaseHandler
                                         break;
 
                                     default:
-                                        $info['warning'][] = 'unknown frequency: "' . $AudioCodecFrequency . '" (' . self::TrimConvert($thisfile_asf_codeclistobject_codecentries_current['description']) . ')';
+                                        $info['warning'][] = 'unknown frequency: "'.$AudioCodecFrequency.'" ('.self::TrimConvert($thisfile_asf_codeclistobject_codecentries_current['description']).')';
                                         break;
                                 }
 
@@ -680,7 +682,7 @@ class Asf extends BaseHandler
                     $offset += 16;
                     $thisfile_asf_scriptcommandobject['reserved_guid'] = self::BytestringToGUID($thisfile_asf_scriptcommandobject['reserved']);
                     if ($thisfile_asf_scriptcommandobject['reserved'] != self::GUIDtoBytestring('4B1ACBE3-100B-11D0-A39B-00A0C90348F6')) {
-                        $info['warning'][] = 'script_command_object.reserved GUID {' . self::BytestringToGUID($thisfile_asf_scriptcommandobject['reserved']) . '} does not match expected "GETID3_ASF_Reserved_1" GUID {4B1ACBE3-100B-11D0-A39B-00A0C90348F6}';
+                        $info['warning'][] = 'script_command_object.reserved GUID {'.self::BytestringToGUID($thisfile_asf_scriptcommandobject['reserved']).'} does not match expected "GETID3_ASF_Reserved_1" GUID {4B1ACBE3-100B-11D0-A39B-00A0C90348F6}';
                         //return false;
                         break;
                     }
@@ -694,7 +696,7 @@ class Asf extends BaseHandler
                     $offset += 2;
                     for ($CommandTypesCounter = 0;
                             $CommandTypesCounter < $thisfile_asf_scriptcommandobject['command_types_count'];
-                            $CommandTypesCounter++) {
+                            ++$CommandTypesCounter) {
                         $CommandTypeNameLength = Helper::LittleEndian2Int(substr($ASFHeaderData,
                                                                                             $offset,
                                                                                             2)) * 2; // 2 bytes per character
@@ -706,7 +708,7 @@ class Asf extends BaseHandler
                     }
                     for ($CommandsCounter = 0;
                             $CommandsCounter < $thisfile_asf_scriptcommandobject['commands_count'];
-                            $CommandsCounter++) {
+                            ++$CommandsCounter) {
                         $thisfile_asf_scriptcommandobject['commands'][$CommandsCounter]['presentation_time'] = Helper::LittleEndian2Int(substr($ASFHeaderData,
                                                                                                                                                           $offset,
                                                                                                                                                           4));
@@ -759,7 +761,7 @@ class Asf extends BaseHandler
                     $offset += 16;
                     $thisfile_asf_markerobject['reserved_guid'] = self::BytestringToGUID($thisfile_asf_markerobject['reserved']);
                     if ($thisfile_asf_markerobject['reserved'] != self::GUIDtoBytestring('4CFEDB20-75F6-11CF-9C0F-00A0C90349CB')) {
-                        $info['warning'][] = 'marker_object.reserved GUID {' . self::BytestringToGUID($thisfile_asf_markerobject['reserved_1']) . '} does not match expected "GETID3_ASF_Reserved_1" GUID {4CFEDB20-75F6-11CF-9C0F-00A0C90349CB}';
+                        $info['warning'][] = 'marker_object.reserved GUID {'.self::BytestringToGUID($thisfile_asf_markerobject['reserved_1']).'} does not match expected "GETID3_ASF_Reserved_1" GUID {4CFEDB20-75F6-11CF-9C0F-00A0C90349CB}';
                         break;
                     }
                     $thisfile_asf_markerobject['markers_count'] = Helper::LittleEndian2Int(substr($ASFHeaderData,
@@ -771,7 +773,7 @@ class Asf extends BaseHandler
                                                                                                           2));
                     $offset += 2;
                     if ($thisfile_asf_markerobject['reserved_2'] != 0) {
-                        $info['warning'][] = 'marker_object.reserved_2 (' . Helper::PrintHexBytes($thisfile_asf_markerobject['reserved_2']) . ') does not match expected value of "0"';
+                        $info['warning'][] = 'marker_object.reserved_2 ('.Helper::PrintHexBytes($thisfile_asf_markerobject['reserved_2']).') does not match expected value of "0"';
                         break;
                     }
                     $thisfile_asf_markerobject['name_length'] = Helper::LittleEndian2Int(substr($ASFHeaderData,
@@ -784,7 +786,7 @@ class Asf extends BaseHandler
                     $offset += $thisfile_asf_markerobject['name_length'];
                     for ($MarkersCounter = 0;
                             $MarkersCounter < $thisfile_asf_markerobject['markers_count'];
-                            $MarkersCounter++) {
+                            ++$MarkersCounter) {
                         $thisfile_asf_markerobject['markers'][$MarkersCounter]['offset'] = Helper::LittleEndian2Int(substr($ASFHeaderData,
                                                                                                                                       $offset,
                                                                                                                                       8));
@@ -845,7 +847,7 @@ class Asf extends BaseHandler
                     $thisfile_asf_bitratemutualexclusionobject['reserved_guid'] = self::BytestringToGUID($thisfile_asf_bitratemutualexclusionobject['reserved']);
                     $offset += 16;
                     if (($thisfile_asf_bitratemutualexclusionobject['reserved'] != self::$GETID3_ASF_Mutex_Bitrate) && ($thisfile_asf_bitratemutualexclusionobject['reserved'] != self::$GETID3_ASF_Mutex_Unknown)) {
-                        $info['warning'][] = 'bitrate_mutual_exclusion_object.reserved GUID {' . self::BytestringToGUID($thisfile_asf_bitratemutualexclusionobject['reserved']) . '} does not match expected "GETID3_ASF_Mutex_Bitrate" GUID {' . self::BytestringToGUID(self::$GETID3_ASF_Mutex_Bitrate) . '} or  "GETID3_ASF_Mutex_Unknown" GUID {' . self::BytestringToGUID(self::$GETID3_ASF_Mutex_Unknown) . '}';
+                        $info['warning'][] = 'bitrate_mutual_exclusion_object.reserved GUID {'.self::BytestringToGUID($thisfile_asf_bitratemutualexclusionobject['reserved']).'} does not match expected "GETID3_ASF_Mutex_Bitrate" GUID {'.self::BytestringToGUID(self::$GETID3_ASF_Mutex_Bitrate).'} or  "GETID3_ASF_Mutex_Unknown" GUID {'.self::BytestringToGUID(self::$GETID3_ASF_Mutex_Unknown).'}';
                         //return false;
                         break;
                     }
@@ -855,7 +857,7 @@ class Asf extends BaseHandler
                     $offset += 2;
                     for ($StreamNumberCounter = 0;
                             $StreamNumberCounter < $thisfile_asf_bitratemutualexclusionobject['stream_numbers_count'];
-                            $StreamNumberCounter++) {
+                            ++$StreamNumberCounter) {
                         $thisfile_asf_bitratemutualexclusionobject['stream_numbers'][$StreamNumberCounter] = Helper::LittleEndian2Int(substr($ASFHeaderData,
                                                                                                                                                         $offset,
                                                                                                                                                         2));
@@ -925,7 +927,7 @@ class Asf extends BaseHandler
                             break;
 
                         default:
-                            $info['warning'][] = 'error_correction_object.error_correction_type GUID {' . self::BytestringToGUID($thisfile_asf_errorcorrectionobject['reserved']) . '} does not match expected "GETID3_ASF_No_Error_Correction" GUID {' . self::BytestringToGUID(self::$GETID3_ASF_No_Error_Correction) . '} or  "GETID3_ASF_Audio_Spread" GUID {' . self::BytestringToGUID(self::$GETID3_ASF_Audio_Spread) . '}';
+                            $info['warning'][] = 'error_correction_object.error_correction_type GUID {'.self::BytestringToGUID($thisfile_asf_errorcorrectionobject['reserved']).'} does not match expected "GETID3_ASF_No_Error_Correction" GUID {'.self::BytestringToGUID(self::$GETID3_ASF_No_Error_Correction).'} or  "GETID3_ASF_Audio_Spread" GUID {'.self::BytestringToGUID(self::$GETID3_ASF_Audio_Spread).'}';
                             //return false;
                             break;
                     }
@@ -1036,7 +1038,7 @@ class Asf extends BaseHandler
                     $offset += 2;
                     for ($ExtendedContentDescriptorsCounter = 0;
                             $ExtendedContentDescriptorsCounter < $thisfile_asf_extendedcontentdescriptionobject['content_descriptors_count'];
-                            $ExtendedContentDescriptorsCounter++) {
+                            ++$ExtendedContentDescriptorsCounter) {
                         // shortcut
                         $thisfile_asf_extendedcontentdescriptionobject['content_descriptors'][$ExtendedContentDescriptorsCounter] = array();
                         $thisfile_asf_extendedcontentdescriptionobject_contentdescriptor_current = &$thisfile_asf_extendedcontentdescriptionobject['content_descriptors'][$ExtendedContentDescriptorsCounter];
@@ -1081,7 +1083,7 @@ class Asf extends BaseHandler
                                 break;
 
                             default:
-                                $info['warning'][] = 'extended_content_description.content_descriptors.' . $ExtendedContentDescriptorsCounter . '.value_type is invalid (' . $thisfile_asf_extendedcontentdescriptionobject_contentdescriptor_current['value_type'] . ')';
+                                $info['warning'][] = 'extended_content_description.content_descriptors.'.$ExtendedContentDescriptorsCounter.'.value_type is invalid ('.$thisfile_asf_extendedcontentdescriptionobject_contentdescriptor_current['value_type'].')';
                                 //return false;
                                 break;
                         }
@@ -1261,7 +1263,7 @@ class Asf extends BaseHandler
                     $offset += 2;
                     for ($BitrateRecordsCounter = 0;
                             $BitrateRecordsCounter < $thisfile_asf_streambitratepropertiesobject['bitrate_records_count'];
-                            $BitrateRecordsCounter++) {
+                            ++$BitrateRecordsCounter) {
                         $thisfile_asf_streambitratepropertiesobject['bitrate_records'][$BitrateRecordsCounter]['flags_raw'] = Helper::LittleEndian2Int(substr($ASFHeaderData,
                                                                                                                                                                          $offset,
                                                                                                                                                                          2));
@@ -1304,9 +1306,9 @@ class Asf extends BaseHandler
                 default:
                     // Implementations shall ignore any standard or non-standard object that they do not know how to handle.
                     if (self::GUIDname($NextObjectGUIDtext)) {
-                        $info['warning'][] = 'unhandled GUID "' . self::GUIDname($NextObjectGUIDtext) . '" {' . $NextObjectGUIDtext . '} in ASF header at offset ' . ($offset - 16 - 8);
+                        $info['warning'][] = 'unhandled GUID "'.self::GUIDname($NextObjectGUIDtext).'" {'.$NextObjectGUIDtext.'} in ASF header at offset '.($offset - 16 - 8);
                     } else {
-                        $info['warning'][] = 'unknown GUID {' . $NextObjectGUIDtext . '} in ASF header at offset ' . ($offset - 16 - 8);
+                        $info['warning'][] = 'unknown GUID {'.$NextObjectGUIDtext.'} in ASF header at offset '.($offset - 16 - 8);
                     }
                     $offset += ($NextObjectSize - 16 - 8);
                     break;
@@ -1317,7 +1319,7 @@ class Asf extends BaseHandler
             $ASFbitrateVideo = 0;
             for ($BitrateRecordsCounter = 0;
                     $BitrateRecordsCounter < $thisfile_asf_streambitrateproperties['bitrate_records_count'];
-                    $BitrateRecordsCounter++) {
+                    ++$BitrateRecordsCounter) {
                 if (isset($thisfile_asf_codeclistobject['codec_entries'][$BitrateRecordsCounter])) {
                     switch ($thisfile_asf_codeclistobject['codec_entries'][$BitrateRecordsCounter]['type_raw']) {
                         case 1:
@@ -1342,12 +1344,10 @@ class Asf extends BaseHandler
             }
         }
         if (isset($thisfile_asf['stream_properties_object']) && is_array($thisfile_asf['stream_properties_object'])) {
-
             $thisfile_audio['bitrate'] = 0;
             $thisfile_video['bitrate'] = 0;
 
             foreach ($thisfile_asf['stream_properties_object'] as $streamnumber => $streamdata) {
-
                 switch ($streamdata['stream_type']) {
                     case self::$GETID3_ASF_Audio_Media:
                         // Field Name                   Field Type   Size (bits)
@@ -1522,7 +1522,8 @@ class Asf extends BaseHandler
                         break;
                 }
             }
-        } while (ftell($this->getid3->fp) < $info['avdataend']) {
+        }
+        while (ftell($this->getid3->fp) < $info['avdataend']) {
             $NextObjectDataHeader = fread($this->getid3->fp, 24);
             $offset = 0;
             $NextObjectGUID = substr($NextObjectDataHeader, 0, 16);
@@ -1546,7 +1547,7 @@ class Asf extends BaseHandler
                     $thisfile_asf['data_object'] = array();
                     $thisfile_asf_dataobject = &$thisfile_asf['data_object'];
 
-                    $DataObjectData = $NextObjectDataHeader . fread($this->getid3->fp,
+                    $DataObjectData = $NextObjectDataHeader.fread($this->getid3->fp,
                                                                     50 - 24);
                     $offset = 24;
 
@@ -1567,7 +1568,7 @@ class Asf extends BaseHandler
                                                                                                       2));
                     $offset += 2;
                     if ($thisfile_asf_dataobject['reserved'] != 0x0101) {
-                        $info['warning'][] = 'data_object.reserved (' . Helper::PrintHexBytes($thisfile_asf_dataobject['reserved']) . ') does not match expected value of "0x0101"';
+                        $info['warning'][] = 'data_object.reserved ('.Helper::PrintHexBytes($thisfile_asf_dataobject['reserved']).') does not match expected value of "0x0101"';
                         //return false;
                         break;
                     }
@@ -1603,7 +1604,7 @@ class Asf extends BaseHandler
                     $thisfile_asf['simple_index_object'] = array();
                     $thisfile_asf_simpleindexobject = &$thisfile_asf['simple_index_object'];
 
-                    $SimpleIndexObjectData = $NextObjectDataHeader . fread($this->getid3->fp,
+                    $SimpleIndexObjectData = $NextObjectDataHeader.fread($this->getid3->fp,
                                                                            56 - 24);
                     $offset = 24;
 
@@ -1629,11 +1630,11 @@ class Asf extends BaseHandler
                                                                                                                         4));
                     $offset += 4;
 
-                    $IndexEntriesData = $SimpleIndexObjectData . fread($this->getid3->fp,
+                    $IndexEntriesData = $SimpleIndexObjectData.fread($this->getid3->fp,
                                                                        6 * $thisfile_asf_simpleindexobject['index_entries_count']);
                     for ($IndexEntriesCounter = 0;
                             $IndexEntriesCounter < $thisfile_asf_simpleindexobject['index_entries_count'];
-                            $IndexEntriesCounter++) {
+                            ++$IndexEntriesCounter) {
                         $thisfile_asf_simpleindexobject['index_entries'][$IndexEntriesCounter]['packet_number'] = Helper::LittleEndian2Int(substr($IndexEntriesData,
                                                                                                                                                              $offset,
                                                                                                                                                              4));
@@ -1671,7 +1672,7 @@ class Asf extends BaseHandler
                     $thisfile_asf['asf_index_object'] = array();
                     $thisfile_asf_asfindexobject = &$thisfile_asf['asf_index_object'];
 
-                    $ASFIndexObjectData = $NextObjectDataHeader . fread($this->getid3->fp,
+                    $ASFIndexObjectData = $NextObjectDataHeader.fread($this->getid3->fp,
                                                                         34 - 24);
                     $offset = 24;
 
@@ -1696,7 +1697,7 @@ class Asf extends BaseHandler
                                                  4 * $thisfile_asf_asfindexobject['index_specifiers_count']);
                     for ($IndexSpecifiersCounter = 0;
                             $IndexSpecifiersCounter < $thisfile_asf_asfindexobject['index_specifiers_count'];
-                            $IndexSpecifiersCounter++) {
+                            ++$IndexSpecifiersCounter) {
                         $IndexSpecifierStreamNumber = Helper::LittleEndian2Int(substr($ASFIndexObjectData,
                                                                                                  $offset,
                                                                                                  2));
@@ -1719,7 +1720,7 @@ class Asf extends BaseHandler
                                                  8 * $thisfile_asf_asfindexobject['index_specifiers_count']);
                     for ($IndexSpecifiersCounter = 0;
                             $IndexSpecifiersCounter < $thisfile_asf_asfindexobject['index_specifiers_count'];
-                            $IndexSpecifiersCounter++) {
+                            ++$IndexSpecifiersCounter) {
                         $thisfile_asf_asfindexobject['block_positions'][$IndexSpecifiersCounter] = Helper::LittleEndian2Int(substr($ASFIndexObjectData,
                                                                                                                                               $offset,
                                                                                                                                               8));
@@ -1730,10 +1731,10 @@ class Asf extends BaseHandler
                                                  4 * $thisfile_asf_asfindexobject['index_specifiers_count'] * $thisfile_asf_asfindexobject['index_entry_count']);
                     for ($IndexEntryCounter = 0;
                             $IndexEntryCounter < $thisfile_asf_asfindexobject['index_entry_count'];
-                            $IndexEntryCounter++) {
+                            ++$IndexEntryCounter) {
                         for ($IndexSpecifiersCounter = 0;
                                 $IndexSpecifiersCounter < $thisfile_asf_asfindexobject['index_specifiers_count'];
-                                $IndexSpecifiersCounter++) {
+                                ++$IndexSpecifiersCounter) {
                             $thisfile_asf_asfindexobject['offsets'][$IndexSpecifiersCounter][$IndexEntryCounter] = Helper::LittleEndian2Int(substr($ASFIndexObjectData,
                                                                                                                                                               $offset,
                                                                                                                                                               4));
@@ -1742,13 +1743,12 @@ class Asf extends BaseHandler
                     }
                     break;
 
-
                 default:
                     // Implementations shall ignore any standard or non-standard object that they do not know how to handle.
                     if (self::GUIDname($NextObjectGUIDtext)) {
-                        $info['warning'][] = 'unhandled GUID "' . self::GUIDname($NextObjectGUIDtext) . '" {' . $NextObjectGUIDtext . '} in ASF body at offset ' . ($offset - 16 - 8);
+                        $info['warning'][] = 'unhandled GUID "'.self::GUIDname($NextObjectGUIDtext).'" {'.$NextObjectGUIDtext.'} in ASF body at offset '.($offset - 16 - 8);
                     } else {
-                        $info['warning'][] = 'unknown GUID {' . $NextObjectGUIDtext . '} in ASF body at offset ' . (ftell($this->getid3->fp) - 16 - 8);
+                        $info['warning'][] = 'unknown GUID {'.$NextObjectGUIDtext.'} in ASF body at offset '.(ftell($this->getid3->fp) - 16 - 8);
                     }
                     fseek($this->getid3->fp, ($NextObjectSize - 16 - 8),
                           SEEK_CUR);
@@ -1834,7 +1834,7 @@ class Asf extends BaseHandler
                         break;
 
                     default:
-                        $info['warning'][] = 'Unknown streamtype: [codec_list_object][codec_entries][' . $streamnumber . '][type_raw] == ' . $streamdata['type_raw'];
+                        $info['warning'][] = 'Unknown streamtype: [codec_list_object][codec_entries]['.$streamnumber.'][type_raw] == '.$streamdata['type_raw'];
                         break;
                 }
             }
@@ -2162,10 +2162,11 @@ class Asf extends BaseHandler
     }
 
     /**
-     *
      * @param  type $asf_header_extension_object_data
      * @param  type $unhandled_sections
+     *
      * @return type
+     *
      * @link http://msdn.microsoft.com/en-us/library/bb643323.aspx
      */
     public function ASF_HeaderExtensionObjectDataParse(&$asf_header_extension_object_data,
@@ -2275,7 +2276,7 @@ class Asf extends BaseHandler
                                                                                                                2));
                     $offset += 2;
 
-                    for ($i = 0; $i < $thisObject['stream_name_count']; $i++) {
+                    for ($i = 0; $i < $thisObject['stream_name_count']; ++$i) {
                         $streamName = array();
 
                         $streamName['language_id_index'] = Helper::LittleEndian2Int(substr($asf_header_extension_object_data,
@@ -2298,7 +2299,7 @@ class Asf extends BaseHandler
 
                     for ($i = 0;
                             $i < $thisObject['payload_extension_system_count'];
-                            $i++) {
+                            ++$i) {
                         $payloadExtensionSystem = array();
 
                         $payloadExtensionSystem['extension_system_id'] = substr($asf_header_extension_object_data,
@@ -2341,7 +2342,7 @@ class Asf extends BaseHandler
                     $offset += 2;
 
                     for ($i = 0; $i < $thisObject['description_record_counts'];
-                            $i++) {
+                            ++$i) {
                         $descriptionRecord = array();
 
                         $descriptionRecord['reserved_1'] = Helper::LittleEndian2Int(substr($asf_header_extension_object_data,
@@ -2413,7 +2414,7 @@ class Asf extends BaseHandler
                     $offset += 2;
 
                     for ($i = 0; $i < $thisObject['language_id_record_counts'];
-                            $i++) {
+                            ++$i) {
                         $languageIDrecord = array();
 
                         $languageIDrecord['language_id_length'] = Helper::LittleEndian2Int(substr($asf_header_extension_object_data,
@@ -2437,7 +2438,7 @@ class Asf extends BaseHandler
                     $offset += 2;
 
                     for ($i = 0; $i < $thisObject['description_records_count'];
-                            $i++) {
+                            ++$i) {
                         $descriptionRecord = array();
 
                         $descriptionRecord['language_list_index'] = Helper::LittleEndian2Int(substr($asf_header_extension_object_data,
@@ -2493,9 +2494,9 @@ class Asf extends BaseHandler
                 default:
                     $unhandled_sections++;
                     if (self::GUIDname($thisObject['guid_text'])) {
-                        $this->getid3->info['warning'][] = 'unhandled Header Extension Object GUID "' . self::GUIDname($thisObject['guid_text']) . '" {' . $thisObject['guid_text'] . '} at offset ' . ($offset - 16 - 8);
+                        $this->getid3->info['warning'][] = 'unhandled Header Extension Object GUID "'.self::GUIDname($thisObject['guid_text']).'" {'.$thisObject['guid_text'].'} at offset '.($offset - 16 - 8);
                     } else {
-                        $this->getid3->info['warning'][] = 'unknown Header Extension Object GUID {' . $thisObject['guid_text'] . '} in at offset ' . ($offset - 16 - 8);
+                        $this->getid3->info['warning'][] = 'unknown Header Extension Object GUID {'.$thisObject['guid_text'].'} in at offset '.($offset - 16 - 8);
                     }
                     break;
             }

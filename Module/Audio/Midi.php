@@ -23,14 +23,14 @@ use GetId3\Lib\Helper;
  * module for Midi Audio files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Midi extends BaseHandler
 {
     /**
-     *
-     * @var boolean
+     * @var bool
      */
     public $scanwholefile = true;
 
@@ -38,8 +38,7 @@ class Midi extends BaseHandler
     const GETID3_MIDI_MAGIC_MTRK = 'MTrk'; // MIDI track header magic
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -47,10 +46,10 @@ class Midi extends BaseHandler
 
         // shortcut
         $info['midi']['raw'] = array();
-        $thisfile_midi               = &$info['midi'];
-        $thisfile_midi_raw           = &$thisfile_midi['raw'];
+        $thisfile_midi = &$info['midi'];
+        $thisfile_midi_raw = &$thisfile_midi['raw'];
 
-        $info['fileformat']          = 'midi';
+        $info['fileformat'] = 'midi';
         $info['audio']['dataformat'] = 'midi';
 
         fseek($this->getid3->fp, $info['avdataoffset'], SEEK_SET);
@@ -64,16 +63,16 @@ class Midi extends BaseHandler
             return false;
         }
         $offset += 4;
-        $thisfile_midi_raw['headersize']    = Helper::BigEndian2Int(substr($MIDIdata, $offset, 4));
+        $thisfile_midi_raw['headersize'] = Helper::BigEndian2Int(substr($MIDIdata, $offset, 4));
         $offset += 4;
-        $thisfile_midi_raw['fileformat']    = Helper::BigEndian2Int(substr($MIDIdata, $offset, 2));
+        $thisfile_midi_raw['fileformat'] = Helper::BigEndian2Int(substr($MIDIdata, $offset, 2));
         $offset += 2;
-        $thisfile_midi_raw['tracks']        = Helper::BigEndian2Int(substr($MIDIdata, $offset, 2));
+        $thisfile_midi_raw['tracks'] = Helper::BigEndian2Int(substr($MIDIdata, $offset, 2));
         $offset += 2;
         $thisfile_midi_raw['ticksperqnote'] = Helper::BigEndian2Int(substr($MIDIdata, $offset, 2));
         $offset += 2;
 
-        for ($i = 0; $i < $thisfile_midi_raw['tracks']; $i++) {
+        for ($i = 0; $i < $thisfile_midi_raw['tracks']; ++$i) {
             while ((strlen($MIDIdata) - $offset) < 8) {
                 $MIDIdata .= fread($this->getid3->fp, $this->getid3->fread_buffer_size());
             }
@@ -101,18 +100,17 @@ class Midi extends BaseHandler
         }
 
         if ($this->scanwholefile) { // this can take quite a long time, so have the option to bypass it if speed is very important
-            $thisfile_midi['totalticks']      = 0;
+            $thisfile_midi['totalticks'] = 0;
             $info['playtime_seconds'] = 0;
-            $CurrentMicroSecondsPerBeat       = 500000; // 120 beats per minute;  60,000,000 microseconds per minute -> 500,000 microseconds per beat
-            $CurrentBeatsPerMinute            = 120;    // 120 beats per minute;  60,000,000 microseconds per minute -> 500,000 microseconds per beat
-            $MicroSecondsPerQuarterNoteAfter  = array ();
+            $CurrentMicroSecondsPerBeat = 500000; // 120 beats per minute;  60,000,000 microseconds per minute -> 500,000 microseconds per beat
+            $CurrentBeatsPerMinute = 120;    // 120 beats per minute;  60,000,000 microseconds per minute -> 500,000 microseconds per beat
+            $MicroSecondsPerQuarterNoteAfter = array();
 
             foreach ($trackdataarray as $tracknumber => $trackdata) {
-
-                $eventsoffset               = 0;
-                $LastIssuedMIDIcommand      = 0;
-                $LastIssuedMIDIchannel      = 0;
-                $CumulativeDeltaTime        = 0;
+                $eventsoffset = 0;
+                $LastIssuedMIDIcommand = 0;
+                $LastIssuedMIDIchannel = 0;
+                $CumulativeDeltaTime = 0;
                 $TicksAtCurrentBPM = 0;
                 while ($eventsoffset < strlen($trackdata)) {
                     $eventid = 0;
@@ -120,7 +118,7 @@ class Midi extends BaseHandler
                         $eventid = count($MIDIevents[$tracknumber]);
                     }
                     $deltatime = 0;
-                    for ($i = 0; $i < 4; $i++) {
+                    for ($i = 0; $i < 4; ++$i) {
                         $deltatimebyte = ord(substr($trackdata, $eventsoffset++, 1));
                         $deltatime = ($deltatime << 7) + ($deltatimebyte & 0x7F);
                         if ($deltatimebyte & 0x80) {
@@ -132,37 +130,33 @@ class Midi extends BaseHandler
                     $CumulativeDeltaTime += $deltatime;
                     $TicksAtCurrentBPM   += $deltatime;
                     $MIDIevents[$tracknumber][$eventid]['deltatime'] = $deltatime;
-                    $MIDI_event_channel                                  = ord(substr($trackdata, $eventsoffset++, 1));
+                    $MIDI_event_channel = ord(substr($trackdata, $eventsoffset++, 1));
                     if ($MIDI_event_channel & 0x80) {
                         // OK, normal event - MIDI command has MSB set
                         $LastIssuedMIDIcommand = $MIDI_event_channel >> 4;
                         $LastIssuedMIDIchannel = $MIDI_event_channel & 0x0F;
                     } else {
                         // running event - assume last command
-                        $eventsoffset--;
+                        --$eventsoffset;
                     }
-                    $MIDIevents[$tracknumber][$eventid]['eventid']   = $LastIssuedMIDIcommand;
-                    $MIDIevents[$tracknumber][$eventid]['channel']   = $LastIssuedMIDIchannel;
+                    $MIDIevents[$tracknumber][$eventid]['eventid'] = $LastIssuedMIDIcommand;
+                    $MIDIevents[$tracknumber][$eventid]['channel'] = $LastIssuedMIDIchannel;
                     if ($MIDIevents[$tracknumber][$eventid]['eventid'] == 0x08) { // Note off (key is released)
 
                         $notenumber = ord(substr($trackdata, $eventsoffset++, 1));
-                        $velocity   = ord(substr($trackdata, $eventsoffset++, 1));
-
+                        $velocity = ord(substr($trackdata, $eventsoffset++, 1));
                     } elseif ($MIDIevents[$tracknumber][$eventid]['eventid'] == 0x09) { // Note on (key is pressed)
 
                         $notenumber = ord(substr($trackdata, $eventsoffset++, 1));
-                        $velocity   = ord(substr($trackdata, $eventsoffset++, 1));
-
+                        $velocity = ord(substr($trackdata, $eventsoffset++, 1));
                     } elseif ($MIDIevents[$tracknumber][$eventid]['eventid'] == 0x0A) { // Key after-touch
 
                         $notenumber = ord(substr($trackdata, $eventsoffset++, 1));
-                        $velocity   = ord(substr($trackdata, $eventsoffset++, 1));
-
+                        $velocity = ord(substr($trackdata, $eventsoffset++, 1));
                     } elseif ($MIDIevents[$tracknumber][$eventid]['eventid'] == 0x0B) { // Control Change
 
                         $controllernum = ord(substr($trackdata, $eventsoffset++, 1));
-                        $newvalue      = ord(substr($trackdata, $eventsoffset++, 1));
-
+                        $newvalue = ord(substr($trackdata, $eventsoffset++, 1));
                     } elseif ($MIDIevents[$tracknumber][$eventid]['eventid'] == 0x0C) { // Program (patch) change
 
                         $newprogramnum = ord(substr($trackdata, $eventsoffset++, 1));
@@ -173,22 +167,18 @@ class Midi extends BaseHandler
                         } else {
                             $thisfile_midi_raw['track'][$tracknumber]['instrument'] = $this->GeneralMIDIinstrumentLookup($newprogramnum);
                         }
-
                     } elseif ($MIDIevents[$tracknumber][$eventid]['eventid'] == 0x0D) { // Channel after-touch
 
                         $channelnumber = ord(substr($trackdata, $eventsoffset++, 1));
-
                     } elseif ($MIDIevents[$tracknumber][$eventid]['eventid'] == 0x0E) { // Pitch wheel change (2000H is normal or no change)
 
                         $changeLSB = ord(substr($trackdata, $eventsoffset++, 1));
                         $changeMSB = ord(substr($trackdata, $eventsoffset++, 1));
                         $pitchwheelchange = (($changeMSB & 0x7F) << 7) & ($changeLSB & 0x7F);
-
                     } elseif (($MIDIevents[$tracknumber][$eventid]['eventid'] == 0x0F) && ($MIDIevents[$tracknumber][$eventid]['channel'] == 0x0F)) {
-
                         $METAeventCommand = ord(substr($trackdata, $eventsoffset++, 1));
-                        $METAeventLength  = ord(substr($trackdata, $eventsoffset++, 1));
-                        $METAeventData    = substr($trackdata, $eventsoffset, $METAeventLength);
+                        $METAeventLength = ord(substr($trackdata, $eventsoffset++, 1));
+                        $METAeventData = substr($trackdata, $eventsoffset, $METAeventLength);
                         $eventsoffset += $METAeventLength;
                         switch ($METAeventCommand) {
                             case 0x00: // Set track sequence number
@@ -219,7 +209,7 @@ class Midi extends BaseHandler
                                 break;
 
                             case 0x05: // Text: lyrics
-                                $text_lyrics  = substr($METAeventData, 0, $METAeventLength);
+                                $text_lyrics = substr($METAeventData, 0, $METAeventLength);
                                 //$thisfile_midi_raw['events'][$tracknumber][$eventid]['lyrics'] = $text_lyrics;
                                 if (!isset($thisfile_midi['lyrics'])) {
                                     $thisfile_midi['lyrics'] = '';
@@ -255,9 +245,9 @@ class Midi extends BaseHandler
                                 break;
 
                             case 0x58: // Time signature
-                                $timesig_numerator   = Helper::BigEndian2Int($METAeventData{0});
+                                $timesig_numerator = Helper::BigEndian2Int($METAeventData{0});
                                 $timesig_denominator = pow(2, Helper::BigEndian2Int($METAeventData{1})); // $02 -> x/4, $03 -> x/8, etc
-                                $timesig_32inqnote   = Helper::BigEndian2Int($METAeventData{2});         // number of 32nd notes to the quarter note
+                                $timesig_32inqnote = Helper::BigEndian2Int($METAeventData{2});         // number of 32nd notes to the quarter note
                                 //$thisfile_midi_raw['events'][$tracknumber][$eventid]['timesig_32inqnote']   = $timesig_32inqnote;
                                 //$thisfile_midi_raw['events'][$tracknumber][$eventid]['timesig_numerator']   = $timesig_numerator;
                                 //$thisfile_midi_raw['events'][$tracknumber][$eventid]['timesig_denominator'] = $timesig_denominator;
@@ -272,8 +262,8 @@ class Midi extends BaseHandler
                                     $keysig_sharpsflats -= 256;
                                 }
 
-                                $keysig_majorminor  = Helper::BigEndian2Int($METAeventData{1}); // 0 -> major, 1 -> minor
-                                $keysigs = array(-7=>'Cb', -6=>'Gb', -5=>'Db', -4=>'Ab', -3=>'Eb', -2=>'Bb', -1=>'F', 0=>'C', 1=>'G', 2=>'D', 3=>'A', 4=>'E', 5=>'B', 6=>'F#', 7=>'C#');
+                                $keysig_majorminor = Helper::BigEndian2Int($METAeventData{1}); // 0 -> major, 1 -> minor
+                                $keysigs = array(-7 => 'Cb', -6 => 'Gb', -5 => 'Db', -4 => 'Ab', -3 => 'Eb', -2 => 'Bb', -1 => 'F', 0 => 'C', 1 => 'G', 2 => 'D', 3 => 'A', 4 => 'E', 5 => 'B', 6 => 'F#', 7 => 'C#');
                                 //$thisfile_midi_raw['events'][$tracknumber][$eventid]['keysig_sharps'] = (($keysig_sharpsflats > 0) ? abs($keysig_sharpsflats) : 0);
                                 //$thisfile_midi_raw['events'][$tracknumber][$eventid]['keysig_flats']  = (($keysig_sharpsflats < 0) ? abs($keysig_sharpsflats) : 0);
                                 //$thisfile_midi_raw['events'][$tracknumber][$eventid]['keysig_minor']  = (bool) $keysig_majorminor;
@@ -291,11 +281,8 @@ class Midi extends BaseHandler
                                 $info['warning'][] = 'Unhandled META Event Command: '.$METAeventCommand;
                                 break;
                         }
-
                     } else {
-
                         $info['warning'][] = 'Unhandled MIDI Event ID: '.$MIDIevents[$tracknumber][$eventid]['eventid'].' + Channel ID: '.$MIDIevents[$tracknumber][$eventid]['channel'];
-
                     }
                 }
                 if (($tracknumber > 0) || (count($trackdataarray) == 1)) {
@@ -312,7 +299,6 @@ class Midi extends BaseHandler
                     continue;
                 }
                 if ($thisfile_midi['totalticks'] > $tickoffset) {
-
                     if ($thisfile_midi_raw['ticksperqnote'] == 0) {
                         $info['error'][] = 'Corrupt MIDI file: ticksperqnote == zero';
 
@@ -326,7 +312,6 @@ class Midi extends BaseHandler
                 }
             }
             if ($thisfile_midi['totalticks'] > $previoustickoffset) {
-
                 if ($thisfile_midi_raw['ticksperqnote'] == 0) {
                     $info['error'][] = 'Corrupt MIDI file: ticksperqnote == zero';
 
@@ -334,7 +319,6 @@ class Midi extends BaseHandler
                 }
 
                 $info['playtime_seconds'] += (($thisfile_midi['totalticks'] - $previoustickoffset) / $thisfile_midi_raw['ticksperqnote']) * ($microsecondsperbeat / 1000000);
-
             }
         }
 
@@ -350,15 +334,15 @@ class Midi extends BaseHandler
     }
 
     /**
-     *
      * @param  type $instrumentid
+     *
      * @return type
      */
     public function GeneralMIDIinstrumentLookup($instrumentid)
     {
         $begin = __LINE__;
 
-        /** This is not a comment!
+        /* This is not a comment!
 
             0	Acoustic Grand
             1	Bright Acoustic
@@ -495,15 +479,15 @@ class Midi extends BaseHandler
     }
 
     /**
-     *
      * @param  type $instrumentid
+     *
      * @return type
      */
     public function GeneralMIDIpercussionLookup($instrumentid)
     {
         $begin = __LINE__;
 
-        /** This is not a comment!
+        /* This is not a comment!
 
             35	Acoustic Bass Drum
             36	Bass Drum 1
@@ -556,5 +540,4 @@ class Midi extends BaseHandler
 
         return Helper::EmbeddedLookup($instrumentid, $begin, __LINE__, __FILE__, 'GeneralMIDIpercussion');
     }
-
 }

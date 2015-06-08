@@ -23,15 +23,14 @@ use GetId3\Lib\Helper;
  * module for analyzing MS Office (.doc, .xls, etc) files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Msoffice extends BaseHandler
 {
-
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -47,9 +46,8 @@ class Msoffice extends BaseHandler
         }
         $info['fileformat'] = 'msoffice';
 
-$info['error'][] = 'MS Office (.doc, .xls, etc) parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
-return false;
+        $info['error'][] = 'MS Office (.doc, .xls, etc) parsing not enabled in this version of GetId3Core() ['.$this->getid3->version().']';
 
+        return false;
     }
-
 }

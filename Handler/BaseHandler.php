@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GetId3() by James Heinrich <info@getid3.org>
  * available at http://getid3.sourceforge.net
@@ -6,6 +7,7 @@
  *
  * Please see readme.txt for more information
  */
+
 namespace GetId3\Handler;
 
 use GetId3\Lib\Helper;
@@ -13,8 +15,8 @@ use GetId3\GetId3Core;
 use GetId3\Exception\DefaultException;
 
 /**
- *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
@@ -30,7 +32,7 @@ abstract class BaseHandler
     /**
      * analyzing filepointer or string
      *
-     * @var boolean
+     * @var bool
      */
     protected $data_string_flag = false;
 
@@ -44,25 +46,23 @@ abstract class BaseHandler
     /**
      * seek position in string
      *
-     * @var integer
+     * @var int
      */
     protected $data_string_position = 0;
 
     /**
      * string length
      *
-     * @var integer
+     * @var int
      */
     protected $data_string_length = 0;
 
     /**
-     *
      * @var type
      */
     private $dependency_to;
 
     /**
-     *
      * @param GetId3\GetId3 $getid3
      * @param type          $call_module
      */
@@ -111,7 +111,6 @@ abstract class BaseHandler
     }
 
     /**
-     *
      * @return type
      */
     protected function ftell()
@@ -124,14 +123,13 @@ abstract class BaseHandler
     }
 
     /**
-     *
      * @param  type $bytes
+     *
      * @return type
      */
     protected function fread($bytes)
     {
         if ($this->getDataStringFlag()) {
-
             $this->setDataStringPosition($this->getDataStringPosition() + $bytes);
 
             return substr($this->getDataString(),
@@ -142,9 +140,9 @@ abstract class BaseHandler
     }
 
     /**
-     *
      * @param  type $bytes
      * @param  type $whence
+     *
      * @return int
      */
     protected function fseek($bytes, $whence = SEEK_SET)
@@ -171,7 +169,6 @@ abstract class BaseHandler
     }
 
     /**
-     *
      * @return type
      */
     protected function feof()
@@ -184,8 +181,8 @@ abstract class BaseHandler
     }
 
     /**
-     *
      * @param  type $module
+     *
      * @return type
      */
     final protected function isDependencyFor($module)
@@ -194,9 +191,9 @@ abstract class BaseHandler
     }
 
     /**
-     *
      * @param  string  $text
-     * @return boolean
+     *
+     * @return bool
      */
     protected function error($text)
     {
@@ -206,9 +203,9 @@ abstract class BaseHandler
     }
 
     /**
-     *
      * @param  string  $text
-     * @return boolean
+     *
+     * @return bool
      */
     protected function warning($text)
     {
@@ -216,12 +213,13 @@ abstract class BaseHandler
     }
 
     /**
-     *
      * @param  type      $ThisFileInfoIndex
      * @param  type      $filename
      * @param  type      $offset
      * @param  type      $length
-     * @return boolean
+     *
+     * @return bool
+     *
      * @throws Exception
      */
     public function saveAttachment(&$ThisFileInfoIndex, $filename, $offset,
@@ -229,7 +227,7 @@ abstract class BaseHandler
     {
         try {
             if (!Helper::intValueSupported($offset + $length)) {
-                throw new DefaultException('it extends beyond the ' . round(PHP_INT_MAX / 1073741824) . 'GB limit');
+                throw new DefaultException('it extends beyond the '.round(PHP_INT_MAX / 1073741824).'GB limit');
             }
 
             if ($this->getGetId3()->getOptionSaveAttachments() === GetId3Core::ATTACHMENTS_NONE) {
@@ -254,13 +252,13 @@ abstract class BaseHandler
                                          DIRECTORY_SEPARATOR);
                 if (!is_dir($dir) || !is_writable($dir)) {
                     // check supplied directory
-                    throw new DefaultException('supplied path (' . $dir . ') does not exist, or is not writable');
+                    throw new DefaultException('supplied path ('.$dir.') does not exist, or is not writable');
                 }
-                $dest = $dir . DIRECTORY_SEPARATOR . $filename;
+                $dest = $dir.DIRECTORY_SEPARATOR.$filename;
 
                 // create dest file
                 if (false == ($fp_dest = fopen($dest, 'wb'))) {
-                    throw new DefaultException('failed to create file ' . $dest);
+                    throw new DefaultException('failed to create file '.$dest);
                 }
 
                 // copy data
@@ -281,9 +279,8 @@ abstract class BaseHandler
                 $ThisFileInfoIndex = $dest;
             }
         } catch (DefaultException $e) {
-
             unset($ThisFileInfoIndex); // do not set any in case of error
-            $this->warning('Failed to extract attachment ' . $filename . ': ' . $e->getMessage());
+            $this->warning('Failed to extract attachment '.$filename.': '.$e->getMessage());
 
             return false;
         }

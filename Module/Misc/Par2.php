@@ -22,15 +22,14 @@ use GetId3\Handler\BaseHandler;
  * module for analyzing PAR2 files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Par2 extends BaseHandler
 {
-
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -41,7 +40,5 @@ class Par2 extends BaseHandler
         $info['error'][] = 'PAR2 parsing not enabled in this version of GetId3Core()';
 
         return false;
-
     }
-
 }

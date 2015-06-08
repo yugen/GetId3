@@ -25,15 +25,14 @@ use GetId3\Module\AudioVideo\Riff;
  * module for analyzing LA (LosslessAudio) audio files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class La extends BaseHandler
 {
-
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -47,13 +46,13 @@ class La extends BaseHandler
             case 'LA02':
             case 'LA03':
             case 'LA04':
-                $info['fileformat']          = 'la';
+                $info['fileformat'] = 'la';
                 $info['audio']['dataformat'] = 'la';
-                $info['audio']['lossless']   = true;
+                $info['audio']['lossless'] = true;
 
                 $info['la']['version_major'] = (int) substr($rawdata, $offset + 2, 1);
                 $info['la']['version_minor'] = (int) substr($rawdata, $offset + 3, 1);
-                $info['la']['version']       = (float) $info['la']['version_major'] + ($info['la']['version_minor'] / 10);
+                $info['la']['version'] = (float) $info['la']['version_major'] + ($info['la']['version_minor'] / 10);
                 $offset += 4;
 
                 $info['la']['uncompressed_size'] = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
@@ -74,16 +73,13 @@ class La extends BaseHandler
 
                 $info['la']['fmt_size'] = 24;
                 if ($info['la']['version'] >= 0.3) {
-
-                    $info['la']['fmt_size']    = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
+                    $info['la']['fmt_size'] = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
                     $info['la']['header_size'] = 49 + $info['la']['fmt_size'] - 24;
                     $offset += 4;
-
                 } else {
 
                     // version 0.2 didn't support additional data blocks
                     $info['la']['header_size'] = 41;
-
                 }
 
                 $fmt_chunk = substr($rawdata, $offset, 4);
@@ -96,15 +92,15 @@ class La extends BaseHandler
                 $fmt_size = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
                 $offset += 4;
 
-                $info['la']['raw']['format']  = Helper::LittleEndian2Int(substr($rawdata, $offset, 2));
+                $info['la']['raw']['format'] = Helper::LittleEndian2Int(substr($rawdata, $offset, 2));
                 $offset += 2;
 
-                $info['la']['channels']       = Helper::LittleEndian2Int(substr($rawdata, $offset, 2));
+                $info['la']['channels'] = Helper::LittleEndian2Int(substr($rawdata, $offset, 2));
                 $offset += 2;
                 if ($info['la']['channels'] == 0) {
                     $info['error'][] = 'Corrupt LA file: channels == zero';
 
-                        return false;
+                    return false;
                 }
 
                 $info['la']['sample_rate'] = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
@@ -112,27 +108,27 @@ class La extends BaseHandler
                 if ($info['la']['sample_rate'] == 0) {
                     $info['error'][] = 'Corrupt LA file: sample_rate == zero';
 
-                        return false;
+                    return false;
                 }
 
-                $info['la']['bytes_per_second']     = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
+                $info['la']['bytes_per_second'] = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
                 $offset += 4;
-                $info['la']['bytes_per_sample']     = Helper::LittleEndian2Int(substr($rawdata, $offset, 2));
+                $info['la']['bytes_per_sample'] = Helper::LittleEndian2Int(substr($rawdata, $offset, 2));
                 $offset += 2;
-                $info['la']['bits_per_sample']      = Helper::LittleEndian2Int(substr($rawdata, $offset, 2));
+                $info['la']['bits_per_sample'] = Helper::LittleEndian2Int(substr($rawdata, $offset, 2));
                 $offset += 2;
 
-                $info['la']['samples']              = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
+                $info['la']['samples'] = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
                 $offset += 4;
 
-                $info['la']['raw']['flags']         = Helper::LittleEndian2Int(substr($rawdata, $offset, 1));
+                $info['la']['raw']['flags'] = Helper::LittleEndian2Int(substr($rawdata, $offset, 1));
                 $offset += 1;
-                $info['la']['flags']['seekable']             = (bool) ($info['la']['raw']['flags'] & 0x01);
+                $info['la']['flags']['seekable'] = (bool) ($info['la']['raw']['flags'] & 0x01);
                 if ($info['la']['version'] >= 0.4) {
                     $info['la']['flags']['high_compression'] = (bool) ($info['la']['raw']['flags'] & 0x02);
                 }
 
-                $info['la']['original_crc']         = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
+                $info['la']['original_crc'] = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
                 $offset += 4;
 
                 // mikeØbevin*de
@@ -153,7 +149,7 @@ class La extends BaseHandler
                 if ($info['la']['flags']['seekable']) {
                     $info['la']['seekpoint_count'] = floor($info['la']['samples'] / ($info['la']['blocksize'] * $info['la']['seekevery']));
 
-                    for ($i = 0; $i < $info['la']['seekpoint_count']; $i++) {
+                    for ($i = 0; $i < $info['la']['seekpoint_count']; ++$i) {
                         $info['la']['seekpoints'][] = Helper::LittleEndian2Int(substr($rawdata, $offset, 4));
                         $offset += 4;
                     }
@@ -171,12 +167,10 @@ class La extends BaseHandler
                         $info['warning'][] = 'FooterStart value points to offset '.$info['la']['footerstart'].' which is beyond end-of-file ('.$info['filesize'].')';
                         $info['la']['footerstart'] = $info['filesize'];
                     }
-
                 } else {
 
                     // La v0.2 didn't have FooterStart value
                     $info['la']['footerstart'] = $info['avdataend'];
-
                 }
 
                 if ($info['la']['footerstart'] < $info['avdataend']) {
@@ -213,21 +207,21 @@ class La extends BaseHandler
                 }
 
                 // $info['avdataoffset'] should be zero to begin with, but just in case it's not, include the addition anyway
-                $info['avdataend']    = $info['avdataoffset'] + $info['la']['footerstart'];
+                $info['avdataend'] = $info['avdataoffset'] + $info['la']['footerstart'];
                 $info['avdataoffset'] = $info['avdataoffset'] + $offset;
 
                 //$info['la']['codec']                = RIFFwFormatTagLookup($info['la']['raw']['format']);
-                $info['la']['compression_ratio']    = (float) (($info['avdataend'] - $info['avdataoffset']) / $info['la']['uncompressed_size']);
-                $info['playtime_seconds']           = (float) ($info['la']['samples'] / $info['la']['sample_rate']) / $info['la']['channels'];
+                $info['la']['compression_ratio'] = (float) (($info['avdataend'] - $info['avdataoffset']) / $info['la']['uncompressed_size']);
+                $info['playtime_seconds'] = (float) ($info['la']['samples'] / $info['la']['sample_rate']) / $info['la']['channels'];
                 if ($info['playtime_seconds'] == 0) {
                     $info['error'][] = 'Corrupt LA file: playtime_seconds == zero';
 
                     return false;
                 }
 
-                $info['audio']['bitrate']            = ($info['avdataend'] - $info['avdataoffset']) * 8 / $info['playtime_seconds'];
+                $info['audio']['bitrate'] = ($info['avdataend'] - $info['avdataoffset']) * 8 / $info['playtime_seconds'];
                 //$info['audio']['codec']              = $info['la']['codec'];
-                $info['audio']['bits_per_sample']    = $info['la']['bits_per_sample'];
+                $info['audio']['bits_per_sample'] = $info['la']['bits_per_sample'];
                 break;
 
             default:
@@ -241,11 +235,10 @@ class La extends BaseHandler
                 break;
         }
 
-        $info['audio']['channels']    = $info['la']['channels'];
+        $info['audio']['channels'] = $info['la']['channels'];
         $info['audio']['sample_rate'] = (int) $info['la']['sample_rate'];
-        $info['audio']['encoder']     = 'LA v'.$info['la']['version'];
+        $info['audio']['encoder'] = 'LA v'.$info['la']['version'];
 
         return true;
     }
-
 }

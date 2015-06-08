@@ -13,7 +13,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        self::$mp3File = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'mp3demo.mp3';
+        self::$mp3File = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'mp3demo.mp3';
         self::$class = 'GetId3\\GetId3Core';
         self::$classWriter = 'GetId3\\Write\\Tags';
     }
@@ -21,7 +21,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
     public function testClassCore()
     {
         if (!class_exists(self::$class)) {
-            $this->markTestSkipped(self::$class . ' is not available.');
+            $this->markTestSkipped(self::$class.' is not available.');
         }
         $this->assertTrue(class_exists(self::$class));
         $this->assertClassHasAttribute('option_md5_data', self::$class);
@@ -39,7 +39,7 @@ class AudioTest extends \PHPUnit_Framework_TestCase
     public function testClassWriter()
     {
         if (!class_exists(self::$classWriter)) {
-            $this->markTestSkipped(self::$classWriter . ' is not available.');
+            $this->markTestSkipped(self::$classWriter.' is not available.');
         }
 
         $this->assertTrue(class_exists(self::$classWriter));
@@ -69,18 +69,18 @@ class AudioTest extends \PHPUnit_Framework_TestCase
         $tagwriter->filename = self::$mp3File;
         $tagwriter->tagformats = array('id3v1', 'id3v2.3');
         $tagwriter->overwrite_tags = true;
-        $tagwriter->tag_encoding   = 'UTF-8';
+        $tagwriter->tag_encoding = 'UTF-8';
         $tagwriter->remove_other_tags = true;
 
-        $hash = ' ' . substr(md5(mt_rand()), 0, 8);
+        $hash = ' '.substr(md5(mt_rand()), 0, 8);
         $tagData = array(
-            'title'   => array('My Song' . $hash),
-            'artist'  => array('The Artist' . $hash),
-            'album'   => array('Greatest Hits' . $hash),
-            'year'    => array('1986' . $hash),
-            'genre'   => array('Electronic' . $hash),
-            'comment' => array('excellent!' . $hash),
-            'track'   => array('04/16' . $hash),
+            'title' => array('My Song'.$hash),
+            'artist' => array('The Artist'.$hash),
+            'album' => array('Greatest Hits'.$hash),
+            'year' => array('1986'.$hash),
+            'genre' => array('Electronic'.$hash),
+            'comment' => array('excellent!'.$hash),
+            'track' => array('04/16'.$hash),
         );
         $tagwriter->tag_data = $tagData;
 

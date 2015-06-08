@@ -23,20 +23,19 @@ use GetId3\Lib\Helper;
  * module for analyzing RAR files
  *
  * @author James Heinrich <info@getid3.org>
+ *
  * @link http://getid3.sourceforge.net
  * @link http://www.getid3.org
  */
 class Rar extends BaseHandler
 {
     /**
-     *
-     * @var boolean
+     * @var bool
      */
     public $option_use_rar_extension = false;
 
     /**
-     *
-     * @return boolean
+     * @return bool
      */
     public function analyze()
     {
@@ -59,7 +58,7 @@ class Rar extends BaseHandler
 
                     return true;
                 } else {
-                    $info['error'][] = 'failed to rar_open(' . $info['filename'] . ')';
+                    $info['error'][] = 'failed to rar_open('.$info['filename'].')';
                 }
             } else {
                 $info['error'][] = 'RAR support does not appear to be available in this PHP installation';
