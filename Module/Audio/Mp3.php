@@ -494,6 +494,11 @@ class Mp3 extends BaseHandler
         if ($MPEGaudioHeaderValidCache[$head4]) {
             $thisfile_mpeg_audio['raw'] = $MPEGheaderRawArray;
         } else {
+            // handle case where info['error'] is not an array.
+            // seems necessary for php 7
+            if (!is_array($info['error'])) {
+                $info['error'] = [$info['error']];
+            }
             $info['error'][] = 'Invalid MPEG audio header ('.Helper::PrintHexBytes($head4).') at offset '.$offset;
 
             return false;
